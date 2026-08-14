@@ -135,14 +135,26 @@ function productCard(p) {
 
         ${
           img
-            ? `<img
-                 src="${escapeAttr(img)}"
-                 alt="${escapeAttr(p.ProductName)}"
-                 loading="lazy"
-                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-               >
-               <div class="image-placeholder" style="display:none;">M</div>`
-            : `<div class="image-placeholder">M</div>`
+            ? `
+              <img
+                class="product-main-image"
+                src="${escapeAttr(img)}"
+                alt="${escapeAttr(p.ProductName)}"
+                loading="lazy"
+                onerror="
+                  this.style.display='none';
+                  this.parentElement.querySelector('.image-placeholder').style.display='flex';
+                "
+              >
+
+              <div
+                class="image-placeholder"
+                style="display:none;"
+              >M</div>
+            `
+            : `
+              <div class="image-placeholder">M</div>
+            `
         }
 
         ${
@@ -153,7 +165,47 @@ function productCard(p) {
 
         ${
           images.length > 1
-            ? `<span class="image-count">${images.length} photos</span>`
+            ? `
+              <span class="image-count">
+                ${images.length} photos
+              </span>
+
+              <div class="product-thumbnails">
+
+                ${images.map((image, index) => `
+                  <button
+                    type="button"
+                    class="product-thumbnail ${index === 0 ? "active" : ""}"
+                    data-src="${escapeAttr(image.url)}"
+                    onclick="
+                      const gallery = this.closest('.product-image');
+                      const main = gallery.querySelector('.product-main-image');
+
+                      if (main) {
+                        main.src = this.dataset.src;
+                        main.style.display = 'block';
+                      }
+
+                      gallery
+                        .querySelectorAll('.product-thumbnail')
+                        .forEach(function(btn) {
+                          btn.classList.remove('active');
+                        });
+
+                      this.classList.add('active');
+                    "
+                    aria-label="View image ${index + 1}"
+                  >
+                    <img
+                      src="${escapeAttr(image.url)}"
+                      alt="${escapeAttr(p.ProductName)} - image ${index + 1}"
+                      loading="lazy"
+                    >
+                  </button>
+                `).join("")}
+
+              </div>
+            `
             : ""
         }
 
