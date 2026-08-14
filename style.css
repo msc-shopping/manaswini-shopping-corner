@@ -214,3 +214,124 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   background: #6f0b2e;
   border-radius: 10px;
 }
+/* ============================================================
+   MODAL PRODUCT GALLERY — FINAL OVERRIDE
+   ============================================================ */
+
+#modalImage {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+#modalImage .modal-gallery {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  background: #f5e6d2;
+}
+
+#modalImage .modal-main-image {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  overflow: hidden !important;
+}
+
+#modalImage .modal-main-image img {
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* Thumbnail strip */
+#modalImage .modal-thumbnails {
+  position: absolute !important;
+
+  left: 14px !important;
+  right: 14px !important;
+  bottom: 14px !important;
+
+  z-index: 50 !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 8px !important;
+
+  width: auto !important;
+
+  padding: 7px !important;
+
+  background: rgba(255, 255, 255, 0.94) !important;
+
+  border-radius: 12px !important;
+
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+
+  box-sizing: border-box !important;
+}
+
+/* Individual thumbnails */
+#modalImage .modal-thumbnail {
+  position: relative !important;
+
+  flex: 0 0 58px !important;
+
+  width: 58px !important;
+  height: 58px !important;
+
+  min-width: 58px !important;
+  min-height: 58px !important;
+
+  padding: 0 !important;
+
+  border: 2px solid transparent !important;
+  border-radius: 8px !important;
+
+  background: #fff !important;
+
+  overflow: hidden !important;
+
+  cursor: pointer !important;
+
+  display: block !important;
+}
+
+#modalImage .modal-thumbnail img {
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: cover !important;
+
+  display: block !important;
+}
+
+#modalImage .modal-thumbnail:hover {
+  border-color: #7a0c2e !important;
+}
+
+#modalImage .modal-thumbnail.active {
+  border-color: #7a0c2e !important;
+}
+
+/* Scrollbar */
+#modalImage .modal-thumbnails::-webkit-scrollbar {
+  height: 4px !important;
+}
+
+#modalImage .modal-thumbnails::-webkit-scrollbar-thumb {
+  background: #7a0c2e !important;
+  border-radius: 10px !important;
+}
