@@ -335,3 +335,141 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   background: #7a0c2e !important;
   border-radius: 10px !important;
 }
+/* ============================================================
+   PRODUCT MODAL IMAGE GALLERY
+   ============================================================ */
+
+#modalImage {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  background: #f3e4d0;
+}
+
+.modal-gallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+.modal-main-image {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background: #f3e4d0;
+}
+
+.modal-main-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* ------------------------------------------------------------
+   THUMBNAILS
+   ------------------------------------------------------------ */
+
+.modal-thumbnails {
+  position: absolute;
+
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 8px;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  border-radius: 12px;
+
+  overflow-x: auto;
+
+  z-index: 20;
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-thumbnail {
+  flex: 0 0 58px;
+
+  width: 58px;
+  height: 58px;
+
+  padding: 0;
+
+  border: 2px solid transparent;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  overflow: hidden;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.modal-thumbnail img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.modal-thumbnail:hover {
+  transform: translateY(-2px);
+  border-color: #7a0c2e;
+}
+
+.modal-thumbnail.active {
+  border-color: #7a0c2e;
+}
+
+/* Scrollbar */
+
+.modal-thumbnails::-webkit-scrollbar {
+  height: 4px;
+}
+
+.modal-thumbnails::-webkit-scrollbar-thumb {
+  background: #7a0c2e;
+  border-radius: 10px;
+}
+
+/* ------------------------------------------------------------
+   MOBILE
+   ------------------------------------------------------------ */
+
+@media (max-width: 700px) {
+
+  .modal-thumbnails {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+
+    gap: 6px;
+
+    padding: 6px;
+  }
+
+  .modal-thumbnail {
+    flex-basis: 48px;
+    width: 48px;
+    height: 48px;
+  }
+
+}
