@@ -116,3 +116,101 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   background: #7a0c2e;
   border-radius: 10px;
 }
+
+/* ============================================================
+   PRODUCT MODAL IMAGE GALLERY
+   ============================================================ */
+
+.modal-gallery {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #f5e6d2;
+}
+
+.modal-main-image {
+  flex: 1;
+
+  min-height: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+.modal-main-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+.modal-thumbnails {
+  flex: 0 0 auto;
+
+  display: flex;
+  gap: 8px;
+
+  padding: 10px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  overflow-x: auto;
+
+  border-top: 1px solid #ead9c2;
+}
+
+.modal-thumbnail {
+  flex: 0 0 58px;
+
+  width: 58px;
+  height: 58px;
+
+  padding: 0;
+
+  border: 2px solid transparent;
+  border-radius: 8px;
+
+  background: #fff;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.modal-thumbnail img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+.modal-thumbnail:hover {
+  transform: translateY(-2px);
+}
+
+.modal-thumbnail.active {
+  border-color: #6f0b2e;
+}
+
+.modal-thumbnails::-webkit-scrollbar {
+  height: 4px;
+}
+
+.modal-thumbnails::-webkit-scrollbar-thumb {
+  background: #6f0b2e;
+  border-radius: 10px;
+}
