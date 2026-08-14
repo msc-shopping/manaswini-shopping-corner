@@ -282,18 +282,105 @@ function openProduct(id) {
 
   setModalQty(state.modalQty);
 
+  /* ==========================================================
+     PRODUCT IMAGES
+     ========================================================== */
+
   const images = getProductImages(p);
 
-  const firstImage =
-    images.length ? images[0].url : "";
+  const modalImage = $("#modalImage");
 
-  $("#modalImage").innerHTML =
-    firstImage
-      ? `<img
-           src="${escapeAttr(firstImage)}"
-           alt="${escapeAttr(p.ProductName)}"
-         >`
-      : `<div class="image-placeholder">M</div>`;
+  if (!modalImage) {
+    openModal("productModal");
+    return;
+  }
+
+  if (!images.length) {
+
+    modalImage.innerHTML = `
+      <div class="image-placeholder">M</div>
+    `;
+
+  } else {
+
+    modalImage.innerHTML = `
+      <div class="modal-gallery">
+
+        <div class="modal-main-image">
+
+          <img
+            id="modalMainImage"
+            src="${escapeAttr(images[0].url)}"
+            alt="${escapeAttr(p.ProductName)}"
+          >
+
+        </div>
+
+        ${
+          images.length > 1
+            ? `
+              <div class="modal-thumbnails">
+
+                ${images.map((image, index) => `
+                  <button
+                    type="button"
+                    class="modal-thumbnail ${
+                      index === 0 ? "active" : ""
+                    }"
+                    data-image-url="${escapeAttr(image.url)}"
+                    aria-label="View image ${index + 1}"
+                  >
+                    <img
+                      src="${escapeAttr(image.url)}"
+                      alt="${escapeAttr(
+                        p.ProductName
+                      )} image ${index + 1}"
+                    >
+                  </button>
+                `).join("")}
+
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+    `;
+
+    /* ----------------------------------------------------------
+       THUMBNAIL CLICK HANDLING
+       ---------------------------------------------------------- */
+
+    const mainImage =
+      modalImage.querySelector("#modalMainImage");
+
+    const thumbnails =
+      modalImage.querySelectorAll(".modal-thumbnail");
+
+    thumbnails.forEach(function(thumbnail) {
+
+      thumbnail.addEventListener(
+        "click",
+        function() {
+
+          const newUrl =
+            this.getAttribute("data-image-url");
+
+          if (!newUrl || !mainImage) return;
+
+          mainImage.src = newUrl;
+
+          thumbnails.forEach(function(btn) {
+            btn.classList.remove("active");
+          });
+
+          this.classList.add("active");
+        }
+      );
+
+    });
+
+  }
 
   openModal("productModal");
 }
