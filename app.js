@@ -254,10 +254,15 @@ function productCard(p) {
 }
 
 function openProduct(id) {
+
   console.log("NEW openProduct() RUNNING");
+
   const p = findProduct(id);
 
-  if (!p) return;
+  if (!p) {
+    console.warn("Product not found:", id);
+    return;
+  }
 
   state.selectedProduct = p;
   state.modalQty = getMOQ(p);
@@ -282,28 +287,48 @@ function openProduct(id) {
 
   setModalQty(state.modalQty);
 
+
   /* ==========================================================
-     PRODUCT IMAGES
+     PRODUCT IMAGE GALLERY
      ========================================================== */
 
   const images = getProductImages(p);
 
+  console.log("Product:", p.ProductID);
+  console.log("Images:", images);
+
+
   const modalImage = $("#modalImage");
 
   if (!modalImage) {
-    openModal("productModal");
+    console.error("modalImage element not found.");
     return;
   }
+
+
+  /* ----------------------------------------------------------
+     NO IMAGE
+     ---------------------------------------------------------- */
 
   if (!images.length) {
 
     modalImage.innerHTML = `
-      <div class="image-placeholder">M</div>
+      <div class="image-placeholder">
+        M
+      </div>
     `;
 
-  } else {
+  }
+
+
+  /* ----------------------------------------------------------
+     ONE OR MORE IMAGES
+     ---------------------------------------------------------- */
+
+  else {
 
     modalImage.innerHTML = `
+
       <div class="modal-gallery">
 
         <div class="modal-main-image">
@@ -311,51 +336,67 @@ function openProduct(id) {
           <img
             id="modalMainImage"
             src="${escapeAttr(images[0].url)}"
-            alt="${escapeAttr(p.ProductName)}"
+            alt="${escapeAttr(p.ProductName || "Product")}"
           >
 
         </div>
 
+
         ${
           images.length > 1
+
             ? `
+
               <div class="modal-thumbnails">
 
-                ${images.map((image, index) => `
-                  <button
-                    type="button"
-                    class="modal-thumbnail ${
-                      index === 0 ? "active" : ""
-                    }"
-                    data-image-url="${escapeAttr(image.url)}"
-                    aria-label="View image ${index + 1}"
-                  >
-                    <img
-                      src="${escapeAttr(image.url)}"
-                      alt="${escapeAttr(
-                        p.ProductName
-                      )} image ${index + 1}"
+                ${images.map(function(image, index) {
+
+                  return `
+
+                    <button
+                      type="button"
+                      class="modal-thumbnail ${
+                        index === 0 ? "active" : ""
+                      }"
+                      data-image-url="${escapeAttr(image.url)}"
+                      aria-label="View image ${index + 1}"
                     >
-                  </button>
-                `).join("")}
+
+                      <img
+                        src="${escapeAttr(image.url)}"
+                        alt="${escapeAttr(
+                          p.ProductName || "Product"
+                        )} image ${index + 1}"
+                      >
+
+                    </button>
+
+                  `;
+
+                }).join("")}
 
               </div>
+
             `
+
             : ""
         }
 
       </div>
+
     `;
 
-    /* ----------------------------------------------------------
-       THUMBNAIL CLICK HANDLING
-       ---------------------------------------------------------- */
+
+    /* --------------------------------------------------------
+       THUMBNAIL CLICK
+       -------------------------------------------------------- */
 
     const mainImage =
       modalImage.querySelector("#modalMainImage");
 
     const thumbnails =
       modalImage.querySelectorAll(".modal-thumbnail");
+
 
     thumbnails.forEach(function(thumbnail) {
 
@@ -366,15 +407,23 @@ function openProduct(id) {
           const newUrl =
             this.getAttribute("data-image-url");
 
-          if (!newUrl || !mainImage) return;
+          if (!newUrl || !mainImage) {
+            return;
+          }
+
 
           mainImage.src = newUrl;
 
-          thumbnails.forEach(function(btn) {
-            btn.classList.remove("active");
+
+          thumbnails.forEach(function(button) {
+
+            button.classList.remove("active");
+
           });
 
+
           this.classList.add("active");
+
         }
       );
 
@@ -382,7 +431,9 @@ function openProduct(id) {
 
   }
 
+
   openModal("productModal");
+
 }
 
 function setModalQty(q) {
