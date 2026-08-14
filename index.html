@@ -570,7 +570,16 @@ function productCard(p) {
   const moq = getMOQ(p);
 
   const images = getProductImages(p);
-  const img = images.length ? images[0].url : "";
+
+  const selectedImage =
+    state.selectedImages[p.ProductID];
+  
+  const img =
+    selectedImage && selectedImage.url
+      ? selectedImage.url
+      : images.length
+        ? images[0].url
+        : "";
 
   return `
     <article class="product-card" data-id="${escapeAttr(p.ProductID)}">
@@ -645,6 +654,70 @@ function productCard(p) {
   `;
 }
 
+function updateProductCardImage(
+  productId,
+  imageUrl
+) {
+
+  const card =
+    document.querySelector(
+      `.product-card[data-id="${CSS.escape(String(productId))}"]`
+    );
+
+  if (!card || !imageUrl) {
+    return;
+  }
+
+
+  const image =
+    card.querySelector(
+      ".product-image > img"
+    );
+
+  if (image) {
+
+    image.src = imageUrl;
+
+    image.style.display = "block";
+
+    return;
+  }
+
+
+  /* --------------------------------------------
+     If card previously showed placeholder
+     -------------------------------------------- */
+
+  const placeholder =
+    card.querySelector(
+      ".image-placeholder"
+    );
+
+  if (placeholder) {
+
+    const newImage =
+      document.createElement("img");
+
+    newImage.src = imageUrl;
+
+    newImage.alt =
+      card
+        .querySelector(".product-name")
+        ?.textContent ||
+      "Product";
+
+    newImage.loading = "lazy";
+
+    newImage.className =
+      "product-main-image";
+
+    placeholder.replaceWith(
+      newImage
+    );
+  }
+
+}
+    
 function openProduct(id) {
 
   const p = findProduct(id);
@@ -675,133 +748,227 @@ function openProduct(id) {
   setModalQty(state.modalQty);
 
 
-  /* ==========================================================
-     PRODUCT IMAGE GALLERY
-     ========================================================== */
+/* ==========================================================
+   PRODUCT IMAGE GALLERY
+   ========================================================== */
 
-  const images = getProductImages(p);
+const images = getProductImages(p);
 
-  console.log("Product:", p.ProductID);
-  console.log("Images:", images);
+console.log("Product:", p.ProductID);
+console.log("Images:", images);
 
+const modalImage = $("#modalImage");
 
-  const modalImage = $("#modalImage");
-
-  if (!modalImage) {
-    console.error("modalImage element not found.");
-    return;
-  }
-
-
-  /* ----------------------------------------------------------
-     NO IMAGE
-     ---------------------------------------------------------- */
-
-  if (!images.length) {
-
-    modalImage.innerHTML = `
-      <div class="image-placeholder">M</div>
-    `;
-
-  }
+if (!modalImage) {
+  console.error("modalImage element not found.");
+  return;
+}
 
 
-  /* ----------------------------------------------------------
-     IMAGE GALLERY
-     ---------------------------------------------------------- */
+/* ----------------------------------------------------------
+   REMEMBER PREVIOUSLY SELECTED IMAGE
+   ---------------------------------------------------------- */
 
-  else {
+let selectedImage =
+  state.selectedImages[p.ProductID];
 
-    modalImage.innerHTML = `
-      <div class="modal-gallery">
+let selectedIndex = 0;
 
-        <div class="modal-main-image">
+if (selectedImage && selectedImage.name) {
 
-          <img
-            id="modalMainImage"
-            src="${escapeAttr(images[0].url)}"
-            alt="${escapeAttr(p.ProductName || "Product")}"
-          >
-
-        </div>
-
-        ${
-          images.length > 1
-            ? `
-              <div class="modal-thumbnails">
-
-                ${images.map(function(image, index) {
-
-                  return `
-                    <button
-                      type="button"
-                      class="modal-thumbnail ${
-                        index === 0 ? "active" : ""
-                      }"
-                      data-image-url="${escapeAttr(image.url)}"
-                      aria-label="View image ${index + 1}"
-                    >
-                      <img
-                        src="${escapeAttr(image.url)}"
-                        alt="${escapeAttr(
-                          p.ProductName || "Product"
-                        )} image ${index + 1}"
-                      >
-                    </button>
-                  `;
-
-                }).join("")}
-
-              </div>
-            `
-            : ""
-        }
-
-      </div>
-    `;
-
-
-    /* ----------------------------------------------------------
-       THUMBNAIL CLICK
-       ---------------------------------------------------------- */
-
-    const mainImage =
-      modalImage.querySelector("#modalMainImage");
-
-    const thumbnails =
-      modalImage.querySelectorAll(".modal-thumbnail");
-
-
-    thumbnails.forEach(function(thumbnail) {
-
-      thumbnail.addEventListener(
-        "click",
-        function() {
-
-          const newUrl =
-            this.getAttribute("data-image-url");
-
-          if (!newUrl || !mainImage) {
-            return;
-          }
-
-          mainImage.src = newUrl;
-
-          thumbnails.forEach(function(button) {
-            button.classList.remove("active");
-          });
-
-          this.classList.add("active");
-
-        }
-      );
-
+  const foundIndex =
+    images.findIndex(function(image) {
+      return image.name === selectedImage.name;
     });
 
+  if (foundIndex >= 0) {
+    selectedIndex = foundIndex;
   }
 
+}
 
-  openModal("productModal");
+
+/* ----------------------------------------------------------
+   NO IMAGE
+   ---------------------------------------------------------- */
+
+if (!images.length) {
+
+  modalImage.innerHTML = `
+    <div class="image-placeholder">M</div>
+  `;
+
+}
+
+
+/* ----------------------------------------------------------
+   IMAGE GALLERY
+   ---------------------------------------------------------- */
+
+else {
+
+  const selectedUrl =
+    images[selectedIndex].url;
+
+  modalImage.innerHTML = `
+
+    <div class="modal-gallery">
+
+      <div class="modal-main-image">
+
+        <img
+          id="modalMainImage"
+          src="${escapeAttr(selectedUrl)}"
+          alt="${escapeAttr(
+            p.ProductName || "Product"
+          )}"
+        >
+
+      </div>
+
+
+      <div class="modal-thumbnails">
+
+        ${images.map(function(image, index) {
+
+          return `
+
+            <button
+              type="button"
+              class="modal-thumbnail ${
+                index === selectedIndex
+                  ? "active"
+                  : ""
+              }"
+              data-image-index="${index}"
+              data-image-name="${escapeAttr(image.name)}"
+              data-image-url="${escapeAttr(image.url)}"
+              aria-label="Select ${image.name}"
+            >
+
+              <img
+                src="${escapeAttr(image.url)}"
+                alt="${escapeAttr(
+                  p.ProductName || "Product"
+                )} - ${index + 1}"
+              >
+
+            </button>
+
+          `;
+
+        }).join("")}
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  /* --------------------------------------------------------
+     MAIN IMAGE
+     -------------------------------------------------------- */
+
+  const mainImage =
+    modalImage.querySelector(
+      "#modalMainImage"
+    );
+
+
+  /* --------------------------------------------------------
+     THUMBNAILS
+     -------------------------------------------------------- */
+
+  const thumbnails =
+    modalImage.querySelectorAll(
+      ".modal-thumbnail"
+    );
+
+
+  thumbnails.forEach(function(thumbnail) {
+
+    thumbnail.addEventListener(
+      "click",
+      function() {
+
+        const index =
+          parseInt(
+            this.getAttribute(
+              "data-image-index"
+            ),
+            10
+          );
+
+        if (
+          Number.isNaN(index) ||
+          !images[index] ||
+          !mainImage
+        ) {
+          return;
+        }
+
+
+        const selected =
+          images[index];
+
+
+        /* --------------------------------------------
+           CHANGE LARGE IMAGE
+           -------------------------------------------- */
+
+        mainImage.src =
+          selected.url;
+
+
+        /* --------------------------------------------
+           REMEMBER SELECTED VARIANT
+           -------------------------------------------- */
+
+        state.selectedImages[p.ProductID] = {
+          name: selected.name,
+          url: selected.url
+        };
+
+
+        /* --------------------------------------------
+           UPDATE ACTIVE THUMBNAIL
+           -------------------------------------------- */
+
+        thumbnails.forEach(
+          function(button) {
+
+            button.classList.remove(
+              "active"
+            );
+
+          }
+        );
+
+
+        this.classList.add("active");
+
+
+        /* --------------------------------------------
+           UPDATE PRODUCT CARD
+           -------------------------------------------- */
+
+        updateProductCardImage(
+          p.ProductID,
+          selected.url
+        );
+
+      }
+    );
+
+  });
+
+}
+
+
+/* Open modal */
+
+openModal("productModal");
 
 }
 
