@@ -254,7 +254,7 @@ function productCard(p) {
 }
 
 function openProduct(id) {
-
+  console.log("NEW openProduct() RUNNING");
   const p = findProduct(id);
 
   if (!p) return;
