@@ -446,6 +446,7 @@ const state = {
   selectedProduct: null,
   modalQty: 1,
   selectedImages: {},
+  selectedVariant: null,
   category: "",
   search: "",
   sort: "featured"
@@ -472,7 +473,17 @@ function bindUI() {
   $("#whatsappBtn").onclick = orderViaWhatsApp;
   $("#modalMinus").onclick = () => setModalQty(state.modalQty - 1);
   $("#modalPlus").onclick = () => setModalQty(state.modalQty + 1);
-  $("#modalAdd").onclick = () => { addToCart(state.selectedProduct, state.modalQty); closeModal("productModal"); openCart(); };
+  $("#modalAdd").onclick = () => {
+
+      addToCart(
+        state.selectedProduct,
+        state.modalQty,
+        state.selectedVariant
+      );
+    
+      closeModal("productModal");
+      openCart();
+    };
   $("#checkoutForm").onsubmit = submitOrder;
   $("#trackForm").onsubmit = trackOrder;
   $("#categoryFilter").onchange = e => { state.category = e.target.value; renderProducts(); };
@@ -571,15 +582,10 @@ function productCard(p) {
 
   const images = getProductImages(p);
 
-  const selectedImage =
-    state.selectedImages[p.ProductID];
-  
   const img =
-    selectedImage && selectedImage.url
-      ? selectedImage.url
-      : images.length
-        ? images[0].url
-        : "";
+    images.length
+      ? images[0].url
+      : "";
 
   return `
     <article class="product-card" data-id="${escapeAttr(p.ProductID)}">
@@ -654,70 +660,7 @@ function productCard(p) {
   `;
 }
 
-function updateProductCardImage(
-  productId,
-  imageUrl
-) {
-
-  const card =
-    document.querySelector(
-      `.product-card[data-id="${CSS.escape(String(productId))}"]`
-    );
-
-  if (!card || !imageUrl) {
-    return;
-  }
-
-
-  const image =
-    card.querySelector(
-      ".product-image > img"
-    );
-
-  if (image) {
-
-    image.src = imageUrl;
-
-    image.style.display = "block";
-
-    return;
-  }
-
-
-  /* --------------------------------------------
-     If card previously showed placeholder
-     -------------------------------------------- */
-
-  const placeholder =
-    card.querySelector(
-      ".image-placeholder"
-    );
-
-  if (placeholder) {
-
-    const newImage =
-      document.createElement("img");
-
-    newImage.src = imageUrl;
-
-    newImage.alt =
-      card
-        .querySelector(".product-name")
-        ?.textContent ||
-      "Product";
-
-    newImage.loading = "lazy";
-
-    newImage.className =
-      "product-main-image";
-
-    placeholder.replaceWith(
-      newImage
-    );
-  }
-
-}
-    
+   
 function openProduct(id) {
 
   const p = findProduct(id);
@@ -769,23 +712,15 @@ if (!modalImage) {
    REMEMBER PREVIOUSLY SELECTED IMAGE
    ---------------------------------------------------------- */
 
-let selectedImage =
-  state.selectedImages[p.ProductID];
-
 let selectedIndex = 0;
 
-if (selectedImage && selectedImage.name) {
-
-  const foundIndex =
-    images.findIndex(function(image) {
-      return image.name === selectedImage.name;
-    });
-
-  if (foundIndex >= 0) {
-    selectedIndex = foundIndex;
-  }
-
-}
+state.selectedVariant =
+  images.length
+    ? {
+        name: images[0].name,
+        url: images[0].url
+      }
+    : null;
 
 
 /* ----------------------------------------------------------
@@ -921,14 +856,14 @@ else {
           selected.url;
 
 
-        /* --------------------------------------------
-           REMEMBER SELECTED VARIANT
-           -------------------------------------------- */
-
-        state.selectedImages[p.ProductID] = {
-          name: selected.name,
-          url: selected.url
-        };
+        /* --------------------------------------------------------
+             REMEMBER SELECTED VARIANT FOR CART
+             -------------------------------------------------------- */
+          
+          state.selectedVariant = {
+            name: selected.name,
+            url: selected.url
+          };
 
 
         /* --------------------------------------------
@@ -948,15 +883,6 @@ else {
 
         this.classList.add("active");
 
-
-        /* --------------------------------------------
-           UPDATE PRODUCT CARD
-           -------------------------------------------- */
-
-        updateProductCardImage(
-          p.ProductID,
-          selected.url
-        );
 
       }
     );
@@ -981,31 +907,130 @@ function setModalQty(q) {
   $("#modalQty").textContent = value;
 }
 
-function addToCart(p, quantity=1) {
+function addToCart(
+  p,
+  quantity = 1,
+  selectedVariant = null
+) {
+
   if (!p) return;
-  const moq = getMOQ(p);
-  let qty = Math.max(moq, Math.floor(quantity));
-  const stock = num(p.Stock);
-  if (stock > 0) qty = Math.min(qty, stock);
-  const existing = state.cart.find(i => i.productId === String(p.ProductID));
-  if (existing) existing.quantity += qty;
-  else state.cart.push({
-  productId: String(p.ProductID),
-  productName: String(p.ProductName),
-  quantity: qty,
-  price: num(p.Price),
-  unit: String(p.Unit || ""),
-  imageUrl: getProductImages(p).length
-    ? getProductImages(p)[0].url
-    : ""
-});
+
+
+  const moq =
+    getMOQ(p);
+
+  let qty =
+    Math.max(
+      moq,
+      Math.floor(quantity)
+    );
+
+
+  const stock =
+    num(p.Stock);
+
+  if (stock > 0) {
+
+    qty =
+      Math.min(
+        qty,
+        stock
+      );
+
+  }
+
+
+  /* --------------------------------------------------------
+     SELECTED VARIANT
+     -------------------------------------------------------- */
+
+  const variant =
+    selectedVariant ||
+    (
+      getProductImages(p).length
+        ? {
+            name: getProductImages(p)[0].name,
+            url: getProductImages(p)[0].url
+          }
+        : {
+            name: "",
+            url: ""
+          }
+    );
+
+
+  /*
+     IMPORTANT:
+     Same product + different variant
+     = different cart item
+  */
+
+  const variantKey =
+    String(p.ProductID) +
+    "|" +
+    String(variant.name || variant.url || "");
+
+
+  const existing =
+    state.cart.find(
+      i => i.cartKey === variantKey
+    );
+
+
+  if (existing) {
+
+    existing.quantity += qty;
+
+  } else {
+
+    state.cart.push({
+
+      cartKey:
+        variantKey,
+
+      productId:
+        String(p.ProductID),
+
+      productName:
+        String(p.ProductName),
+
+      quantity:
+        qty,
+
+      price:
+        num(p.Price),
+
+      unit:
+        String(p.Unit || ""),
+
+      variantName:
+        String(variant.name || ""),
+
+      imageUrl:
+        String(variant.url || "")
+
+    });
+
+  }
+
+
   saveCart();
   renderCart();
 }
 
-function changeCart(id, delta) {
-  const item = state.cart.find(i => i.productId === id);
-  const p = findProduct(id);
+function changeCart(cartKey, delta) {
+
+  const item =
+    state.cart.find(
+      i => i.cartKey === cartKey
+    );
+
+  if (!item) return;
+
+  const p =
+    findProduct(item.productId);
+
+  if (!p) return;
   if (!item || !p) return;
   const moq = getMOQ(p);
   item.quantity = Math.max(moq, item.quantity + delta);
@@ -1014,9 +1039,15 @@ function changeCart(id, delta) {
   saveCart(); renderCart();
 }
 
-function removeCart(id) {
-  state.cart = state.cart.filter(i => i.productId !== id);
-  saveCart(); renderCart();
+function removeCart(cartKey) {
+
+  state.cart =
+    state.cart.filter(
+      i => i.cartKey !== cartKey
+    );
+
+  saveCart();
+  renderCart();
 }
 
 function renderCart() {
@@ -1028,8 +1059,20 @@ function renderCart() {
   }
   $("#cartItems").innerHTML = state.cart.map(i => `<div class="cart-item">
     <div class="cart-thumb">${i.imageUrl ? `<img src="${escapeAttr(i.imageUrl)}" alt="">` : "M"}</div>
-    <div><h4>${escapeHtml(i.productName)}</h4><p>${money(i.price)}${i.unit ? ` / ${escapeHtml(i.unit)}` : ""}</p>
-      <div class="cart-controls"><button onclick="changeCart('${escapeAttr(i.productId)}',-1)">−</button><b>${i.quantity}</b><button onclick="changeCart('${escapeAttr(i.productId)}',1)">+</button><button class="remove" onclick="removeCart('${escapeAttr(i.productId)}')">Remove</button></div>
+    <div>
+  <h4>${escapeHtml(i.productName)}</h4>
+
+  ${
+    i.variantName
+      ? `<p>Selected design: ${escapeHtml(i.variantName)}</p>`
+      : ""
+  }
+
+  <p>
+    ${money(i.price)}
+    ${i.unit ? ` / ${escapeHtml(i.unit)}` : ""}
+  </p>
+      <div class="cart-controls"><button onclick="changeCart('${escapeAttr(i.cartKey)}',-1)">−</button><b>${i.quantity}</b><button onclick="changeCart('${escapeAttr(i.cartKey)}',1)">+</button><button class="remove" onclick="removeCart('${escapeAttr(i.cartKey)}')">Remove</button></div>
     </div><strong>${money(i.price*i.quantity)}</strong>
   </div>`).join("");
   $("#cartSubtotal").textContent = money(cartSubtotal());
