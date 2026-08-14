@@ -325,24 +325,116 @@ function renderProducts() {
   });
 }
 
+function getProductImages(p) {
+
+  if (!p) return [];
+
+  // New multiple-image format from Google Apps Script
+  if (Array.isArray(p.ImageURLs)) {
+
+    return p.ImageURLs
+      .filter(x => x && x.url)
+      .map(x => ({
+        name: String(x.name || ""),
+        url: String(x.url || "")
+      }));
+
+  }
+
+  // Backward compatibility with old ImageURL field
+  const oldImage = String(p.ImageURL || "").trim();
+
+  if (oldImage) {
+    return [{
+      name: "",
+      url: oldImage
+    }];
+  }
+
+  return [];
+}
+
+
 function productCard(p) {
+
   const price = num(p.Price);
   const mrp = num(p.MRP);
   const moq = getMOQ(p);
-  const img = String(p.ImageURL || "").trim();
-  return `<article class="product-card" data-id="${escapeAttr(p.ProductID)}">
-    <div class="product-image">
-      ${img ? `<img src="${escapeAttr(img)}" alt="${escapeAttr(p.ProductName)}">` : `<div class="image-placeholder">M</div>`}
-      ${moq > 1 ? `<span class="badge">MOQ ${moq}</span>` : ""}
-    </div>
-    <div class="product-info">
-      <div class="product-cat">${escapeHtml(p.Category || "Collection")}</div>
-      <h3 class="product-name">${escapeHtml(p.ProductName || "Product")}</h3>
-      <div><span class="price">${money(price)}${p.Unit ? ` / ${escapeHtml(p.Unit)}` : ""}</span>${mrp > price ? `<span class="mrp">${money(mrp)}</span>` : ""}</div>
-      <div class="moq">${moq > 1 ? `Minimum order: ${moq} ${escapeHtml(p.Unit || "units")}` : "Minimum order: 1"}</div>
-      <div class="card-actions"><button class="small-btn">View</button><button class="small-btn primary" data-add>Add</button></div>
-    </div>
-  </article>`;
+
+  const images = getProductImages(p);
+  const img = images.length ? images[0].url : "";
+
+  return `
+    <article class="product-card" data-id="${escapeAttr(p.ProductID)}">
+
+      <div class="product-image">
+
+        ${
+          img
+            ? `<img
+                 src="${escapeAttr(img)}"
+                 alt="${escapeAttr(p.ProductName)}"
+                 loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+               >
+               <div class="image-placeholder" style="display:none;">M</div>`
+            : `<div class="image-placeholder">M</div>`
+        }
+
+        ${
+          moq > 1
+            ? `<span class="badge">MOQ ${moq}</span>`
+            : ""
+        }
+
+        ${
+          images.length > 1
+            ? `<span class="image-count">${images.length} photos</span>`
+            : ""
+        }
+
+      </div>
+
+      <div class="product-info">
+
+        <div class="product-cat">
+          ${escapeHtml(p.Category || "Collection")}
+        </div>
+
+        <h3 class="product-name">
+          ${escapeHtml(p.ProductName || "Product")}
+        </h3>
+
+        <div>
+          <span class="price">
+            ${money(price)}
+            ${p.Unit ? ` / ${escapeHtml(p.Unit)}` : ""}
+          </span>
+
+          ${
+            mrp > price
+              ? `<span class="mrp">${money(mrp)}</span>`
+              : ""
+          }
+        </div>
+
+        <div class="moq">
+          ${
+            moq > 1
+              ? `Minimum order: ${moq} ${escapeHtml(p.Unit || "units")}`
+              : "Minimum order: 1"
+          }
+        </div>
+
+        <div class="card-actions">
+          <button class="small-btn">View</button>
+          <button class="small-btn primary" data-add>Add</button>
+        </div>
+
+      </div>
+
+    </article>
+  `;
 }
 
 function openProduct(id) {
@@ -356,8 +448,13 @@ function openProduct(id) {
   $("#modalMOQ").textContent = getMOQ(p) > 1 ? `Minimum Order: ${getMOQ(p)}` : "MOQ: 1";
   $("#modalDescription").textContent = p.Description || "Product details will be updated soon.";
   setModalQty(state.modalQty);
-  const img = String(p.ImageURL || "").trim();
-  $("#modalImage").innerHTML = img ? `<img src="${escapeAttr(img)}" alt="${escapeAttr(p.ProductName)}">` : `<div class="image-placeholder">M</div>`;
+  const images = getProductImages(p);
+  const img = images.length ? images[0].url : "";
+  
+  $("#modalImage").innerHTML =
+    img
+      ? `<img src="${escapeAttr(img)}" alt="${escapeAttr(p.ProductName)}">`
+      : `<div class="image-placeholder">M</div>`;
   openModal("productModal");
 }
 
@@ -378,7 +475,16 @@ function addToCart(p, quantity=1) {
   if (stock > 0) qty = Math.min(qty, stock);
   const existing = state.cart.find(i => i.productId === String(p.ProductID));
   if (existing) existing.quantity += qty;
-  else state.cart.push({productId:String(p.ProductID), productName:String(p.ProductName), quantity:qty, price:num(p.Price), unit:String(p.Unit||""), imageUrl:String(p.ImageURL||"")});
+  else state.cart.push({
+  productId: String(p.ProductID),
+  productName: String(p.ProductName),
+  quantity: qty,
+  price: num(p.Price),
+  unit: String(p.Unit || ""),
+  imageUrl: getProductImages(p).length
+    ? getProductImages(p)[0].url
+    : ""
+});
   saveCart();
   renderCart();
 }
