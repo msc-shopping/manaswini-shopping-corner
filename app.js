@@ -95,7 +95,6 @@ function getProductImages(p) {
 
   if (!p) return [];
 
-  // New multiple-image format from Google Apps Script
   if (Array.isArray(p.ImageURLs)) {
 
     return p.ImageURLs
@@ -106,7 +105,6 @@ function getProductImages(p) {
       }));
   }
 
-  // Backward compatibility with the old ImageURL field
   const oldImage = String(p.ImageURL || "").trim();
 
   if (oldImage) {
