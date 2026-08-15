@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body data-page="index">
+<body data-page="shop">
 <div class="topbar">
 <div>Traditional collections for weddings, poojas &amp; celebrations</div>
 <div class="topbar-right"><span>COD Available</span><span>Online Payment</span><span>☎ 9030833667</span></div>
@@ -41,38 +41,33 @@
 </div>
 </header>
 <main id="sitePages">
-<section class="page-view" data-view="home" id="page-home">
-<section class="hero" id="homeHero">
-<div class="hero-copy">
-<div class="eyebrow">TRADITION • ELEGANCE • CELEBRATION</div>
-<h1>Beautiful things for your <em>special moments.</em></h1>
-<p>Discover traditional jewellery, return gifts, pooja essentials and festive collections curated for weddings, celebrations and every occasion.</p>
-<div class="hero-actions">
-<a class="btn btn-gold" href="shop.html">Explore Shop</a>
-<a class="btn btn-outline" href="categories.html">Shop by Category</a>
-</div>
-<div class="hero-note"><span>✦</span> Bulk &amp; MOQ orders welcome</div>
-</div>
-<div aria-label="Luxury decorative pattern" class="hero-art">
-<div class="hero-orbit orbit-1"></div>
-<div class="hero-orbit orbit-2"></div>
-<div class="hero-badge">M<br/><small>MSC</small></div>
-<div class="hero-flower">✦</div>
-</div>
-</section>
-<section class="section products-section home-products">
+<section class="page-view" data-view="shop" id="page-shop">
+<section class="section products-section shop-page">
 <div class="section-head product-head">
 <div>
-<span class="eyebrow">OUR COLLECTION</span>
-<h2>Featured products</h2>
+<span class="eyebrow">THE COMPLETE COLLECTION</span>
+<h2>Shop all products</h2>
 </div>
-<a class="text-link" href="shop.html">View all products →</a>
+<div class="filters">
+<select id="shopCategoryFilter">
+<option value="">All categories</option>
+</select>
+<select id="shopSortFilter">
+<option value="featured">Featured</option>
+<option value="low">Price: Low to High</option>
+<option value="high">Price: High to Low</option>
+<option value="name">Name</option>
+</select>
 </div>
-<div class="loading" id="homeLoadingState">
-<span class="spinner"></span> Loading collection...
+</div>
+<div class="shop-search">
+<input autocomplete="off" id="shopSearchInput" placeholder="Search products..." type="search"/>
+</div>
+<div class="loading" id="shopLoadingState">
+<span class="spinner"></span> Loading products...
         </div>
-<div class="empty" hidden="" id="homeEmptyState">No products available.</div>
-<div class="product-grid" id="homeProductGrid"></div>
+<div class="empty" hidden="" id="shopEmptyState">No products match your search.</div>
+<div class="product-grid" id="shopProductGrid"></div>
 </section>
 </section>
 </main>
@@ -153,6 +148,6 @@
 </div>
 </div>
 <script src="app.js" defer></script>
-<script src="index.js" defer></script>
+<script src="shop.js" defer></script>
 </body>
 </html>

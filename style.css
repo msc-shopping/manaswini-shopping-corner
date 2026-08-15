@@ -659,228 +659,50 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
 }
 
 
+
 /* ============================================================
-   ABOUT PAGE — USE THE EXACT HOME HERO LOGO
+   FINAL ABOUT LOGO — EXACT SAME ARTWORK AS HOME
    ============================================================ */
-
-/*
-   The About HTML already uses:
-   <div class="hero-art about-hero-art">
-
-   Therefore the existing global .hero-art rule is reused.
-   This gives About exactly the same Home background, shape,
-   orbit, M badge and star. No duplicate logo styling is used.
-*/
-
-.story-art{
+#page-about .story-art{
+  min-height:450px !important;
   background:transparent !important;
   border:0 !important;
   border-radius:0 !important;
   box-shadow:none !important;
   overflow:visible !important;
-  min-height:450px !important;
-  display:grid !important;
-  place-items:center !important;
-}
-
-.story-art .about-hero-art{
-  width:100% !important;
-  min-height:450px !important;
-}
-/* ============================================================
-   FINAL ABOUT LOGO — FORCE SAME HOME DESIGN
-   ============================================================ */
-
-#page-about .story-art {
-  min-height: 450px !important;
-  display: grid !important;
-  place-items: center !important;
-
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  overflow: visible !important;
-}
-
-#page-about .about-hero-art {
-  width: 100% !important;
-  height: 450px !important;
-  min-height: 450px !important;
-
-  position: relative !important;
-  display: grid !important;
-  place-items: center !important;
-
-  /* SAME WINE BACKGROUND AS HOME */
-  background: radial-gradient(
-    circle,
-    #8b304d 0%,
-    #5a1028 42%,
-    #300614 100%
-  ) !important;
-
-  /* ROUNDED RECTANGULAR BLOCK */
-  border-radius: 28px !important;
-
-  overflow: hidden !important;
-  box-shadow: var(--shadow) !important;
-}
-
-/* Remove inherited large oval rings */
-#page-about .about-hero-art::before,
-#page-about .about-hero-art::after {
-  display: none !important;
-  content: none !important;
-}
-
-/* Decorative orbit */
-#page-about .about-hero-art .hero-orbit {
-  position: absolute !important;
-  border: 1px dashed rgba(229,202,138,.35) !important;
-  border-radius: 50% !important;
-}
-
-#page-about .about-hero-art .orbit-1 {
-  width: 84% !important;
-  height: 40% !important;
-  transform: rotate(25deg) !important;
-}
-
-#page-about .about-hero-art .orbit-2 {
-  width: 62% !important;
-  height: 75% !important;
-  transform: rotate(-30deg) !important;
-}
-
-/* ROUND M LOGO */
-#page-about .about-hero-art .hero-badge {
-  width: 140px !important;
-  height: 140px !important;
-
-  border-radius: 50% !important;
-
-  display: grid !important;
-  place-items: center !important;
-
-  color: var(--gold2) !important;
-  font: 500 65px "Cinzel" !important;
-
-  border: 1px solid var(--gold) !important;
-
-  box-shadow:
-    0 0 0 12px rgba(201,163,91,.08),
-    0 0 0 24px rgba(201,163,91,.05) !important;
-
-  z-index: 10 !important;
-}
-
-/* MSC */
-#page-about .about-hero-art .hero-badge small {
-  font: 10px "DM Sans" !important;
-  letter-spacing: .3em !important;
-  margin-top: -55px !important;
-}
-
-/* STAR */
-#page-about .about-hero-art .hero-flower {
-  position: absolute !important;
-  bottom: 65px !important;
-  right: 70px !important;
-
-  color: var(--gold2) !important;
-  font-size: 34px !important;
-  opacity: .8 !important;
-
-  z-index: 10 !important;
-}
-/* ============================================================
-   ABOUT LOGO — EXACTLY LIKE HOME LOGO
-   ============================================================ */
-
-/* Remove the old Story container styling */
-.story-art{
-  background:transparent !important;
-  border-radius:0 !important;
-  min-height:450px !important;
-  overflow:visible !important;
-}
-
-/* Make About logo use the same artwork as Home */
-.story-art .about-hero-art{
-  min-height:450px !important;
-  width:100% !important;
-  height:450px !important;
-
-  background:
-    radial-gradient(
-      circle,
-      #8b304d 0,
-      #5a1028 42%,
-      #300614 100%
-    ) !important;
-
-  border-radius:48% 48% 46% 46% !important;
-
-  overflow:hidden !important;
-  box-shadow:var(--shadow) !important;
-
   display:grid !important;
   place-items:center !important;
   position:relative !important;
 }
-
-/* Same orbit proportions as HOME */
-.story-art .about-hero-art .orbit-1{
-  width:84% !important;
-  height:40% !important;
-  transform:rotate(25deg) !important;
-}
-
-.story-art .about-hero-art .orbit-2{
-  width:62% !important;
-  height:75% !important;
-  transform:rotate(-30deg) !important;
-}
-
-/* Same M logo as HOME */
-.story-art .about-hero-art .hero-badge{
-  width:140px !important;
-  height:140px !important;
-  border-radius:50% !important;
-
+#page-about .about-hero-art{
+  width:100% !important;
+  height:450px !important;
+  min-height:450px !important;
+  position:relative !important;
   display:grid !important;
   place-items:center !important;
-  text-align:center !important;
-
-  color:var(--gold2) !important;
-  font:500 65px "Cinzel" !important;
-
-  border:1px solid var(--gold) !important;
-
-  box-shadow:
-    0 0 0 12px rgba(201,163,91,.08),
-    0 0 0 24px rgba(201,163,91,.05) !important;
-
-  z-index:5 !important;
+  background:radial-gradient(circle,#8b304d 0,#5a1028 42%,#300614 100%) !important;
+  border-radius:48% 48% 46% 46% !important;
+  overflow:hidden !important;
+  box-shadow:var(--shadow) !important;
 }
+#page-about .about-hero-art::before,
+#page-about .about-hero-art::after{content:none !important;display:none !important;}
+#page-about .about-hero-art .hero-orbit{position:absolute !important;border:1px dashed rgba(229,202,138,.35) !important;border-radius:50% !important;z-index:1 !important;}
+#page-about .about-hero-art .orbit-1{width:84% !important;height:40% !important;transform:rotate(25deg) !important;}
+#page-about .about-hero-art .orbit-2{width:62% !important;height:75% !important;transform:rotate(-30deg) !important;}
+#page-about .about-hero-art .hero-badge{width:140px !important;height:140px !important;border-radius:50% !important;display:grid !important;place-items:center !important;text-align:center !important;color:var(--gold2) !important;font:500 65px "Cinzel" !important;border:1px solid var(--gold) !important;box-shadow:0 0 0 12px rgba(201,163,91,.08),0 0 0 24px rgba(201,163,91,.05) !important;z-index:2 !important;}
+#page-about .about-hero-art .hero-badge small{font:10px "DM Sans" !important;letter-spacing:.3em !important;margin-top:-55px !important;color:var(--gold2) !important;}
+#page-about .about-hero-art .hero-flower{position:absolute !important;bottom:65px !important;right:70px !important;color:var(--gold2) !important;font-size:34px !important;opacity:.8 !important;z-index:2 !important;}
+#page-about .story-art::before,#page-about .story-art::after{content:none !important;display:none !important;}
 
-/* Same MSC text */
-.story-art .about-hero-art .hero-badge small{
-  font:10px "DM Sans" !important;
-  letter-spacing:.3em !important;
-  margin-top:-55px !important;
-  color:var(--gold2) !important;
-}
-
-/* Same gold star */
-.story-art .about-hero-art .hero-flower{
-  position:absolute !important;
-  bottom:65px !important;
-  right:70px !important;
-
-  color:var(--gold2) !important;
-  font-size:34px !important;
-  opacity:.8 !important;
-  z-index:5 !important;
-}
+/* ============================================================
+   CATEGORY LOADING — NEVER SHOW EMPTY MESSAGE BEFORE API LOAD
+   ============================================================ */
+.category-loading{min-height:125px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;grid-column:1/-1;}
+#categoryCardsLoadingState{grid-column:1/-1;}
+#categoryProductsArea[hidden]{display:none !important;}
+#categoryProductsArea{padding-top:10px !important;margin-top:0 !important;}
+#page-categories .category-page{min-height:auto !important;height:auto !important;padding-bottom:25px !important;}
+.online-payment-details{margin-top:12px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;}
+.online-payment-details .checkout-summary{margin-top:0;margin-bottom:12px;}
