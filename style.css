@@ -635,3 +635,86 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   }
 
 }
+/* ============================================================
+   CATEGORY PAGE — REMOVE EXCESSIVE EMPTY SPACE
+   ============================================================ */
+
+.categories-section,
+.category-section {
+  min-height: auto !important;
+  height: auto !important;
+}
+
+.categories-section {
+  padding-bottom: 40px !important;
+}
+
+.category-grid {
+  margin-bottom: 0 !important;
+}
+/* ============================================================
+   MANASWINI ABOUT LOGO
+   ============================================================ */
+
+.about-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-logo-box {
+  width: 260px;
+  height: 260px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--gold);
+  border-radius: 18px;
+
+  background: var(--wine);
+
+  box-sizing: border-box;
+}
+
+.about-logo-circle {
+  width: 130px;
+  height: 130px;
+
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+.about-logo-circle span {
+  display: block;
+
+  font-family: Georgia, serif;
+  font-size: 72px;
+  line-height: 1;
+
+  color: var(--gold);
+
+  transform: translateY(-2px);
+}
+
+.about-logo-code {
+  margin-top: 12px;
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+
+  letter-spacing: 5px;
+
+  color: var(--gold);
+
+  text-align: center;
+}
