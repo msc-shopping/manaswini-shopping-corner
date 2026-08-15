@@ -794,3 +794,93 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
 
   z-index: 10 !important;
 }
+/* ============================================================
+   ABOUT LOGO — EXACTLY LIKE HOME LOGO
+   ============================================================ */
+
+/* Remove the old Story container styling */
+.story-art{
+  background:transparent !important;
+  border-radius:0 !important;
+  min-height:450px !important;
+  overflow:visible !important;
+}
+
+/* Make About logo use the same artwork as Home */
+.story-art .about-hero-art{
+  min-height:450px !important;
+  width:100% !important;
+  height:450px !important;
+
+  background:
+    radial-gradient(
+      circle,
+      #8b304d 0,
+      #5a1028 42%,
+      #300614 100%
+    ) !important;
+
+  border-radius:48% 48% 46% 46% !important;
+
+  overflow:hidden !important;
+  box-shadow:var(--shadow) !important;
+
+  display:grid !important;
+  place-items:center !important;
+  position:relative !important;
+}
+
+/* Same orbit proportions as HOME */
+.story-art .about-hero-art .orbit-1{
+  width:84% !important;
+  height:40% !important;
+  transform:rotate(25deg) !important;
+}
+
+.story-art .about-hero-art .orbit-2{
+  width:62% !important;
+  height:75% !important;
+  transform:rotate(-30deg) !important;
+}
+
+/* Same M logo as HOME */
+.story-art .about-hero-art .hero-badge{
+  width:140px !important;
+  height:140px !important;
+  border-radius:50% !important;
+
+  display:grid !important;
+  place-items:center !important;
+  text-align:center !important;
+
+  color:var(--gold2) !important;
+  font:500 65px "Cinzel" !important;
+
+  border:1px solid var(--gold) !important;
+
+  box-shadow:
+    0 0 0 12px rgba(201,163,91,.08),
+    0 0 0 24px rgba(201,163,91,.05) !important;
+
+  z-index:5 !important;
+}
+
+/* Same MSC text */
+.story-art .about-hero-art .hero-badge small{
+  font:10px "DM Sans" !important;
+  letter-spacing:.3em !important;
+  margin-top:-55px !important;
+  color:var(--gold2) !important;
+}
+
+/* Same gold star */
+.story-art .about-hero-art .hero-flower{
+  position:absolute !important;
+  bottom:65px !important;
+  right:70px !important;
+
+  color:var(--gold2) !important;
+  font-size:34px !important;
+  opacity:.8 !important;
+  z-index:5 !important;
+}
