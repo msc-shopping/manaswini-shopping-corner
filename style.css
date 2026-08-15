@@ -661,3 +661,81 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   place-items:center;
   overflow:hidden;
 }
+/* ============================================================
+   ABOUT LOGO — SAME DESIGN AS HOME, PROPERLY SCALED
+   ============================================================ */
+
+.about-hero-logo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 450px;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+}
+
+
+/* Keep orbit proportions balanced inside About block */
+.about-hero-logo .orbit-1 {
+  width: 72%;
+  height: 72%;
+  transform: rotate(25deg);
+}
+
+.about-hero-logo .orbit-2 {
+  width: 62%;
+  height: 78%;
+  transform: rotate(-30deg);
+}
+
+
+/* Same badge as Home */
+.about-hero-logo .hero-badge {
+  width: 140px;
+  height: 140px;
+
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  text-align: center;
+
+  color: var(--gold2);
+
+  font: 500 65px "Cinzel";
+
+  border: 1px solid var(--gold);
+
+  box-shadow:
+    0 0 0 12px rgba(201,163,91,.08),
+    0 0 0 24px rgba(201,163,91,.05);
+
+  z-index: 2;
+}
+
+
+/* MSC */
+.about-hero-logo .hero-badge small {
+  font: 10px "DM Sans";
+  letter-spacing: .3em;
+  margin-top: -55px;
+}
+
+
+/* Same gold symbol as Home */
+.about-hero-logo .hero-flower {
+  position: absolute;
+
+  bottom: 65px;
+  right: 70px;
+
+  color: var(--gold2);
+
+  font-size: 34px;
+
+  opacity: .8;
+}
