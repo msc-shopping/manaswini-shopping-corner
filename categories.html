@@ -33,6 +33,7 @@
 </nav>
 <div class="header-actions">
 <button aria-label="Search" class="icon-btn" id="searchBtn">⌕</button>
+<a class="account-btn" href="account.html" aria-label="My Account">My Account</a>
 <button aria-label="Open cart" class="cart-btn" id="cartBtn">Cart <span id="cartCount">0</span></button>
 </div>
 </div>
@@ -43,38 +44,18 @@
 <main id="sitePages">
 <section class="page-view" data-view="categories" id="page-categories">
 <section class="section category-page">
-<div class="section-head">
+<div class="section-head category-intro">
 <div>
 <span class="eyebrow">SHOP BY CATEGORY</span>
 <h2>Collections made for celebrations</h2>
 </div>
-<p>Choose any category to see the products in that collection. All categories in your Products sheet are shown automatically.</p>
+<p>Choose any category to explore its products. All categories in your Products sheet are shown automatically.</p>
 </div>
 <div class="category-grid" id="categoryGrid"><div class="category-loading" id="categoryCardsLoadingState"><span class="spinner"></span> Loading categories...</div></div>
 </section>
-<section class="section category-products-section products-section" hidden="True" id="categoryProductsArea">
-<div class="section-head product-head">
-<div>
-<span class="eyebrow">PRODUCT COLLECTION</span>
-<h2 id="categoryPageTitle">All Products</h2>
-</div>
-<div class="filters">
-<select id="categoryPageFilter">
-<option value="">All categories</option>
-</select>
-<select id="categorySortFilter">
-<option value="featured">Featured</option>
-<option value="low">Price: Low to High</option>
-<option value="high">Price: High to Low</option>
-<option value="name">Name</option>
-</select>
-</div>
-</div>
-<div class="loading" id="categoryProductsLoadingState"><span class="spinner"></span> Loading products...</div>
-<div class="empty" hidden="" id="categoryEmptyState">
-          No products match this category.
-        </div>
-<div class="product-grid" id="categoryProductGrid"></div>
+<section class="section category-products-section products-section" id="categoryProductsArea">
+<div id="categoryProductsByCategory" class="category-product-sections"></div>
+<div class="empty" hidden id="categoryEmptyState">No products are available.</div>
 </section>
 </section>
 </main>

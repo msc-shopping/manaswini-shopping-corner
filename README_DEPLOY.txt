@@ -1,60 +1,51 @@
-MANASWINI SHOPPING CORNER — UPDATED WEBSITE
-============================================
+MANASWINI SHOPPING CORNER — FINAL UPDATE
 
-WHAT WAS FIXED
----------------
-1. Products now have a local products.json fallback, so GitHub Pages does not remain blank when the Google Apps Script endpoint is unavailable.
-2. Live Google Apps Script catalogue is still attempted and replaces the saved catalogue when available.
-3. Updated Apps Script backend supports JSONP for cross-origin catalogue/tracking requests.
-4. Hero/logo artwork is circular rather than the stretched oval shape.
-5. Header M logo and footer M logo are fixed circular marks.
-6. Footer is structurally at the bottom; the large cream/white area after the footer is removed.
-7. All six pages use the same polished header/footer styling.
-8. Footer navigation now points to real HTML pages.
-9. Categories are generated from the product catalogue.
-10. Shop filters/search/sort remain functional.
-11. Product cards, product modal, cart and checkout styling are unified.
-12. Contact page is arranged as cards + enquiry form + map.
-13. Track Order page has a compact centered tracking panel.
+1. Replace the old website files with all files in this folder on GitHub Pages.
+2. Keep these files in the same directory:
+   index.html
+   categories.html
+   shop.html
+   about.html
+   contact.html
+   track.html
+   account.html
+   style.css
+   app.js
+   index.js
+   categories.js
+   shop.js
+   about.js
+   contact.js
+   track.js
+   account.js
+   products.json
 
-GITHUB PAGES
-------------
-Upload/replace these files in the SAME directory as index.html:
+3. Google Apps Script:
+   - Open backend/code.gs.
+   - Put your Google OAuth Web Client ID in CONFIG.GOOGLE_CLIENT_ID.
+   - Deploy a NEW Web App version.
+   - Execute as: Me.
+   - Who has access: Anyone.
+   - Replace the API URL in app.js only if the new deployment URL changes.
 
-index.html
-categories.html
-shop.html
-about.html
-contact.html
-track.html
-style.css
-app.js
-index.js
-categories.js
-shop.js
-about.js
-contact.js
-track.js
-products.json
+4. Google Cloud:
+   - Create an OAuth 2.0 Web Client ID.
+   - Add your GitHub Pages origin to Authorized JavaScript origins.
+     Example: https://YOUR-USERNAME.github.io
+   - Put the client ID in account.js and backend/code.gs.
 
-The website entry point remains index.html.
+5. Account features:
+   - Google Sign-In becomes active after the client ID is configured.
+   - Google users can have a profile and the site can load their Orders from the Orders sheet.
+   - The email/username form is a browser-local fallback. Do not treat it as production-grade authentication until a server-side password/OTP system is added.
 
-GOOGLE APPS SCRIPT BACKEND
----------------------------
-The updated backend is:
-backend/code.gs
+6. Products/images:
+   - The local products.json is only a fallback catalogue.
+   - Product images are read from ImageURL/ImageURLs/Image1/Image2/etc. when present.
+   - Google Drive file links are converted to viewable URLs automatically.
+   - The current supplied products.json contains no actual image URLs, so real product photos cannot appear until image URLs are supplied in the Products/ProductImages data.
 
-Replace the old Apps Script code with this code and DEPLOY A NEW VERSION of the web app.
-Use:
-- Execute as: Me
-- Who has access: Anyone
-
-After deployment, update API_URL in app.js if Google gives a NEW deployment URL.
-
-IMPORTANT
----------
-The website can display the saved catalogue from products.json even before the Apps Script backend is redeployed. However, live catalogue updates, order placement and order tracking depend on the Apps Script deployment.
-
-PRODUCT IMAGES
---------------
-The current supplied Products/ProductImages database has no populated ProductImages rows, so products without image URLs intentionally show the circular M/Manaswini placeholder. When ProductImages is populated, the updated backend automatically returns ImageURLs to the website.
+7. Categories page:
+   - Product counts are removed from category cards.
+   - Products are rendered in separate category sections below the category cards.
+   - Local products appear immediately; the live API refreshes in the background without holding the page on a loading message.
