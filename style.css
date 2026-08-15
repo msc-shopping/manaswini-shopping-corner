@@ -635,17 +635,3 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   }
 
 }
-/* Footer logo: exactly match header logo */
-.footer-brand .brand-mark {
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--gold);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: var(--gold);
-  font-family: "Cinzel";
-  font-size: 20px;
-  margin: 0;
-  line-height: normal;
-}
