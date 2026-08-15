@@ -46,7 +46,7 @@ function bindUI() {
 
 async function loadProducts() {
   try {
-    const res = await fetch(`${API_URL}?action=getProducts`, {cache:"no-store"});
+    const res = await fetch(`${API_URL}?action=getProducts`, {cache:"default"});
     const data = await res.json();
     if (data.status !== "success") throw new Error(data.message || "Unable to load products");
     state.products = Array.isArray(data.products) ? data.products : [];
