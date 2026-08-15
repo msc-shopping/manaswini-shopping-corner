@@ -397,6 +397,16 @@ body.page-switching{overflow-x:hidden}
   }
 }
 
+
+/* Dynamic category cards: support any number of categories from Products sheet */
+#categoryGrid{
+  align-items:stretch;
+}
+#categoryGrid .category-card{
+  width:100%;
+  min-height:125px;
+}
+
   </style>
 </head>
 <body>
@@ -485,17 +495,10 @@ body.page-switching{overflow-x:hidden}
             <span class="eyebrow">SHOP BY CATEGORY</span>
             <h2>Collections made for celebrations</h2>
           </div>
-          <p>Choose a category to see only the products that belong to it.</p>
+          <p>Choose any category to see the products in that collection. All categories in your Products sheet are shown automatically.</p>
         </div>
 
-        <div class="category-grid" id="categoryGrid">
-          <button class="category-card" data-category="Jewellery"><span>✦</span><b>Jewellery</b><small>Necklaces, malas & more</small></button>
-          <button class="category-card" data-category="Harams"><span>◇</span><b>Harams</b><small>Traditional statement pieces</small></button>
-          <button class="category-card" data-category="Bangles"><span>◌</span><b>Bangles</b><small>Festive & elegant styles</small></button>
-          <button class="category-card" data-category="Sarees"><span>▱</span><b>Sarees</b><small>Traditional collections</small></button>
-          <button class="category-card" data-category="Return Gifts"><span>♢</span><b>Return Gifts</b><small>Wedding & pooja favours</small></button>
-          <button class="category-card" data-category="Pooja & Festival"><span>✺</span><b>Pooja & Festival</b><small>Kalasam & vratam essentials</small></button>
-        </div>
+        <div class="category-grid" id="categoryGrid"></div>
       </section>
 
       <section class="section category-products-section products-section" id="categoryProductsArea" hidden>
@@ -832,7 +835,29 @@ function bindUI() {
   $$(".main-nav a[data-page]").forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
-      showPage(link.dataset.page, true);
+
+      const page = link.dataset.page;
+
+      /*
+       * Clicking the top-level Categories link means:
+       * open the category landing page, not the last selected category.
+       */
+      if (page === "categories") {
+        state.category = "";
+
+        const categoryFilter =
+          $("#categoryPageFilter");
+
+        if (categoryFilter) {
+          categoryFilter.value = "";
+        }
+      }
+
+      showPage(page, true);
+
+      if (page === "categories") {
+        renderCategoryProducts();
+      }
     });
   });
 
@@ -846,28 +871,7 @@ function bindUI() {
     });
   });
 
-  /* Category selection */
-  $$(".category-card").forEach(btn => {
-    btn.onclick = () => {
-      state.category = btn.dataset.category;
-
-      const filter = $("#categoryPageFilter");
-      if (filter) filter.value = state.category;
-
-      showPage("categories", true);
-      renderCategoryProducts();
-
-      setTimeout(() => {
-        const area = $("#categoryProductsArea");
-        if (area) {
-          area.scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-          });
-        }
-      }, 80);
-    };
-  });
+  /* Category selection is bound after category cards are generated. */
 
   $("#categoryPageFilter").onchange = e => {
     state.category = e.target.value;
@@ -923,21 +927,107 @@ async function loadProducts() {
 }
 
 function populateCategories() {
+
+  /*
+   * Build the category list directly from the Products data.
+   * This prevents categories from being missed when a new category
+   * is added to the Google Sheet.
+   */
   const categories = [...new Set(
     state.products
       .map(p => String(p.Category || "").trim())
       .filter(Boolean)
-  )].sort();
+  )].sort((a, b) => a.localeCompare(b));
 
+  /* Category filter dropdowns */
   const options =
     `<option value="">All categories</option>` +
-    categories.map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join("");
+    categories
+      .map(c =>
+        `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`
+      )
+      .join("");
 
   ["#shopCategoryFilter", "#categoryPageFilter"].forEach(selector => {
     const select = $(selector);
     if (!select) return;
+
     select.innerHTML = options;
-    if (state.category) select.value = state.category;
+
+    if (state.category &&
+        categories.includes(state.category)) {
+      select.value = state.category;
+    } else {
+      select.value = "";
+    }
+  });
+
+  /* Category cards */
+  const categoryGrid = $("#categoryGrid");
+
+  if (!categoryGrid) return;
+
+  const icons = ["✦","◇","◌","▱","♢","✺","❖","◈","✧","○"];
+
+  categoryGrid.innerHTML = categories.length
+    ? categories.map((category, index) => `
+        <button
+          type="button"
+          class="category-card"
+          data-category="${escapeAttr(category)}"
+        >
+          <span>${icons[index % icons.length]}</span>
+          <b>${escapeHtml(category)}</b>
+          <small>View ${escapeHtml(category)} products</small>
+        </button>
+      `).join("")
+    : `
+      <div class="empty">
+        No product categories are available yet.
+      </div>
+    `;
+
+  /*
+   * Bind every dynamically-created category card.
+   */
+  categoryGrid.querySelectorAll(".category-card").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+      const selectedCategory =
+        btn.dataset.category || "";
+
+      /*
+       * First enter the Categories page with no previous
+       * category filter, then apply the newly selected category.
+       */
+      state.category = "";
+
+      showPage("categories", true);
+
+      state.category = selectedCategory;
+
+      const filter = $("#categoryPageFilter");
+      if (filter) filter.value = selectedCategory;
+
+      renderCategoryProducts();
+
+      setTimeout(() => {
+
+        const area =
+          $("#categoryProductsArea");
+
+        if (area) {
+          area.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        }
+
+      }, 80);
+
+    });
+
   });
 }
 
@@ -1385,25 +1475,63 @@ function getInitialPage() {
 }
 
 function showPage(page, updateHash = true) {
-  const validPages = ["home","categories","shop","about","contact","track"];
-  if (!validPages.includes(page)) page = "home";
+
+  const validPages =
+    ["home","categories","shop","about","contact","track"];
+
+  if (!validPages.includes(page)) {
+    page = "home";
+  }
+
+  /*
+   * IMPORTANT:
+   * A category selected inside Categories must NOT carry over
+   * to Home, Shop, About, Contact or Track Order.
+   *
+   * Therefore, whenever we leave the Categories page,
+   * clear the category filter completely.
+   */
+  if (page !== "categories") {
+    state.category = "";
+
+    const shopFilter = $("#shopCategoryFilter");
+    if (shopFilter) {
+      shopFilter.value = "";
+    }
+
+    const categoryFilter = $("#categoryPageFilter");
+    if (categoryFilter) {
+      categoryFilter.value = "";
+    }
+  }
 
   document.querySelectorAll(".page-view").forEach(view => {
     view.hidden = view.dataset.view !== page;
   });
 
   document.querySelectorAll(".main-nav a[data-page]").forEach(link => {
-    link.classList.toggle("active", link.dataset.page === page);
+    link.classList.toggle(
+      "active",
+      link.dataset.page === page
+    );
   });
 
   const nav = $("#mainNav");
   if (nav) nav.classList.remove("open");
 
-  window.scrollTo({top:0, left:0, behavior:"auto"});
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "auto"
+  });
 
   if (updateHash) {
     try {
-      history.pushState({page}, "", "#" + page);
+      history.pushState(
+        {page},
+        "",
+        "#" + page
+      );
     } catch(e) {
       location.hash = page;
     }
@@ -1418,10 +1546,6 @@ function showPage(page, updateHash = true) {
   }
 
   if (page === "categories") {
-    if (updateHash && !state.category) {
-      const filter = $("#categoryPageFilter");
-      if (filter) filter.value = "";
-    }
     renderCategoryProducts();
   }
 }
