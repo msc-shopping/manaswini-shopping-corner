@@ -189,6 +189,10 @@ async function loadProducts() {
     state.source = "live";
     afterProductsLoaded();
     showLoadingStates(false);
+    if (new URLSearchParams(location.search).get("checkout") === "1") {
+      history.replaceState({}, "", location.pathname);
+      setTimeout(() => openCheckout(), 250);
+    }
   } catch (error) {
     console.warn("Live catalogue unavailable:", error);
     if (!state.products.length) {
@@ -407,11 +411,25 @@ function renderCategoryProducts() {
 
 function attachProductCardEvents(grid) {
   grid.querySelectorAll(".product-main-image").forEach(img => {
+    img.dataset.fallbackTried = "0";
     img.addEventListener("error", () => {
+      const original = img.dataset.originalUrl || img.src;
+      const idMatch = original.match(/[?&]id=([A-Za-z0-9_-]+)/);
+      const tried = Number(img.dataset.fallbackTried || 0);
+      if (idMatch && tried === 0) {
+        img.dataset.fallbackTried = "1";
+        img.src = `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w1600`;
+        return;
+      }
+      if (idMatch && tried === 1) {
+        img.dataset.fallbackTried = "2";
+        img.src = `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+        return;
+      }
       img.hidden = true;
       const fallback = img.parentElement?.querySelector(".fallback-placeholder");
       if (fallback) fallback.hidden = false;
-    }, {once:true});
+    });
   });
   grid.querySelectorAll(".product-card").forEach(card => {
     const id = card.dataset.id;
@@ -431,8 +449,16 @@ function attachProductCardEvents(grid) {
 function normalizeImageUrl(url) {
   const value = String(url || "").trim();
   if (!value) return "";
-  const drive = value.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=|thumbnail\?id=)([A-Za-z0-9_-]+)/i);
-  if (drive) return `https://drive.google.com/thumbnail?id=${drive[1]}&sz=w1200`;
+
+  // Google Drive image links are converted to the public file-view URL.
+  // thumbnailLink is intentionally avoided because Google documents it as
+  // short-lived and not intended for direct web-app use.
+  const drive = value.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]+)/i);
+  if (drive) return `https://drive.google.com/uc?export=view&id=${drive[1]}`;
+
+  const userContent = value.match(/drive\.usercontent\.google\.com\/(?:download|view)[^?]*\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i);
+  if (userContent) return `https://drive.google.com/uc?export=view&id=${userContent[1]}`;
+
   return value;
 }
 
@@ -470,7 +496,7 @@ function productCard(product) {
   return `<article class="product-card" data-id="${escapeAttr(product.ProductID)}">
     <div class="product-image">
       ${image
-        ? `<img class="product-main-image" src="${escapeAttr(image)}" alt="${escapeAttr(product.ProductName)}" loading="lazy">
+        ? `<img class="product-main-image" src="${escapeAttr(image)}" data-original-url="${escapeAttr(image)}" alt="${escapeAttr(product.ProductName)}" loading="lazy" referrerpolicy="no-referrer">
            <div class="image-placeholder fallback-placeholder" hidden><span>M</span><small>MANASWINI</small></div>`
         : `<div class="image-placeholder"><span>M</span><small>MANASWINI</small></div>`}
       ${moq > 1 ? `<span class="badge">MOQ ${moq}</span>` : ""}
@@ -665,9 +691,21 @@ function setModalQty(value) {
   if ($("#modalQty")) $("#modalQty").textContent = quantity;
 }
 
+function getLoggedInAccount() {
+  try { return JSON.parse(localStorage.getItem("manaswini_account") || "null"); }
+  catch (_) { return null; }
+}
+
 function openCheckout() {
   if (!state.cart.length) {
     alert("Your cart is empty.");
+    return;
+  }
+
+  const account = getLoggedInAccount();
+  if (!account || !account.sessionToken) {
+    closeCart();
+    window.location.href = `${pageUrl("account")}?return=checkout`;
     return;
   }
 
@@ -697,11 +735,19 @@ async function submitOrder(event) {
     return;
   }
 
+  const account = getLoggedInAccount();
+  if (!account || !account.sessionToken) {
+    closeModal("checkoutModal");
+    window.location.href = `${pageUrl("account")}?return=checkout`;
+    return;
+  }
+
   const payload = {
+    authToken: account.sessionToken,
     customer: {
-      name: String(form.get("name") || "").trim(),
+      name: String(form.get("name") || account.fullName || "").trim(),
       phone: String(form.get("phone") || "").trim(),
-      email: String(form.get("email") || "").trim(),
+      email: String(form.get("email") || account.email || "").trim(),
       address: String(form.get("address") || "").trim(),
       city: String(form.get("city") || "").trim(),
       state: String(form.get("state") || "").trim(),
@@ -725,6 +771,16 @@ async function submitOrder(event) {
     });
     const data = await response.json();
     if (data.status !== "success") throw new Error(data.message || "Order could not be placed.");
+
+    const savedOrders = JSON.parse(localStorage.getItem("manaswini_orders") || "[]");
+    savedOrders.push({
+      orderId: data.orderId,
+      date: new Date().toISOString(),
+      total: data.total,
+      status: "Order Placed",
+      email: account.email
+    });
+    localStorage.setItem("manaswini_orders", JSON.stringify(savedOrders));
 
     state.cart = [];
     saveCart();

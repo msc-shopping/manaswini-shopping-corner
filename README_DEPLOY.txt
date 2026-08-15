@@ -1,29 +1,14 @@
-MANASWINI SHOPPING CORNER — CLEAN URL + DRIVE IMAGE VERSION
+MANASWINI SHOPPING CORNER — IMAGE + ACCOUNT UPDATE
 
-1. Upload the contents of this folder to GitHub Pages.
-2. Pages use clean URLs:
-   /manaswini-shopping-corner/
-   /manaswini-shopping-corner/categories/
-   /manaswini-shopping-corner/shop/
-   /manaswini-shopping-corner/about/
-   /manaswini-shopping-corner/contact/
-   /manaswini-shopping-corner/account/
-
-3. Track Order is no longer a top navigation item. It is inside My Account after login, matching the requested shopping-app flow.
-
-4. Product images:
-   The Drive folder contains files named MSC001-01.jpg, MSC001-02.jpg, etc.
-   backend/code.gs is configured for folder ID:
-   1e24OkZn4YIPOD5XLnrW3Dqv--Dj5PUI
-
-   Deploy the updated Apps Script, then run:
-   syncProductImagesFromDrive()
-   once from the Apps Script editor.
-
-   That function creates/refreshes the ProductImages sheet and sets the product image files to Anyone with the link / Viewer so the public GitHub Pages site can display them. If your Google Workspace blocks public sharing, use another public image host or enable link sharing for the folder/files.
-
-5. Google Sign-In:
-   Put your Google OAuth Web Client ID in account.js and CONFIG.GOOGLE_CLIENT_ID in backend/code.gs.
-   Add your GitHub Pages origin as an authorized JavaScript origin in Google Cloud.
-
-6. Do not use the old .html links. Use the clean directory URLs above.
+1. Upload the contents of this package to the GitHub repository.
+2. In Google Apps Script, replace code.gs with backend/code.gs.
+3. Deploy the Apps Script as a Web App: Execute as the Google account that owns the Sheets/Drive; Who has access: Anyone.
+4. The Drive Product Images folder must remain accessible to the Apps Script owner. The backend automatically converts MSC001-01.jpg, MSC001-02.jpg, etc. into public image URLs.
+5. The backend now uses Google Drive's public file-view URL and the frontend has two image fallbacks. This avoids relying only on Drive thumbnailLink URLs, which Google documents as short-lived/not intended for direct web-app use.
+6. Optional: run syncProductImagesFromDrive() once in Apps Script to refresh the ProductImages sheet and set file sharing.
+7. ACCOUNT: email/username signup and login are server-side. Users are stored in a Users sheet automatically. Passwords are stored only as salted SHA-256 hashes; the plaintext password is not stored. Sessions expire after 7 days.
+8. CHECKOUT: a customer must be logged in with a valid session before Proceed to Checkout can open, and the backend rejects unauthenticated orders.
+9. GOOGLE LOGIN: put your Google OAuth Web Client ID in account.js and the same ID in CONFIG.GOOGLE_CLIENT_ID in backend/code.gs. Add the GitHub Pages origin as an authorized JavaScript origin in Google Cloud.
+10. MY ACCOUNT contains My Details, My Orders, Saved Address, Wishlist and Track your order.
+11. Cart count is hidden as requested.
+12. Clean URLs remain directory URLs such as /shop/, /categories/, /about/, /contact/, /account/; no .html suffix is used.
