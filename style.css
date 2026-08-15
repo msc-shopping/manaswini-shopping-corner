@@ -927,7 +927,7 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
       #300614 100%
     ) !important;
 
-  border-radius:28px !important;
+  border-radius:48% 48% 46% 46% !important;
   overflow:hidden !important;
   box-shadow:var(--shadow) !important;
 }
