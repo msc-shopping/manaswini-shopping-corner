@@ -50,7 +50,7 @@
 /* Remove the old Story artwork circle */
 .story-art:before{
   display:none;
-}.story-art:before{content:"";position:absolute;width:70%;height:70%;border:1px solid rgba(229,202,138,.35);border-radius:50%}.story-copy p{color:var(--muted);line-height:1.8}.story-points{display:flex;gap:14px;margin-top:22px}.story-points>span{color:var(--gold);font-size:17px}.story-points b,.story-points small{display:block}.story-points b{font-size:13px;color:var(--wine)}.story-points small{font-size:11px;color:var(--muted);margin-top:4px}
+}.story-copy p{color:var(--muted);line-height:1.8}.story-points{display:flex;gap:14px;margin-top:22px}.story-points>span{color:var(--gold);font-size:17px}.story-points b,.story-points small{display:block}.story-points b{font-size:13px;color:var(--wine)}.story-points small{font-size:11px;color:var(--muted);margin-top:4px}
 .track-section{background:var(--wine3);color:#fff;padding:85px 5%;text-align:center}.track-inner{max-width:650px;margin:auto}.track-inner h2{color:#fff}.track-inner p{color:#d9c9c6;font-size:13px}.track-inner form{display:flex;gap:10px;margin-top:25px}.track-inner input{flex:1;padding:15px 18px;border:0;border-radius:999px;outline:none}.track-result{background:#fff;color:var(--ink);border-radius:14px;padding:18px;text-align:left;margin-top:20px}.track-result strong{color:var(--wine)}
 footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:auto;padding:55px 5%;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:35px}.footer-brand .brand b{color:#f8e6bd}.footer-brand p{font-size:10px;letter-spacing:.18em;color:#9e888c}.footer-main h4{color:var(--gold2);font:600 13px "Cinzel";letter-spacing:.08em}.footer-main a,.footer-main span{display:block;color:#cdbfc0;font-size:11px;margin:10px 0}.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:18px 5%;text-align:center;font-size:10px;color:#927e82}
 .overlay{display:none;position:fixed;inset:0;background:rgba(23,3,9,.48);z-index:80}.overlay.show{display:block}.cart-drawer{position:fixed;right:-440px;top:0;width:min(440px,100%);height:100%;background:#fffdf8;z-index:90;transition:.3s;display:flex;flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,.18)}.cart-drawer.open{right:0}.drawer-head{padding:25px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.drawer-head h3{margin:5px 0 0;font:600 28px "Playfair Display";color:var(--wine3)}.close-btn{font-size:28px;color:var(--wine)}.cart-items{flex:1;overflow:auto;padding:15px 20px}.cart-item{display:grid;grid-template-columns:70px 1fr auto;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}.cart-thumb{width:70px;height:70px;border-radius:10px;background:#f1e4d4;display:grid;place-items:center;color:var(--wine);font:30px "Playfair Display";overflow:hidden}.cart-thumb img{width:100%;height:100%;object-fit:cover}.cart-item h4{margin:0 0 5px;font:600 15px "Playfair Display";color:var(--wine)}.cart-item p{margin:0;color:var(--muted);font-size:11px}.cart-controls{display:flex;align-items:center;gap:7px;margin-top:9px}.cart-controls button{width:25px;height:25px;border:1px solid var(--line);background:#fff;border-radius:50%}.remove{color:#9a4b5e!important;border:0!important;background:transparent!important}.cart-footer{padding:20px;border-top:1px solid var(--line)}.cart-line{display:flex;justify-content:space-between;margin:8px 0}.cart-line.muted{font-size:11px;color:var(--muted)}.full{width:100%;margin-top:12px}.text-btn{border:0;background:transparent;color:var(--wine);font-weight:700;font-size:11px}
@@ -690,30 +690,12 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
 .category-grid {
   margin-bottom: 0 !important;
 }
-.about-hero-logo{
-  width:100%;
-  height:100%;
-  min-height:450px;
-  position:relative;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-}
+
 /* ============================================================
    ABOUT LOGO — SAME DESIGN AS HOME, PROPERLY SCALED
    ============================================================ */
 
-.about-hero-logo {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 450px;
 
-  display: grid;
-  place-items: center;
-
-  overflow: hidden;
-}
 
 
 /* Keep orbit proportions balanced inside About block */
@@ -912,4 +894,106 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   height:0 !important;
   border:0 !important;
   background:none !important;
+}
+/* ============================================================
+   ABOUT PAGE — SAME LOGO AS HOME
+   ============================================================ */
+
+.story-art{
+  min-height:450px !important;
+  display:grid !important;
+  place-items:center !important;
+  position:relative !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+
+.story-art .about-hero-art{
+  width:100% !important;
+  height:450px !important;
+  min-height:450px !important;
+
+  position:relative !important;
+  display:grid !important;
+  place-items:center !important;
+
+  background:
+    radial-gradient(
+      circle,
+      #8b304d 0%,
+      #5a1028 42%,
+      #300614 100%
+    ) !important;
+
+  border-radius:28px !important;
+  overflow:hidden !important;
+  box-shadow:var(--shadow) !important;
+}
+
+/* Remove unwanted outer oval */
+.story-art .about-hero-art::before,
+.story-art .about-hero-art::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Same orbit as HOME */
+.story-art .about-hero-art .orbit-1{
+  width:84% !important;
+  height:40% !important;
+  transform:rotate(25deg) !important;
+}
+
+/* Same orbit as HOME */
+.story-art .about-hero-art .orbit-2{
+  width:62% !important;
+  height:75% !important;
+  transform:rotate(-30deg) !important;
+}
+
+/* Round M logo */
+.story-art .about-hero-art .hero-badge{
+  width:140px !important;
+  height:140px !important;
+
+  border-radius:50% !important;
+
+  display:grid !important;
+  place-items:center !important;
+
+  text-align:center !important;
+
+  color:var(--gold2) !important;
+
+  font:500 65px "Cinzel" !important;
+
+  border:1px solid var(--gold) !important;
+
+  box-shadow:
+    0 0 0 12px rgba(201,163,91,.08),
+    0 0 0 24px rgba(201,163,91,.05) !important;
+
+  z-index:5 !important;
+}
+
+/* MSC below M */
+.story-art .about-hero-art .hero-badge small{
+  font:10px "DM Sans" !important;
+  letter-spacing:.3em !important;
+  margin-top:-55px !important;
+  color:var(--gold2) !important;
+}
+
+/* Gold star */
+.story-art .about-hero-art .hero-flower{
+  position:absolute !important;
+  bottom:65px !important;
+  right:70px !important;
+  color:var(--gold2) !important;
+  font-size:34px !important;
+  opacity:.8 !important;
+  z-index:5 !important;
 }
