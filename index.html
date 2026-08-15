@@ -511,7 +511,12 @@ body.page-switching{overflow-x:hidden}
           <p>Choose any category to see the products in that collection. All categories in your Products sheet are shown automatically.</p>
         </div>
 
-        <div class="category-grid" id="categoryGrid"></div>
+        <div class="category-grid" id="categoryGrid">
+          <div class="category-loading" id="categoryLoadingState">
+            <span class="spinner"></span>
+            Loading categories &amp; products...
+          </div>
+        </div>
       </section>
 
       <section class="section category-products-section products-section" id="categoryProductsArea" hidden>
