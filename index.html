@@ -331,26 +331,42 @@ body.page-switching{overflow-x:hidden}
 .enquiry-form .form-grid{
   margin-top:0;
 }
+
 .map-card{
   margin-top:18px;
-  padding:24px 28px;
+  padding:24px;
   background:#fff;
   border:1px solid var(--line);
   border-radius:20px;
-  display:flex;
-  justify-content:space-between;
+  display:grid;
+  grid-template-columns:.8fr 1.2fr;
   align-items:center;
   gap:25px;
 }
-.map-card h3{
+.map-copy h3{
   color:var(--wine3);
   font:600 24px "Playfair Display";
   margin:8px 0;
 }
-.map-card p{
-  margin:0;
+.map-copy p{
+  margin:0 0 16px;
   color:var(--muted);
   font-size:11px;
+  line-height:1.7;
+}
+.map-frame{
+  width:100%;
+  height:280px;
+  overflow:hidden;
+  border-radius:15px;
+  border:1px solid var(--line);
+  background:#f5eee4;
+}
+.map-frame iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
 }
 .track-page{
   min-height:calc(100vh - 78px);
@@ -374,8 +390,10 @@ body.page-switching{overflow-x:hidden}
     font-size:32px;
   }
   .map-card{
-    flex-direction:column;
-    align-items:flex-start;
+    grid-template-columns:1fr;
+  }
+  .map-frame{
+    height:240px;
   }
 }
 
@@ -438,13 +456,6 @@ body.page-switching{overflow-x:hidden}
         </div>
       </section>
 
-      <div class="trust-strip">
-        <div><strong>COD</strong><span>Cash on Delivery</span></div>
-        <div><strong>ONLINE</strong><span>Secure online payment</span></div>
-        <div><strong>MOQ</strong><span>Bulk-order friendly</span></div>
-        <div><strong>CARE</strong><span>Personal customer support</span></div>
-      </div>
-
       <section class="section products-section home-products">
         <div class="section-head product-head">
           <div>
@@ -490,8 +501,8 @@ body.page-switching{overflow-x:hidden}
       <section class="section category-products-section products-section" id="categoryProductsArea" hidden>
         <div class="section-head product-head">
           <div>
-            <span class="eyebrow">CATEGORY PRODUCTS</span>
-            <h2 id="categoryPageTitle">Products</h2>
+            <span class="eyebrow">PRODUCT COLLECTION</span>
+            <h2 id="categoryPageTitle">All Products</h2>
           </div>
           <div class="filters">
             <select id="categoryPageFilter">
@@ -644,12 +655,22 @@ body.page-switching{overflow-x:hidden}
         </div>
 
         <div class="map-card">
-          <div>
+          <div class="map-copy">
             <span class="eyebrow">VISIT / LOCATION</span>
             <h3>Find us in Hyderabad</h3>
-            <p>Open the location directly in Google Maps for directions.</p>
+            <p>Use the map below for a quick location preview, or open Google Maps for full directions.</p>
+            <a class="btn btn-outline" href="https://www.google.com/maps/search/?api=1&query=Hyderabad%2C%20Telangana%2C%20India" target="_blank" rel="noopener">Open in Google Maps</a>
           </div>
-          <a class="btn btn-outline" href="https://www.google.com/maps/search/?api=1&query=Hyderabad%2C%20Telangana%2C%20India" target="_blank" rel="noopener">Open Google Maps</a>
+
+          <div class="map-frame">
+            <iframe
+              title="Manaswini Shopping Corner location"
+              src="https://www.google.com/maps?q=Hyderabad%2C%20Telangana%2C%20India&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen>
+            </iframe>
+          </div>
         </div>
       </section>
     </section>
@@ -785,7 +806,7 @@ function bindUI() {
   $("#closeCart").onclick = closeCart;
   $("#overlay").onclick = closeCart;
   $("#searchBtn").onclick = () => $("#searchPanel").classList.toggle("open");
-  $("#searchInput").addEventListener("input", e => { state.search = e.target.value.toLowerCase().trim(); renderProducts(); });
+  $("#searchInput").addEventListener("input", e => { state.search = e.target.value.toLowerCase().trim(); renderShopProducts(); });
   $("#mobileMenuBtn").onclick = () => $("#mainNav").classList.toggle("open");
   $("#checkoutBtn").onclick = openCheckout;
   $("#whatsappBtn").onclick = orderViaWhatsApp;
@@ -804,8 +825,7 @@ function bindUI() {
     };
   $("#checkoutForm").onsubmit = submitOrder;
   $("#trackForm").onsubmit = trackOrder;
-  $("#categoryFilter").onchange = e => { state.category = e.target.value; renderProducts(); };
-  $("#sortFilter").onchange = e => { state.sort = e.target.value; renderProducts(); };
+
   $$(".modal-close").forEach(btn => btn.onclick = () => closeModal(btn.dataset.close));
 
   /* Page navigation */
@@ -830,13 +850,22 @@ function bindUI() {
   $$(".category-card").forEach(btn => {
     btn.onclick = () => {
       state.category = btn.dataset.category;
-      $("#categoryPageFilter").value = state.category;
+
+      const filter = $("#categoryPageFilter");
+      if (filter) filter.value = state.category;
+
       showPage("categories", true);
       renderCategoryProducts();
+
       setTimeout(() => {
         const area = $("#categoryProductsArea");
-        if (area) area.scrollIntoView({behavior:"smooth", block:"start"});
-      }, 50);
+        if (area) {
+          area.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+          });
+        }
+      }, 80);
     };
   });
 
@@ -946,7 +975,7 @@ function renderHomeProducts() {
   if (!grid) return;
 
   /* Home shows a curated preview, not the complete catalogue. */
-  const list = filteredProducts().slice(0, 8);
+  const list = filteredProducts().slice(0, 12);
   $("#homeEmptyState").hidden = list.length !== 0;
   grid.innerHTML = list.map(productCard).join("");
   attachProductCardEvents(grid);
@@ -967,17 +996,24 @@ function renderCategoryProducts() {
   const area = $("#categoryProductsArea");
   if (!grid || !area) return;
 
-  if (!state.category) {
-    area.hidden = true;
-    grid.innerHTML = "";
-    return;
-  }
-
+  /*
+   * Categories page always shows products.
+   * If a category is selected, show only that category.
+   * Otherwise show the complete product collection.
+   */
   area.hidden = false;
+
   const list = filteredProducts();
-  $("#categoryPageTitle").textContent = state.category || "Products";
-  $("#categoryEmptyState").hidden = list.length !== 0;
-  grid.innerHTML = list.map(productCard).join("");
+
+  $("#categoryPageTitle").textContent =
+    state.category || "All Products";
+
+  $("#categoryEmptyState").hidden =
+    list.length !== 0;
+
+  grid.innerHTML =
+    list.map(productCard).join("");
+
   attachProductCardEvents(grid);
 }
 
@@ -1373,9 +1409,21 @@ function showPage(page, updateHash = true) {
     }
   }
 
-  if (page === "home") renderHomeProducts();
-  if (page === "shop") renderShopProducts();
-  if (page === "categories") renderCategoryProducts();
+  if (page === "home") {
+    renderHomeProducts();
+  }
+
+  if (page === "shop") {
+    renderShopProducts();
+  }
+
+  if (page === "categories") {
+    if (updateHash && !state.category) {
+      const filter = $("#categoryPageFilter");
+      if (filter) filter.value = "";
+    }
+    renderCategoryProducts();
+  }
 }
 
 window.addEventListener("popstate", () => {
