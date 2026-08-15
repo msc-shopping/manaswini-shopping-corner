@@ -532,7 +532,14 @@ body.page-switching{overflow-x:hidden}
             </select>
           </div>
         </div>
-        <div class="empty" id="categoryEmptyState" hidden>No products match this category.</div>
+        <div class="loading" id="categoryLoadingState">
+          <span class="spinner"></span> Loading categories & products...
+        </div>
+        
+        <div class="empty" id="categoryEmptyState" hidden>
+          No products match this category.
+        </div>
+        
         <div class="product-grid" id="categoryProductGrid"></div>
       </section>
     </section>
@@ -1151,25 +1158,40 @@ function renderShopProducts() {
 function renderCategoryProducts() {
   const grid = $("#categoryProductGrid");
   const area = $("#categoryProductsArea");
+  const loading = $("#categoryLoadingState");
+  const empty = $("#categoryEmptyState");
+
   if (!grid || !area) return;
 
   /*
-   * Categories page always shows products.
-   * If a category is selected, show only that category.
-   * Otherwise show the complete product collection.
+   * Products are loaded asynchronously from Google Sheets.
+   * Do not show "No products match this category" while
+   * the data is still loading.
    */
   area.hidden = false;
+
+  /* Still waiting for the API response */
+  if (!state.products || state.products.length === 0) {
+    if (loading) loading.style.display = "block";
+    if (empty) empty.hidden = true;
+    grid.innerHTML = "";
+    return;
+  }
+
+  /* Data has finished loading */
+  if (loading) loading.style.display = "none";
 
   const list = filteredProducts();
 
   $("#categoryPageTitle").textContent =
     state.category || "All Products";
 
-  $("#categoryEmptyState").hidden =
-    list.length !== 0;
+  /* Show empty message only after products have loaded */
+  if (empty) {
+    empty.hidden = list.length !== 0;
+  }
 
-  grid.innerHTML =
-    list.map(productCard).join("");
+  grid.innerHTML = list.map(productCard).join("");
 
   attachProductCardEvents(grid);
 }
