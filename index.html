@@ -271,6 +271,114 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   .main-nav a:last-child{border-bottom:0}
 }
 
+
+/* ============================================================
+   TRUE PAGE VIEWS — only one site page is visible at a time
+   ============================================================ */
+.page-view[hidden]{display:none !important}
+.page-view{min-height:calc(100vh - 78px)}
+body.page-switching{overflow-x:hidden}
+
+.shop-search{
+  margin:-10px 0 25px;
+}
+.shop-search input{
+  width:100%;
+  padding:13px 18px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:#fff;
+  outline:none;
+  color:var(--ink);
+}
+.category-page{
+  min-height:calc(100vh - 78px);
+}
+.category-products-section{
+  padding-top:10px;
+}
+.shop-page{
+  min-height:calc(100vh - 78px);
+}
+.home-products{
+  padding-top:55px;
+  padding-bottom:70px;
+}
+.home-products .product-grid{
+  max-height:none;
+}
+.enquiry-wrap{
+  margin-top:55px;
+  display:grid;
+  grid-template-columns:.8fr 1.2fr;
+  gap:35px;
+  padding:35px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+}
+.enquiry-copy h2{
+  font:600 38px/1.1 "Playfair Display";
+  color:var(--wine3);
+  margin:10px 0 15px;
+}
+.enquiry-copy p{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.8;
+  max-width:430px;
+}
+.enquiry-form .form-grid{
+  margin-top:0;
+}
+.map-card{
+  margin-top:18px;
+  padding:24px 28px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:25px;
+}
+.map-card h3{
+  color:var(--wine3);
+  font:600 24px "Playfair Display";
+  margin:8px 0;
+}
+.map-card p{
+  margin:0;
+  color:var(--muted);
+  font-size:11px;
+}
+.track-page{
+  min-height:calc(100vh - 78px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.track-page .track-inner{
+  padding:70px 20px;
+}
+.contact-section{
+  padding-bottom:70px;
+}
+
+@media(max-width:760px){
+  .enquiry-wrap{
+    grid-template-columns:1fr;
+    padding:22px;
+  }
+  .enquiry-copy h2{
+    font-size:32px;
+  }
+  .map-card{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -282,17 +390,17 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
   <header class="site-header">
     <div class="header-inner">
       <button class="icon-btn mobile-menu" id="mobileMenuBtn" aria-label="Open menu">☰</button>
-      <a class="brand" href="#home" aria-label="Manaswini Shopping Corner home">
+      <a class="brand" href="#home" data-page="home" aria-label="Manaswini Shopping Corner home">
         <span class="brand-mark">M</span>
         <span><b>MANASWINI</b><small>SHOPPING CORNER</small></span>
       </a>
       <nav class="main-nav" id="mainNav">
-        <a href="#home" data-page-link="home">Home</a>
-        <a href="#collections" data-page-link="collections">Categories</a>
-        <a href="#products" data-page-link="products">Shop</a>
-        <a href="#about" data-page-link="about">About</a>
-        <a href="#contact" data-page-link="contact">Contact</a>
-        <a href="#track" data-page-link="track">Track Order</a>
+        <a href="#home" data-page="home">Home</a>
+        <a href="#categories" data-page="categories">Categories</a>
+        <a href="#shop" data-page="shop">Shop</a>
+        <a href="#about" data-page="about">About</a>
+        <a href="#contact" data-page="contact">Contact</a>
+        <a href="#track" data-page="track">Track Order</a>
       </nav>
       <div class="header-actions">
         <button class="icon-btn" id="searchBtn" aria-label="Search">⌕</button>
@@ -304,152 +412,273 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
     </div>
   </header>
 
-  <main>
-    <section class="hero" id="home">
-      <div class="hero-copy">
-        <div class="eyebrow">TRADITION • ELEGANCE • CELEBRATION</div>
-        <h1>Beautiful things for your <em>special moments.</em></h1>
-        <p>Discover traditional jewellery, return gifts, pooja essentials and festive collections curated for weddings, celebrations and every occasion.</p>
-        <div class="hero-actions">
-          <a class="btn btn-gold" href="#products">Explore Collection</a>
-          <a class="btn btn-outline" href="#track">Track an Order</a>
+  <main id="sitePages">
+
+    <!-- ======================================================
+         HOME PAGE
+         Only: Hero + Featured Products
+         ====================================================== -->
+    <section class="page-view" id="page-home" data-view="home">
+      <section class="hero" id="homeHero">
+        <div class="hero-copy">
+          <div class="eyebrow">TRADITION • ELEGANCE • CELEBRATION</div>
+          <h1>Beautiful things for your <em>special moments.</em></h1>
+          <p>Discover traditional jewellery, return gifts, pooja essentials and festive collections curated for weddings, celebrations and every occasion.</p>
+          <div class="hero-actions">
+            <a class="btn btn-gold" href="#shop" data-page="shop">Explore Shop</a>
+            <a class="btn btn-outline" href="#categories" data-page="categories">Shop by Category</a>
+          </div>
+          <div class="hero-note"><span>✦</span> Bulk & MOQ orders welcome</div>
         </div>
-        <div class="hero-note"><span>✦</span> Bulk & MOQ orders welcome</div>
-      </div>
-      <div class="hero-art" aria-label="Luxury decorative pattern">
-        <div class="hero-orbit orbit-1"></div>
-        <div class="hero-orbit orbit-2"></div>
-        <div class="hero-badge">M<br><small>MC</small></div>
-        <div class="hero-flower">✦</div>
-      </div>
-    </section>
-
-    <section class="trust-strip">
-      <div><strong>COD</strong><span>Cash on Delivery</span></div>
-      <div><strong>ONLINE</strong><span>Secure online payment</span></div>
-      <div><strong>MOQ</strong><span>Bulk-order friendly</span></div>
-      <div><strong>CARE</strong><span>Personal customer support</span></div>
-    </section>
-
-    <section class="section" id="collections">
-      <div class="section-head">
-        <div><span class="eyebrow">SHOP BY CATEGORY</span><h2>Collections made for celebrations</h2></div>
-        <p>Explore traditional pieces, thoughtful return gifts and festive essentials.</p>
-      </div>
-      <div class="category-grid" id="categoryGrid">
-        <button class="category-card" data-category="Jewellery"><span>✦</span><b>Jewellery</b><small>Necklaces, malas & more</small></button>
-        <button class="category-card" data-category="Harams"><span>◇</span><b>Harams</b><small>Traditional statement pieces</small></button>
-        <button class="category-card" data-category="Bangles"><span>◌</span><b>Bangles</b><small>Festive & elegant styles</small></button>
-        <button class="category-card" data-category="Sarees"><span>▱</span><b>Sarees</b><small>Traditional collections</small></button>
-        <button class="category-card" data-category="Return Gifts"><span>♢</span><b>Return Gifts</b><small>Wedding & pooja favours</small></button>
-        <button class="category-card" data-category="Pooja & Festival"><span>✺</span><b>Pooja & Festival</b><small>Kalasam & vratam essentials</small></button>
-      </div>
-    </section>
-
-    <section class="section products-section" id="products">
-      <div class="section-head product-head">
-        <div><span class="eyebrow">THE COLLECTION</span><h2>Featured products</h2></div>
-        <div class="filters">
-          <select id="categoryFilter"><option value="">All categories</option></select>
-          <select id="sortFilter">
-            <option value="featured">Featured</option>
-            <option value="low">Price: Low to High</option>
-            <option value="high">Price: High to Low</option>
-            <option value="name">Name</option>
-          </select>
+        <div class="hero-art" aria-label="Luxury decorative pattern">
+          <div class="hero-orbit orbit-1"></div>
+          <div class="hero-orbit orbit-2"></div>
+          <div class="hero-badge">M<br><small>MC</small></div>
+          <div class="hero-flower">✦</div>
         </div>
-      </div>
-      <div class="loading" id="loadingState"><span class="spinner"></span> Loading collection...</div>
-      <div class="empty" id="emptyState" hidden>No products match your search.</div>
-      <div class="product-grid" id="productGrid"></div>
-    </section>
+      </section>
 
-    <section class="story section" id="about">
-      <div class="story-art"><div class="story-medallion">M</div></div>
-      <div class="story-copy">
-        <span class="eyebrow">ABOUT MANASWINI</span>
-        <h2>Tradition, thoughtfully brought to you.</h2>
-        <p>Manaswini Shopping Corner brings together traditional Indian products for weddings, poojas, festivals and meaningful celebrations — from jewellery and sarees to return gifts and decorative essentials.</p>
-        <div class="story-points"><span>✦</span><div><b>Made for moments</b><small>Curated collections for your celebrations.</small></div></div>
-        <div class="story-points"><span>✦</span><div><b>Bulk orders welcome</b><small>Selected products have minimum-order quantities.</small></div></div>
-        <div class="story-points"><span>✦</span><div><b>Easy ordering</b><small>Choose online payment or Cash on Delivery.</small></div></div>
-      </div>
-    </section>
-
-
-    <section class="contact-section section" id="contact">
-      <div class="section-head">
-        <div>
-          <span class="eyebrow">GET IN TOUCH</span>
-          <h2>We are here to help.</h2>
-        </div>
-        <p>For product enquiries, bulk orders, wedding collections, delivery questions or general support, contact Manaswini Shopping Corner.</p>
+      <div class="trust-strip">
+        <div><strong>COD</strong><span>Cash on Delivery</span></div>
+        <div><strong>ONLINE</strong><span>Secure online payment</span></div>
+        <div><strong>MOQ</strong><span>Bulk-order friendly</span></div>
+        <div><strong>CARE</strong><span>Personal customer support</span></div>
       </div>
 
-      <div class="contact-grid">
-        <div class="contact-card contact-primary">
-          <span class="contact-icon">☎</span>
+      <section class="section products-section home-products">
+        <div class="section-head product-head">
           <div>
-            <span class="contact-label">CALL / WHATSAPP</span>
-            <h3>9030833667</h3>
-            <p>Speak with us about products, availability and orders.</p>
-            <div class="contact-actions">
-              <a class="small-btn primary" href="tel:9030833667">Call Now</a>
-              <a class="small-btn" href="https://wa.me/919030833667" target="_blank" rel="noopener">WhatsApp</a>
+            <span class="eyebrow">OUR COLLECTION</span>
+            <h2>Featured products</h2>
+          </div>
+          <a class="text-link" href="#shop" data-page="shop">View all products →</a>
+        </div>
+
+        <div class="loading" id="homeLoadingState">
+          <span class="spinner"></span> Loading collection...
+        </div>
+        <div class="empty" id="homeEmptyState" hidden>No products available.</div>
+        <div class="product-grid" id="homeProductGrid"></div>
+      </section>
+    </section>
+
+
+    <!-- ======================================================
+         CATEGORIES PAGE
+         Only visible after clicking Categories.
+         ====================================================== -->
+    <section class="page-view" id="page-categories" data-view="categories" hidden>
+      <section class="section category-page">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">SHOP BY CATEGORY</span>
+            <h2>Collections made for celebrations</h2>
+          </div>
+          <p>Choose a category to see only the products that belong to it.</p>
+        </div>
+
+        <div class="category-grid" id="categoryGrid">
+          <button class="category-card" data-category="Jewellery"><span>✦</span><b>Jewellery</b><small>Necklaces, malas & more</small></button>
+          <button class="category-card" data-category="Harams"><span>◇</span><b>Harams</b><small>Traditional statement pieces</small></button>
+          <button class="category-card" data-category="Bangles"><span>◌</span><b>Bangles</b><small>Festive & elegant styles</small></button>
+          <button class="category-card" data-category="Sarees"><span>▱</span><b>Sarees</b><small>Traditional collections</small></button>
+          <button class="category-card" data-category="Return Gifts"><span>♢</span><b>Return Gifts</b><small>Wedding & pooja favours</small></button>
+          <button class="category-card" data-category="Pooja & Festival"><span>✺</span><b>Pooja & Festival</b><small>Kalasam & vratam essentials</small></button>
+        </div>
+      </section>
+
+      <section class="section category-products-section products-section" id="categoryProductsArea" hidden>
+        <div class="section-head product-head">
+          <div>
+            <span class="eyebrow">CATEGORY PRODUCTS</span>
+            <h2 id="categoryPageTitle">Products</h2>
+          </div>
+          <div class="filters">
+            <select id="categoryPageFilter">
+              <option value="">All categories</option>
+            </select>
+            <select id="categorySortFilter">
+              <option value="featured">Featured</option>
+              <option value="low">Price: Low to High</option>
+              <option value="high">Price: High to Low</option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+        </div>
+        <div class="empty" id="categoryEmptyState" hidden>No products match this category.</div>
+        <div class="product-grid" id="categoryProductGrid"></div>
+      </section>
+    </section>
+
+
+    <!-- ======================================================
+         SHOP PAGE
+         Complete catalogue. Product scrolling belongs here.
+         ====================================================== -->
+    <section class="page-view" id="page-shop" data-view="shop" hidden>
+      <section class="section products-section shop-page">
+        <div class="section-head product-head">
+          <div>
+            <span class="eyebrow">THE COMPLETE COLLECTION</span>
+            <h2>Shop all products</h2>
+          </div>
+          <div class="filters">
+            <select id="shopCategoryFilter">
+              <option value="">All categories</option>
+            </select>
+            <select id="shopSortFilter">
+              <option value="featured">Featured</option>
+              <option value="low">Price: Low to High</option>
+              <option value="high">Price: High to Low</option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="shop-search">
+          <input id="shopSearchInput" type="search" placeholder="Search products..." autocomplete="off">
+        </div>
+
+        <div class="loading" id="shopLoadingState">
+          <span class="spinner"></span> Loading products...
+        </div>
+        <div class="empty" id="shopEmptyState" hidden>No products match your search.</div>
+        <div class="product-grid" id="shopProductGrid"></div>
+      </section>
+    </section>
+
+
+    <!-- ======================================================
+         ABOUT PAGE
+         ====================================================== -->
+    <section class="page-view" id="page-about" data-view="about" hidden>
+      <section class="story section">
+        <div class="story-art"><div class="story-medallion">M</div></div>
+        <div class="story-copy">
+          <span class="eyebrow">ABOUT MANASWINI</span>
+          <h2>Tradition, thoughtfully brought to you.</h2>
+          <p>Manaswini Shopping Corner brings together traditional Indian products for weddings, poojas, festivals and meaningful celebrations — from jewellery and sarees to return gifts and decorative essentials.</p>
+          <div class="story-points"><span>✦</span><div><b>Made for moments</b><small>Curated collections for your celebrations.</small></div></div>
+          <div class="story-points"><span>✦</span><div><b>Bulk orders welcome</b><small>Selected products have minimum-order quantities.</small></div></div>
+          <div class="story-points"><span>✦</span><div><b>Easy ordering</b><small>Choose online payment or Cash on Delivery.</small></div></div>
+        </div>
+      </section>
+    </section>
+
+
+    <!-- ======================================================
+         CONTACT PAGE
+         ====================================================== -->
+    <section class="page-view" id="page-contact" data-view="contact" hidden>
+      <section class="contact-section section">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">GET IN TOUCH</span>
+            <h2>We are here to help.</h2>
+          </div>
+          <p>For product enquiries, bulk orders, wedding collections, delivery questions or general support, contact Manaswini Shopping Corner.</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card contact-primary">
+            <span class="contact-icon">☎</span>
+            <div>
+              <span class="contact-label">CALL / WHATSAPP</span>
+              <h3>9030833667</h3>
+              <p>Speak with us about products, availability and orders.</p>
+              <div class="contact-actions">
+                <a class="small-btn primary" href="tel:9030833667">Call Now</a>
+                <a class="small-btn" href="https://wa.me/919030833667" target="_blank" rel="noopener">WhatsApp</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-card">
+            <span class="contact-icon">✉</span>
+            <div>
+              <span class="contact-label">EMAIL</span>
+              <h3>manaswinishoppingcorner@gmail.com</h3>
+              <p>Send us your product or bulk-order requirements.</p>
+              <a class="text-link" href="mailto:manaswinishoppingcorner@gmail.com">Send an Email →</a>
+            </div>
+          </div>
+
+          <div class="contact-card">
+            <span class="contact-icon">⌖</span>
+            <div>
+              <span class="contact-label">LOCATION</span>
+              <h3>Hyderabad, Telangana</h3>
+              <p>Manaswini Shopping Corner, Hyderabad, Telangana, India.</p>
+              <a class="text-link" href="https://www.google.com/maps/search/?api=1&query=Hyderabad%2C%20Telangana%2C%20India" target="_blank" rel="noopener">Open in Google Maps →</a>
+            </div>
+          </div>
+
+          <div class="contact-card">
+            <span class="contact-icon">✦</span>
+            <div>
+              <span class="contact-label">BULK & MOQ ORDERS</span>
+              <h3>Planning a celebration?</h3>
+              <p>Tell us the products and quantities you need. Selected products support minimum-order quantities.</p>
+              <a class="text-link" href="https://wa.me/919030833667?text=Hello%20Manaswini%20Shopping%20Corner%2C%20I%20would%20like%20to%20enquire%20about%20a%20bulk%20order." target="_blank" rel="noopener">Make a Bulk Enquiry →</a>
             </div>
           </div>
         </div>
 
-        <div class="contact-card">
-          <span class="contact-icon">✉</span>
-          <div>
-            <span class="contact-label">EMAIL</span>
-            <h3>manaswinishoppingcorner@gmail.com</h3>
-            <p>Send us your product or bulk-order requirements.</p>
-            <a class="text-link" href="mailto:manaswinishoppingcorner@gmail.com">Send an Email →</a>
+        <div class="enquiry-wrap">
+          <div class="enquiry-copy">
+            <span class="eyebrow">ENQUIRY</span>
+            <h2>Send us an enquiry.</h2>
+            <p>Have a product requirement, bulk order or celebration coming up? Send the details and we can get back to you.</p>
           </div>
+          <form id="enquiryForm" class="enquiry-form">
+            <div class="form-grid">
+              <label>Full Name<input name="enquiryName" required></label>
+              <label>Mobile Number<input name="enquiryPhone" required inputmode="tel"></label>
+              <label>Email Address<input name="enquiryEmail" type="email"></label>
+              <label>Requirement<input name="enquirySubject" placeholder="Product / Bulk Order / General"></label>
+              <label class="wide">Message<textarea name="enquiryMessage" rows="4" required></textarea></label>
+            </div>
+            <button class="btn btn-gold" type="submit">Send Enquiry</button>
+            <div class="form-message" id="enquiryMessage"></div>
+          </form>
         </div>
 
-        <div class="contact-card">
-          <span class="contact-icon">⌖</span>
+        <div class="map-card">
           <div>
-            <span class="contact-label">LOCATION</span>
-            <h3>Hyderabad, Telangana</h3>
-            <p>Manaswini Shopping Corner, Hyderabad, Telangana, India.</p>
-            <a class="text-link" href="https://www.google.com/maps/search/?api=1&query=Hyderabad%2C%20Telangana%2C%20India" target="_blank" rel="noopener">Open in Google Maps →</a>
+            <span class="eyebrow">VISIT / LOCATION</span>
+            <h3>Find us in Hyderabad</h3>
+            <p>Open the location directly in Google Maps for directions.</p>
           </div>
+          <a class="btn btn-outline" href="https://www.google.com/maps/search/?api=1&query=Hyderabad%2C%20Telangana%2C%20India" target="_blank" rel="noopener">Open Google Maps</a>
         </div>
-
-        <div class="contact-card">
-          <span class="contact-icon">✦</span>
-          <div>
-            <span class="contact-label">BULK & MOQ ORDERS</span>
-            <h3>Planning a celebration?</h3>
-            <p>Tell us the products and quantities you need. Selected products support minimum-order quantities.</p>
-            <a class="text-link" href="https://wa.me/919030833667?text=Hello%20Manaswini%20Shopping%20Corner%2C%20I%20would%20like%20to%20enquire%20about%20a%20bulk%20order." target="_blank" rel="noopener">Make a Bulk Enquiry →</a>
-          </div>
-        </div>
-      </div>
+      </section>
     </section>
 
-    <section class="track-section" id="track">
-      <div class="track-inner">
-        <span class="eyebrow">ORDER SUPPORT</span>
-        <h2>Track your order</h2>
-        <p>Enter the Order ID from your confirmation email.</p>
-        <form id="trackForm">
-          <input id="trackId" required placeholder="e.g. MSC-260814-0001" autocomplete="off">
-          <button class="btn btn-gold" type="submit">Track Order</button>
-        </form>
-        <div class="track-result" id="trackResult" hidden></div>
-      </div>
+
+    <!-- ======================================================
+         TRACK ORDER PAGE
+         ====================================================== -->
+    <section class="page-view" id="page-track" data-view="track" hidden>
+      <section class="track-section track-page">
+        <div class="track-inner">
+          <span class="eyebrow">ORDER SUPPORT</span>
+          <h2>Track your order</h2>
+          <p>Enter the Order ID from your confirmation email.</p>
+          <form id="trackForm">
+            <input id="trackId" required placeholder="e.g. MSC-260814-0001" autocomplete="off">
+            <button class="btn btn-gold" type="submit">Track Order</button>
+          </form>
+          <div class="track-result" id="trackResult" hidden></div>
+        </div>
+      </section>
     </section>
+
   </main>
 
   <footer>
     <div class="footer-main">
       <div class="footer-brand"><div class="brand"><div class="brand-mark">M</div><span><b>MANASWINI</b><small>SHOPPING CORNER</small></span></div><p>Tradition • Elegance • Celebration</p></div>
-      <div><h4>Shop</h4><a href="#products">All Products</a><a href="#collections">Categories</a><a href="#about">About</a><a href="#contact">Contact</a><a href="#track">Track Order</a></div>
+      <div><h4>Shop</h4><a href="#shop" data-page="shop">All Products</a><a href="#categories" data-page="categories">Categories</a><a href="#about" data-page="about">About</a><a href="#contact" data-page="contact">Contact</a><a href="#track" data-page="track">Track Order</a></div>
       <div><h4>Help</h4><a href="tel:9030833667">9030833667</a><a href="mailto:manaswinishoppingcorner@gmail.com">Email us</a><span>Hyderabad, Telangana, India</span></div>
       <div><h4>Order</h4><span>Online Payment</span><span>Cash on Delivery</span><span>Bulk / MOQ Orders</span></div>
     </div>
@@ -548,6 +777,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindUI();
   loadProducts();
   renderCart();
+  showPage(getInitialPage(), false);
 });
 
 function bindUI() {
@@ -576,35 +806,110 @@ function bindUI() {
   $("#trackForm").onsubmit = trackOrder;
   $("#categoryFilter").onchange = e => { state.category = e.target.value; renderProducts(); };
   $("#sortFilter").onchange = e => { state.sort = e.target.value; renderProducts(); };
-  $$(".category-card").forEach(btn => btn.onclick = () => {
-    state.category = btn.dataset.category;
-    $("#categoryFilter").value = state.category;
-    document.querySelector("#products").scrollIntoView({behavior:"smooth"});
-    renderProducts();
-  });
   $$(".modal-close").forEach(btn => btn.onclick = () => closeModal(btn.dataset.close));
+
+  /* Page navigation */
+  $$(".main-nav a[data-page]").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      showPage(link.dataset.page, true);
+    });
+  });
+
+  $$("[data-page]").forEach(link => {
+    if (link.closest(".main-nav")) return;
+    link.addEventListener("click", e => {
+      const page = link.dataset.page;
+      if (!page) return;
+      e.preventDefault();
+      showPage(page, true);
+    });
+  });
+
+  /* Category selection */
+  $$(".category-card").forEach(btn => {
+    btn.onclick = () => {
+      state.category = btn.dataset.category;
+      $("#categoryPageFilter").value = state.category;
+      showPage("categories", true);
+      renderCategoryProducts();
+      setTimeout(() => {
+        const area = $("#categoryProductsArea");
+        if (area) area.scrollIntoView({behavior:"smooth", block:"start"});
+      }, 50);
+    };
+  });
+
+  $("#categoryPageFilter").onchange = e => {
+    state.category = e.target.value;
+    renderCategoryProducts();
+  };
+
+  $("#categorySortFilter").onchange = e => {
+    state.sort = e.target.value;
+    renderCategoryProducts();
+  };
+
+  $("#shopCategoryFilter").onchange = e => {
+    state.category = e.target.value;
+    renderShopProducts();
+  };
+
+  $("#shopSortFilter").onchange = e => {
+    state.sort = e.target.value;
+    renderShopProducts();
+  };
+
+  $("#shopSearchInput").addEventListener("input", e => {
+    state.search = e.target.value.toLowerCase().trim();
+    renderShopProducts();
+  });
+
+  if ($("#enquiryForm")) {
+    $("#enquiryForm").onsubmit = submitEnquiry;
+  }
 }
 
 async function loadProducts() {
   try {
-    const res = await fetch(`${API_URL}?action=getProducts`, {cache:"no-store"});
+    const res = await fetch(`${API_URL}?action=getProducts`, {cache:"default"});
     const data = await res.json();
     if (data.status !== "success") throw new Error(data.message || "Unable to load products");
     state.products = Array.isArray(data.products) ? data.products : [];
     populateCategories();
-    renderProducts();
+    renderHomeProducts();
+    renderShopProducts();
+    renderCategoryProducts();
   } catch (err) {
-    $("#loadingState").innerHTML = `<div>Unable to load the collection right now.<br><small>${escapeHtml(err.message)}</small></div>`;
+    if ($("#homeLoadingState")) {
+      $("#homeLoadingState").innerHTML = `<div>Unable to load the collection right now.<br><small>${escapeHtml(err.message)}</small></div>`;
+    }
+    if ($("#shopLoadingState")) {
+      $("#shopLoadingState").innerHTML = `<div>Unable to load products right now.<br><small>${escapeHtml(err.message)}</small></div>`;
+    }
   } finally {
-    $("#loadingState").style.display = "none";
+    if ($("#homeLoadingState")) $("#homeLoadingState").style.display = "none";
+    if ($("#shopLoadingState")) $("#shopLoadingState").style.display = "none";
   }
 }
 
 function populateCategories() {
-  const select = $("#categoryFilter");
-  const categories = [...new Set(state.products.map(p => String(p.Category || "").trim()).filter(Boolean))].sort();
-  select.innerHTML = `<option value="">All categories</option>` + categories.map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join("");
-  if (state.category) select.value = state.category;
+  const categories = [...new Set(
+    state.products
+      .map(p => String(p.Category || "").trim())
+      .filter(Boolean)
+  )].sort();
+
+  const options =
+    `<option value="">All categories</option>` +
+    categories.map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join("");
+
+  ["#shopCategoryFilter", "#categoryPageFilter"].forEach(selector => {
+    const select = $(selector);
+    if (!select) return;
+    select.innerHTML = options;
+    if (state.category) select.value = state.category;
+  });
 }
 
 function filteredProducts() {
@@ -619,17 +924,61 @@ function filteredProducts() {
   return list;
 }
 
-function renderProducts() {
-  const grid = $("#productGrid");
-  const list = filteredProducts();
-  $("#emptyState").hidden = list.length !== 0;
-  grid.innerHTML = list.map(productCard).join("");
-  $$(".product-card").forEach(card => {
+function attachProductCardEvents(grid) {
+  if (!grid) return;
+
+  grid.querySelectorAll(".product-card").forEach(card => {
     const id = card.dataset.id;
     card.onclick = () => openProduct(id);
+
     const add = card.querySelector("[data-add]");
-    if (add) add.onclick = e => { e.stopPropagation(); addToCart(findProduct(id), getMOQ(findProduct(id))); };
+    if (add) {
+      add.onclick = e => {
+        e.stopPropagation();
+        addToCart(findProduct(id), getMOQ(findProduct(id)));
+      };
+    }
   });
+}
+
+function renderHomeProducts() {
+  const grid = $("#homeProductGrid");
+  if (!grid) return;
+
+  /* Home shows a curated preview, not the complete catalogue. */
+  const list = filteredProducts().slice(0, 8);
+  $("#homeEmptyState").hidden = list.length !== 0;
+  grid.innerHTML = list.map(productCard).join("");
+  attachProductCardEvents(grid);
+}
+
+function renderShopProducts() {
+  const grid = $("#shopProductGrid");
+  if (!grid) return;
+
+  const list = filteredProducts();
+  $("#shopEmptyState").hidden = list.length !== 0;
+  grid.innerHTML = list.map(productCard).join("");
+  attachProductCardEvents(grid);
+}
+
+function renderCategoryProducts() {
+  const grid = $("#categoryProductGrid");
+  const area = $("#categoryProductsArea");
+  if (!grid || !area) return;
+
+  if (!state.category) {
+    area.hidden = true;
+    grid.innerHTML = "";
+    return;
+  }
+
+  area.hidden = false;
+  const list = filteredProducts();
+  $("#categoryPageTitle").textContent = state.category || "Products";
+  $("#categoryEmptyState").hidden = list.length !== 0;
+  grid.innerHTML = list.map(productCard).join("");
+  attachProductCardEvents(grid);
 }
 
 function getProductImages(p) {
@@ -986,6 +1335,57 @@ openModal("productModal");
 
 }
 
+
+/* ============================================================
+   PAGE ROUTER
+   Only one page-view is visible at a time.
+   ============================================================ */
+
+function getInitialPage() {
+  const page = String(location.hash || "#home").replace(/^#/, "").toLowerCase();
+  return ["home","categories","shop","about","contact","track"].includes(page)
+    ? page
+    : "home";
+}
+
+function showPage(page, updateHash = true) {
+  const validPages = ["home","categories","shop","about","contact","track"];
+  if (!validPages.includes(page)) page = "home";
+
+  document.querySelectorAll(".page-view").forEach(view => {
+    view.hidden = view.dataset.view !== page;
+  });
+
+  document.querySelectorAll(".main-nav a[data-page]").forEach(link => {
+    link.classList.toggle("active", link.dataset.page === page);
+  });
+
+  const nav = $("#mainNav");
+  if (nav) nav.classList.remove("open");
+
+  window.scrollTo({top:0, left:0, behavior:"auto"});
+
+  if (updateHash) {
+    try {
+      history.pushState({page}, "", "#" + page);
+    } catch(e) {
+      location.hash = page;
+    }
+  }
+
+  if (page === "home") renderHomeProducts();
+  if (page === "shop") renderShopProducts();
+  if (page === "categories") renderCategoryProducts();
+}
+
+window.addEventListener("popstate", () => {
+  showPage(getInitialPage(), false);
+});
+
+window.addEventListener("hashchange", () => {
+  showPage(getInitialPage(), false);
+});
+
 function setModalQty(q) {
   const moq = getMOQ(state.selectedProduct || {});
   const stock = num((state.selectedProduct || {}).Stock);
@@ -1224,6 +1624,40 @@ async function submitOrder(e) {
   } finally {
     btn.disabled = false; btn.textContent = "Place Order";
   }
+}
+
+
+function submitEnquiry(e) {
+  e.preventDefault();
+
+  const form = new FormData(e.target);
+  const name = String(form.get("enquiryName") || "").trim();
+  const phone = String(form.get("enquiryPhone") || "").trim();
+  const email = String(form.get("enquiryEmail") || "").trim();
+  const subject = String(form.get("enquirySubject") || "").trim();
+  const message = String(form.get("enquiryMessage") || "").trim();
+
+  const whatsappText =
+    `Hello Manaswini Shopping Corner,\n\n` +
+    `Enquiry from: ${name}\n` +
+    `Mobile: ${phone}\n` +
+    `Email: ${email || "Not provided"}\n` +
+    `Requirement: ${subject || "General"}\n\n` +
+    `${message}`;
+
+  const box = $("#enquiryMessage");
+  if (box) {
+    box.textContent = "Opening WhatsApp to send your enquiry...";
+  }
+
+  window.open(
+    "https://wa.me/919030833667?text=" + encodeURIComponent(whatsappText),
+    "_blank",
+    "noopener"
+  );
+
+  e.target.reset();
+  if (box) box.textContent = "Your enquiry is ready to send on WhatsApp.";
 }
 
 async function trackOrder(e) {
