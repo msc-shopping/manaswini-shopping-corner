@@ -1,2 +1,1 @@
-// About page has no page-specific JavaScript.
-document.addEventListener("DOMContentLoaded", () => {});
+// About page uses the shared layout and app.js.
