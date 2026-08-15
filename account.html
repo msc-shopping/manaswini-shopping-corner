@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5a1028">
+<title>My Account | Manaswini Shopping Corner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body data-page="account">
+<div class="topbar"><div>Traditional collections for weddings, poojas &amp; celebrations</div><div class="topbar-right"><span>COD Available</span><span>Online Payment</span><span>☎ 9030833667</span></div></div>
+<header class="site-header"><div class="header-inner">
+<button aria-label="Open menu" class="icon-btn mobile-menu" id="mobileMenuBtn">☰</button>
+<a aria-label="Manaswini Shopping Corner home" class="brand" href="../"><span class="brand-mark">M</span><span><b>MANASWINI</b><small>SHOPPING CORNER</small></span></a>
+<nav class="main-nav" id="mainNav"><a href="../">Home</a><a href="../categories/">Categories</a><a href="../shop/">Shop</a><a href="../about/">About</a><a href="../contact/">Contact</a></nav>
+<div class="header-actions"><button aria-label="Search" class="icon-btn" id="searchBtn">⌕</button><a class="account-btn active" href="../account/">My Account</a><button aria-label="Open cart" class="cart-btn" id="cartBtn">Cart <span id="cartCount">0</span></button></div>
+</div><div class="search-panel" id="searchPanel"><input autocomplete="off" id="searchInput" placeholder="Search jewellery, potli bags, pooja items..." type="search"></div></header>
+<main id="sitePages">
+<section class="section account-page">
+<div class="account-hero"><span class="eyebrow">MY ACCOUNT</span><h1>Everything in one place.</h1><p>Manage your profile, saved details, orders and wishlist from your Manaswini account.</p></div>
+<div id="accountLoggedOut" class="account-auth">
+<div class="auth-card"><div class="auth-copy"><span class="eyebrow">WELCOME</span><h2>Sign in to Manaswini</h2><p>Use your Google account or create an account with your email and username.</p></div>
+<div id="googleButtonWrap" class="google-wrap"><div id="googleSignInButton"></div><button type="button" class="google-fallback" id="googleFallback">Continue with Google</button><small id="googleHelp">Google Sign-In requires your Google OAuth Client ID to be configured in <b>account.js</b>.</small></div>
+<div class="auth-divider"><span>OR</span></div>
+<form id="signupForm" class="auth-form"><h3>Create account</h3><div class="form-grid"><label>Full Name<input name="fullName" required></label><label>Username<input name="username" required minlength="3"></label><label>Email Address<input name="email" required type="email"></label><label>Mobile Number<input name="phone" inputmode="tel" required></label><label class="wide">Password<input name="password" type="password" required minlength="6"></label></div><button class="btn btn-gold full" type="submit">Create Account</button><div class="form-message" id="signupMessage"></div></form>
+<div class="auth-divider"><span>ALREADY A CUSTOMER?</span></div>
+<form id="loginForm" class="auth-form compact-auth"><div class="form-grid"><label>Email or Username<input name="identity" required></label><label>Password<input name="password" type="password" required></label></div><button class="btn btn-outline full" type="submit">Login</button><div class="form-message" id="loginMessage"></div></form>
+</div>
+</div>
+<div id="accountLoggedIn" class="account-dashboard" hidden>
+<div class="dashboard-top"><div><span class="eyebrow">WELCOME BACK</span><h2 id="accountGreeting">Hello.</h2></div><button class="btn btn-outline" id="logoutBtn">Logout</button></div>
+<div class="account-grid">
+<section class="account-card profile-card"><div class="account-card-head"><div><span class="eyebrow">PROFILE</span><h3>My Details</h3></div><button class="text-btn" id="editProfileBtn" type="button">Edit</button></div><div id="profileDetails"></div></section>
+<section class="account-card orders-card"><div class="account-card-head"><div><span class="eyebrow">ORDER HISTORY</span><h3>My Orders</h3></div></div><div id="myOrders"><div class="empty">Loading orders...</div></div></section>
+<section class="account-card address-card"><div class="account-card-head"><div><span class="eyebrow">DELIVERY</span><h3>Saved Address</h3></div><button class="text-btn" id="editAddressBtn" type="button">Edit</button></div><div id="addressDetails"><div class="empty">No saved address yet.</div></div></section>
+<section class="account-card wishlist-card"><div class="account-card-head"><div><span class="eyebrow">FAVOURITES</span><h3>Wishlist</h3></div><a class="text-btn" href="../shop/">Shop</a></div><div id="wishlistDetails"><div class="empty">Your wishlist is empty.</div></div></section>
+</div>
+</div>
+</section>
+</main>
+<footer><div class="footer-main"><div class="footer-brand"><div class="brand"><div class="brand-mark">M</div><span><b>MANASWINI</b><small>SHOPPING CORNER</small></span></div><p>Tradition • Elegance • Celebration</p></div><div><h4>Shop</h4><a href="../shop/">All Products</a><a href="../categories/">Categories</a><a href="../about/">About</a><a href="../contact/">Contact</a></div><div><h4>Help</h4><a href="tel:9030833667">9030833667</a><a href="mailto:manaswinishoppingcorner@gmail.com">Email us</a><span>Hyderabad, Telangana, India</span></div><div><h4>Order</h4><span>Online Payment</span><span>Cash on Delivery</span><span>Bulk / MOQ Orders</span></div></div><div class="footer-bottom">© <span id="year"></span> Manaswini Shopping Corner. All rights reserved.</div></footer>
+<div class="overlay" id="overlay"></div><aside aria-label="Shopping cart" class="cart-drawer" id="cartDrawer"><div class="drawer-head"><div><span class="eyebrow">YOUR BAG</span><h3>Shopping Cart</h3></div><button class="close-btn" id="closeCart">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-footer"><div class="cart-line"><span>Subtotal</span><strong id="cartSubtotal">₹0.00</strong></div><div class="cart-line muted"><span>Shipping</span><span id="cartShipping">Calculated at checkout</span></div><button class="btn btn-gold full" id="checkoutBtn">Proceed to Checkout</button><button class="text-btn full" id="whatsappBtn">Order via WhatsApp</button></div></aside>
+<script src="../app.js" defer></script><script src="../account.js" defer></script>
+</body>
+</html>

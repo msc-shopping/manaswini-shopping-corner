@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#5a1028">
+  <meta name="description" content="Manaswini Shopping Corner — traditional jewellery, return gifts, pooja and festive collections.">
+  <title>Manaswini Shopping Corner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body data-page="categories">
+<div class="topbar">
+<div>Traditional collections for weddings, poojas &amp; celebrations</div>
+<div class="topbar-right"><span>COD Available</span><span>Online Payment</span><span>☎ 9030833667</span></div>
+</div>
+<header class="site-header">
+<div class="header-inner">
+<button aria-label="Open menu" class="icon-btn mobile-menu" id="mobileMenuBtn">☰</button>
+<a aria-label="Manaswini Shopping Corner home" class="brand" href="../">
+<span class="brand-mark">M</span>
+<span><b>MANASWINI</b><small>SHOPPING CORNER</small></span>
+</a>
+<nav class="main-nav" id="mainNav">
+<a href="../">Home</a>
+<a href="../categories/">Categories</a>
+<a href="../shop/">Shop</a>
+<a href="../about/">About</a>
+<a href="../contact/">Contact</a>
+
+</nav>
+<div class="header-actions">
+<button aria-label="Search" class="icon-btn" id="searchBtn">⌕</button>
+<a class="account-btn" href="../account/" aria-label="My Account">My Account</a>
+<button aria-label="Open cart" class="cart-btn" id="cartBtn">Cart <span id="cartCount">0</span></button>
+</div>
+</div>
+<div class="search-panel" id="searchPanel">
+<input autocomplete="off" id="searchInput" placeholder="Search jewellery, potli bags, pooja items..." type="search"/>
+</div>
+</header>
+<main id="sitePages">
+<section class="page-view" data-view="categories" id="page-categories">
+<section class="section category-page">
+<div class="section-head category-intro">
+<div>
+<span class="eyebrow">SHOP BY CATEGORY</span>
+<h2>Collections made for celebrations</h2>
+</div>
+<p>Choose any category to explore its products. All categories in your Products sheet are shown automatically.</p>
+</div>
+<div class="category-grid" id="categoryGrid"><div class="category-loading" id="categoryCardsLoadingState"><span class="spinner"></span> Loading categories...</div></div>
+</section>
+<section class="section category-products-section products-section" id="categoryProductsArea">
+<div id="categoryProductsByCategory" class="category-product-sections"></div>
+<div class="empty" hidden id="categoryEmptyState">No products are available.</div>
+</section>
+</section>
+</main>
+<footer>
+<div class="footer-main">
+<div class="footer-brand"><div class="brand"><div class="brand-mark">M</div><span><b>MANASWINI</b><small>SHOPPING CORNER</small></span></div><p>Tradition • Elegance • Celebration</p></div>
+<div><h4>Shop</h4><a href="../shop/">All Products</a><a href="../categories/">Categories</a><a href="../about/">About</a><a href="../contact/">Contact</a></div>
+<div><h4>Help</h4><a href="tel:9030833667">9030833667</a><a href="mailto:manaswinishoppingcorner@gmail.com">Email us</a><span>Hyderabad, Telangana, India</span></div>
+<div><h4>Order</h4><span>Online Payment</span><span>Cash on Delivery</span><span>Bulk / MOQ Orders</span></div>
+</div>
+<div class="footer-bottom">© <span id="year"></span> Manaswini Shopping Corner. All rights reserved.</div>
+</footer>
+<div class="overlay" id="overlay"></div>
+<aside aria-label="Shopping cart" class="cart-drawer" id="cartDrawer">
+<div class="drawer-head"><div><span class="eyebrow">YOUR BAG</span><h3>Shopping Cart</h3></div><button class="close-btn" id="closeCart">×</button></div>
+<div class="cart-items" id="cartItems"></div>
+<div class="cart-footer">
+<div class="cart-line"><span>Subtotal</span><strong id="cartSubtotal">₹0.00</strong></div>
+<div class="cart-line muted"><span>Shipping</span><span id="cartShipping">Calculated at checkout</span></div>
+<button class="btn btn-gold full" id="checkoutBtn">Proceed to Checkout</button>
+<button class="text-btn full" id="whatsappBtn">Order via WhatsApp</button>
+</div>
+</aside>
+<div class="modal" id="productModal">
+<div class="modal-card product-modal">
+<button class="close-btn modal-close" data-close="productModal">×</button>
+<div class="modal-product-image" id="modalImage"></div>
+<div class="modal-product-info">
+<span class="eyebrow" id="modalCategory"></span>
+<h2 id="modalName"></h2>
+<div class="modal-price" id="modalPrice"></div>
+<div class="modal-moq" id="modalMOQ"></div>
+<p id="modalDescription"></p>
+<div class="quantity-row"><span>Quantity</span><div class="qty"><button id="modalMinus">−</button><span id="modalQty">1</span><button id="modalPlus">+</button></div></div>
+<button class="btn btn-gold full" id="modalAdd">Add to Cart</button>
+</div>
+</div>
+</div>
+<div class="modal" id="checkoutModal">
+<div class="modal-card checkout-card">
+<button class="close-btn modal-close" data-close="checkoutModal">×</button>
+<div class="checkout-head"><span class="eyebrow">CHECKOUT</span><h2>Complete your order</h2><p>Your order will be securely recorded before payment/shipping is processed.</p></div>
+<form class="checkout-form" id="checkoutForm">
+<div class="form-grid">
+<label>Full Name<input name="name" required=""/></label>
+<label>Mobile Number<input inputmode="tel" name="phone" required=""/></label>
+<label class="wide">Email Address<input name="email" required="" type="email"/></label>
+<label class="wide">Delivery Address<textarea name="address" required="" rows="3"></textarea></label>
+<label>City<input name="city" required=""/></label>
+<label>State<input name="state" required="" value="Telangana"/></label>
+<label>PIN Code<input inputmode="numeric" name="pincode" required=""/></label>
+</div>
+<div class="payment-choice"><b>Payment method</b>
+<label class="pay-option"><input checked="" name="paymentMode" type="radio" value="COD"/><span><strong>Cash on Delivery</strong><small>Pay when your order is delivered.</small></span></label>
+<label class="pay-option"><input name="paymentMode" type="radio" value="ONLINE"/><span><strong>Online Payment</strong><small>Payment gateway will be connected after checkout testing.</small></span></label>
+<div class="online-payment-details" id="onlinePaymentDetails" hidden>
+  <div class="checkout-summary"><strong>Online payment</strong><br><small>Complete payment through the payment method provided by the store, then enter the transaction/reference ID below.</small></div>
+  <label class="wide">Transaction / UTR ID<input name="paymentReference" id="paymentReference" autocomplete="off" placeholder="Enter transaction / UTR ID"></label>
+</div>
+</div>
+<div class="checkout-summary" id="checkoutSummary"></div>
+<button class="btn btn-gold full" id="placeOrderBtn" type="submit">Place Order</button>
+<div class="form-message" id="checkoutMessage"></div>
+</form>
+</div>
+</div>
+<div class="modal" id="successModal">
+<div class="modal-card success-card">
+<div class="success-icon">✓</div>
+<span class="eyebrow">ORDER RECEIVED</span>
+<h2>Thank you for your order.</h2>
+<p>Your order has been recorded successfully.</p>
+<div class="order-number" id="successOrderId"></div>
+<p class="small" id="successPayment"></p>
+<button class="btn btn-gold full" onclick="closeModal('successModal')" type="button">
+          Continue Shopping
+        </button>
+</div>
+</div>
+<script src="../app.js" defer></script>
+<script src="../categories.js" defer></script>
+</body>
+</html>
