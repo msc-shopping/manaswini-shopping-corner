@@ -890,3 +890,26 @@ footer{background:#25040f;color:#cdbfc0}.footer-main{max-width:1240px;margin:aut
 
   z-index:2 !important;
 }
+/* ============================================================
+   FINAL FIX — REMOVE OLD ABOUT OVAL
+   ============================================================ */
+
+.story-art::before,
+.story-art::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  border:0 !important;
+  background:none !important;
+}
+
+.story-art .about-hero-art::before,
+.story-art .about-hero-art::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  border:0 !important;
+  background:none !important;
+}
