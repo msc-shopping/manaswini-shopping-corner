@@ -411,34 +411,67 @@ function renderCategoryProducts() {
 
 function attachProductCardEvents(grid) {
   grid.querySelectorAll(".product-main-image").forEach(img => {
+
     img.dataset.fallbackTried = "0";
+
     img.addEventListener("error", () => {
+
       const original = img.dataset.originalUrl || img.src;
+
       const idMatch = original.match(/[?&]id=([A-Za-z0-9_-]+)/);
+
       const tried = Number(img.dataset.fallbackTried || 0);
+
       if (idMatch && tried === 0) {
         img.dataset.fallbackTried = "1";
-        img.src = `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w1600`;
+
+        img.src =
+          `https://drive.usercontent.google.com/download?id=${idMatch[1]}&export=view`;
+
         return;
       }
+
       if (idMatch && tried === 1) {
         img.dataset.fallbackTried = "2";
-        img.src = `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+
+        img.src =
+          `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+
         return;
       }
+
       img.hidden = true;
-      const fallback = img.parentElement?.querySelector(".fallback-placeholder");
-      if (fallback) fallback.hidden = false;
+
+      const fallback =
+        img.parentElement?.querySelector(".fallback-placeholder");
+
+      if (fallback) {
+        fallback.hidden = false;
+      }
     });
+
   });
+
   grid.querySelectorAll(".product-card").forEach(card => {
+
     const id = card.dataset.id;
-    card.addEventListener("click", () => openProduct(id));
-    card.querySelector("[data-add]")?.addEventListener("click", event => {
-      event.stopPropagation();
-      const product = findProduct(id);
-      if (product) addToCart(product, getMOQ(product));
+
+    card.addEventListener("click", () => {
+      openProduct(id);
     });
+
+    card.querySelector("[data-add]")?.addEventListener("click", event => {
+
+      event.stopPropagation();
+
+      const product = findProduct(id);
+
+      if (product) {
+        addToCart(product, getMOQ(product));
+      }
+
+    });
+
   });
 }
 
@@ -455,7 +488,7 @@ function normalizeImageUrl(url) {
   );
 
   if (match) {
-    return `https://drive.usercontent.google.com/download?id=${match[1]}&export=view`;
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1600`;
   }
 
   match = value.match(
@@ -463,7 +496,7 @@ function normalizeImageUrl(url) {
   );
 
   if (match) {
-    return `https://drive.usercontent.google.com/download?id=${match[1]}&export=view`;
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1600`;
   }
 
   return value;
@@ -521,45 +554,219 @@ function productCard(product) {
 
 function openProduct(id) {
   const product = findProduct(id);
+
   if (!product) return;
 
   state.selectedProduct = product;
   state.modalQty = getMOQ(product);
   state.selectedVariant = null;
 
-  $("#modalCategory").textContent = product.Category || "Collection";
-  $("#modalName").textContent = product.ProductName || "Product";
-  $("#modalPrice").textContent = `${money(num(product.Price))}${product.Unit ? ` / ${product.Unit}` : ""}`;
-  $("#modalMOQ").textContent = getMOQ(product) > 1 ? `Minimum order: ${getMOQ(product)}` : "MOQ: 1";
-  $("#modalDescription").textContent = product.Description || "Product details will be updated soon.";
+  $("#modalCategory").textContent =
+    product.Category || "Collection";
+
+  $("#modalName").textContent =
+    product.ProductName || "Product";
+
+  $("#modalPrice").textContent =
+    `${money(num(product.Price))}${product.Unit ? ` / ${product.Unit}` : ""}`;
+
+  $("#modalMOQ").textContent =
+    getMOQ(product) > 1
+      ? `Minimum order: ${getMOQ(product)}`
+      : "MOQ: 1";
+
+  $("#modalDescription").textContent =
+    product.Description ||
+    "Product details will be updated soon.";
+
   setModalQty(state.modalQty);
 
   const images = getProductImages(product);
+
   const modalImage = $("#modalImage");
 
   if (!images.length) {
-    modalImage.innerHTML = `<div class="modal-placeholder"><span>M</span><small>MANASWINI</small></div>`;
+
+    modalImage.innerHTML = `
+      <div class="modal-placeholder">
+        <span>M</span>
+        <small>MANASWINI</small>
+      </div>
+    `;
+
   } else {
-    modalImage.innerHTML = `<div class="modal-gallery">
-      <div class="modal-main-image"><img id="modalMainImage" src="${escapeAttr(images[0].url)}" alt="${escapeAttr(product.ProductName)}"><div class="modal-placeholder modal-image-fallback" hidden><span>M</span><small>MANASWINI</small></div></div>
-      ${images.length > 1 ? `<div class="modal-thumbnails">${images.map((image, index) => `<button type="button" class="modal-thumbnail ${index === 0 ? "active" : ""}" data-index="${index}"><img src="${escapeAttr(image.url)}" alt="Image ${index + 1}"></button>`).join("")}</div>` : ""}
-    </div>`;
+
+    modalImage.innerHTML = `
+      <div class="modal-gallery">
+
+        <div class="modal-main-image">
+
+          <img
+            id="modalMainImage"
+            src="${escapeAttr(images[0].url)}"
+            alt="${escapeAttr(product.ProductName)}"
+            referrerpolicy="no-referrer"
+          >
+
+          <div
+            class="modal-placeholder modal-image-fallback"
+            hidden
+          >
+            <span>M</span>
+            <small>MANASWINI</small>
+          </div>
+
+        </div>
+
+        ${
+          images.length > 1
+            ? `
+              <div class="modal-thumbnails">
+
+                ${images.map((image, index) => `
+                  <button
+                    type="button"
+                    class="modal-thumbnail ${index === 0 ? "active" : ""}"
+                    data-index="${index}"
+                  >
+                    <img
+                      src="${escapeAttr(image.url)}"
+                      alt="Image ${index + 1}"
+                      loading="lazy"
+                      referrerpolicy="no-referrer"
+                    >
+                  </button>
+                `).join("")}
+
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+    `;
 
     const mainImage = $("#modalMainImage");
+
+    /*
+     * Main image fallback chain
+     *
+     * 1. Google Drive thumbnail
+     * 2. Google usercontent image
+     * 3. Google Drive download
+     * 4. Manaswini placeholder
+     */
+
     mainImage?.addEventListener("error", () => {
+
+      const current = mainImage.src || "";
+
+      const idMatch =
+        current.match(/[?&]id=([A-Za-z0-9_-]+)/);
+
+      const tried =
+        Number(mainImage.dataset.fallbackTried || 0);
+
+      if (idMatch && tried === 0) {
+
+        mainImage.dataset.fallbackTried = "1";
+
+        mainImage.src =
+          `https://drive.usercontent.google.com/download?id=${idMatch[1]}&export=view`;
+
+        return;
+      }
+
+      if (idMatch && tried === 1) {
+
+        mainImage.dataset.fallbackTried = "2";
+
+        mainImage.src =
+          `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+
+        return;
+      }
+
       mainImage.hidden = true;
-      $("#modalImage .modal-image-fallback")?.removeAttribute("hidden");
-    }, {once:true});
-    $$("#modalImage .modal-thumbnail").forEach(button => {
-      button.addEventListener("click", () => {
-        const image = images[Number(button.dataset.index)];
-        if (!image) return;
-        mainImage.src = image.url;
-        state.selectedVariant = image;
-        $$("#modalImage .modal-thumbnail").forEach(item => item.classList.remove("active"));
-        button.classList.add("active");
-      });
+
+      $("#modalImage .modal-image-fallback")
+        ?.removeAttribute("hidden");
+
     });
+
+    /*
+     * Thumbnail fallback
+     */
+
+    $$("#modalImage .modal-thumbnail img")
+      .forEach((thumbnail) => {
+
+        thumbnail.dataset.fallbackTried = "0";
+
+        thumbnail.addEventListener("error", () => {
+
+          const current = thumbnail.src || "";
+
+          const idMatch =
+            current.match(/[?&]id=([A-Za-z0-9_-]+)/);
+
+          const tried =
+            Number(thumbnail.dataset.fallbackTried || 0);
+
+          if (idMatch && tried === 0) {
+
+            thumbnail.dataset.fallbackTried = "1";
+
+            thumbnail.src =
+              `https://drive.usercontent.google.com/download?id=${idMatch[1]}&export=view`;
+
+            return;
+          }
+
+          if (idMatch && tried === 1) {
+
+            thumbnail.dataset.fallbackTried = "2";
+
+            thumbnail.src =
+              `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+
+          }
+
+        });
+
+      });
+
+    /*
+     * Thumbnail click
+     */
+
+    $$("#modalImage .modal-thumbnail")
+      .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+          const image =
+            images[Number(button.dataset.index)];
+
+          if (!image) return;
+
+          mainImage.dataset.fallbackTried = "0";
+
+          mainImage.src = image.url;
+
+          state.selectedVariant = image;
+
+          $$("#modalImage .modal-thumbnail")
+            .forEach(item =>
+              item.classList.remove("active")
+            );
+
+          button.classList.add("active");
+
+        });
+
+      });
+
   }
 
   openModal("productModal");
