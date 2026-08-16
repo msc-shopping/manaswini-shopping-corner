@@ -410,35 +410,72 @@ function renderCategoryProducts() {
 }
 
 function attachProductCardEvents(grid) {
+
+  if (!grid) return;
+
+  /*
+   * PRODUCT IMAGE LOADING
+   */
+
   grid.querySelectorAll(".product-main-image").forEach(img => {
 
     img.dataset.fallbackTried = "0";
 
+    img.addEventListener("load", () => {
+
+      img.classList.add("image-loaded");
+
+      const fallback =
+        img.parentElement?.querySelector(".fallback-placeholder");
+
+      if (fallback) {
+        fallback.hidden = true;
+      }
+
+    });
+
     img.addEventListener("error", () => {
 
-      const original = img.dataset.originalUrl || img.src;
+      const original =
+        img.dataset.originalUrl ||
+        img.getAttribute("src") ||
+        "";
 
-      const idMatch = original.match(/[?&]id=([A-Za-z0-9_-]+)/);
+      const idMatch =
+        original.match(/[?&]id=([A-Za-z0-9_-]+)/);
 
-      const tried = Number(img.dataset.fallbackTried || 0);
+      const tried =
+        Number(img.dataset.fallbackTried || 0);
 
+      /*
+       * FALLBACK 1
+       */
       if (idMatch && tried === 0) {
+
         img.dataset.fallbackTried = "1";
 
         img.src =
-          `https://drive.usercontent.google.com/download?id=${idMatch[1]}&export=view`;
+          `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w2000`;
 
         return;
       }
 
+      /*
+       * FALLBACK 2
+       */
       if (idMatch && tried === 1) {
+
         img.dataset.fallbackTried = "2";
 
         img.src =
-          `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+          `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
 
         return;
       }
+
+      /*
+       * FINAL FALLBACK
+       */
 
       img.hidden = true;
 
@@ -448,9 +485,15 @@ function attachProductCardEvents(grid) {
       if (fallback) {
         fallback.hidden = false;
       }
+
     });
 
   });
+
+
+  /*
+   * PRODUCT CARD CLICK
+   */
 
   grid.querySelectorAll(".product-card").forEach(card => {
 
@@ -473,6 +516,7 @@ function attachProductCardEvents(grid) {
     });
 
   });
+
 }
 
 /* ============================================================
@@ -483,25 +527,69 @@ function normalizeImageUrl(url) {
   const value = String(url || "").trim();
   if (!value) return "";
 
+  let id = "";
+
+  // Google Drive file/d/FILE_ID/view
   let match = value.match(
-    /drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]+)/i
+    /drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/i
   );
 
   if (match) {
-    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1600`;
+    id = match[1];
   }
 
-  match = value.match(
-    /drive\.usercontent\.google\.com\/(?:download|view)[^?]*\?[^#]*id=([A-Za-z0-9_-]+)/i
-  );
+  // Google Drive open?id=FILE_ID
+  if (!id) {
+    match = value.match(
+      /drive\.google\.com\/open\?id=([A-Za-z0-9_-]+)/i
+    );
 
-  if (match) {
-    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1600`;
+    if (match) {
+      id = match[1];
+    }
   }
 
+  // Google Drive uc?id=FILE_ID
+  if (!id) {
+    match = value.match(
+      /drive\.google\.com\/uc\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i
+    );
+
+    if (match) {
+      id = match[1];
+    }
+  }
+
+  // Google Drive thumbnail?id=FILE_ID
+  if (!id) {
+    match = value.match(
+      /drive\.google\.com\/thumbnail\?[^#]*id=([A-Za-z0-9_-]+)/i
+    );
+
+    if (match) {
+      id = match[1];
+    }
+  }
+
+  // drive.usercontent.google.com/download?id=FILE_ID
+  if (!id) {
+    match = value.match(
+      /drive\.usercontent\.google\.com\/(?:download|view)[^#]*[?&]id=([A-Za-z0-9_-]+)/i
+    );
+
+    if (match) {
+      id = match[1];
+    }
+  }
+
+  // If a Drive ID was found, always use the thumbnail endpoint.
+  if (id) {
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+  }
+
+  // Non-Drive image URL
   return value;
 }
-
 function getProductImages(product) {
   if (!product) return [];
   const found = [];
@@ -602,11 +690,13 @@ function openProduct(id) {
         <div class="modal-main-image">
 
           <img
-            id="modalMainImage"
-            src="${escapeAttr(images[0].url)}"
-            alt="${escapeAttr(product.ProductName)}"
-            referrerpolicy="no-referrer"
-          >
+              id="modalMainImage"
+              src="${escapeAttr(images[0].url)}"
+              data-original-url="${escapeAttr(images[0].url)}"
+              alt="${escapeAttr(product.ProductName)}"
+              referrerpolicy="no-referrer"
+              loading="eager"
+            >
 
           <div
             class="modal-placeholder modal-image-fallback"
@@ -630,11 +720,12 @@ function openProduct(id) {
                     data-index="${index}"
                   >
                     <img
-                      src="${escapeAttr(image.url)}"
-                      alt="Image ${index + 1}"
-                      loading="lazy"
-                      referrerpolicy="no-referrer"
-                    >
+                       src="${escapeAttr(image.url)}"
+                       data-original-url="${escapeAttr(image.url)}"
+                       alt="Image ${index + 1}"
+                       loading="eager"
+                       referrerpolicy="no-referrer"
+                     >
                   </button>
                 `).join("")}
 
@@ -646,95 +737,147 @@ function openProduct(id) {
       </div>
     `;
 
-    const mainImage = $("#modalMainImage");
+const mainImage = $("#modalMainImage");
+
+/*
+ * ============================================================
+ * MAIN MODAL IMAGE FALLBACK
+ * ============================================================
+ */
+
+if (mainImage) {
+
+  mainImage.dataset.fallbackTried = "0";
+
+  mainImage.addEventListener("load", () => {
+
+    mainImage.hidden = false;
+
+    const fallback =
+      $("#modalImage .modal-image-fallback");
+
+    if (fallback) {
+      fallback.hidden = true;
+    }
+
+  });
+
+  mainImage.addEventListener("error", () => {
+
+    const original =
+      mainImage.dataset.originalUrl ||
+      mainImage.getAttribute("src") ||
+      "";
+
+    const idMatch =
+      original.match(/[?&]id=([A-Za-z0-9_-]+)/);
+
+    const tried =
+      Number(mainImage.dataset.fallbackTried || 0);
 
     /*
-     * Main image fallback chain
-     *
-     * 1. Google Drive thumbnail
-     * 2. Google usercontent image
-     * 3. Google Drive download
-     * 4. Manaswini placeholder
+     * FIRST RETRY
      */
 
-    mainImage?.addEventListener("error", () => {
+    if (idMatch && tried === 0) {
 
-      const current = mainImage.src || "";
+      mainImage.dataset.fallbackTried = "1";
+
+      mainImage.src =
+        `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w2000`;
+
+      return;
+    }
+
+    /*
+     * SECOND RETRY
+     */
+
+    if (idMatch && tried === 1) {
+
+      mainImage.dataset.fallbackTried = "2";
+
+      mainImage.src =
+        `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+
+      return;
+    }
+
+    /*
+     * FINAL FALLBACK
+     */
+
+    mainImage.hidden = true;
+
+    $("#modalImage .modal-image-fallback")
+      ?.removeAttribute("hidden");
+
+  });
+
+}
+
+
+/*
+ * ============================================================
+ * THUMBNAIL FALLBACK
+ * ============================================================
+ */
+
+$$("#modalImage .modal-thumbnail img")
+  .forEach((thumbnail) => {
+
+    thumbnail.dataset.fallbackTried = "0";
+
+    thumbnail.addEventListener("error", () => {
+
+      const original =
+        thumbnail.dataset.originalUrl ||
+        thumbnail.getAttribute("src") ||
+        "";
 
       const idMatch =
-        current.match(/[?&]id=([A-Za-z0-9_-]+)/);
+        original.match(/[?&]id=([A-Za-z0-9_-]+)/);
 
       const tried =
-        Number(mainImage.dataset.fallbackTried || 0);
+        Number(thumbnail.dataset.fallbackTried || 0);
+
+      /*
+       * FIRST RETRY
+       */
 
       if (idMatch && tried === 0) {
 
-        mainImage.dataset.fallbackTried = "1";
+        thumbnail.dataset.fallbackTried = "1";
 
-        mainImage.src =
-          `https://drive.usercontent.google.com/download?id=${idMatch[1]}&export=view`;
+        thumbnail.src =
+          `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w500`;
 
         return;
       }
+
+      /*
+       * SECOND RETRY
+       */
 
       if (idMatch && tried === 1) {
 
-        mainImage.dataset.fallbackTried = "2";
+        thumbnail.dataset.fallbackTried = "2";
 
-        mainImage.src =
-          `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+        thumbnail.src =
+          `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
 
         return;
       }
 
-      mainImage.hidden = true;
+      /*
+       * FINAL FALLBACK
+       */
 
-      $("#modalImage .modal-image-fallback")
-        ?.removeAttribute("hidden");
+      thumbnail.style.display = "none";
 
     });
 
-    /*
-     * Thumbnail fallback
-     */
-
-    $$("#modalImage .modal-thumbnail img")
-      .forEach((thumbnail) => {
-
-        thumbnail.dataset.fallbackTried = "0";
-
-        thumbnail.addEventListener("error", () => {
-
-          const current = thumbnail.src || "";
-
-          const idMatch =
-            current.match(/[?&]id=([A-Za-z0-9_-]+)/);
-
-          const tried =
-            Number(thumbnail.dataset.fallbackTried || 0);
-
-          if (idMatch && tried === 0) {
-
-            thumbnail.dataset.fallbackTried = "1";
-
-            thumbnail.src =
-              `https://drive.usercontent.google.com/download?id=${idMatch[1]}&export=view`;
-
-            return;
-          }
-
-          if (idMatch && tried === 1) {
-
-            thumbnail.dataset.fallbackTried = "2";
-
-            thumbnail.src =
-              `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
-
-          }
-
-        });
-
-      });
+  });
 
     /*
      * Thumbnail click
