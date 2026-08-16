@@ -232,16 +232,331 @@ footer{flex:0 0 auto;background:#25040f;color:#cdbfc0}
 .modal-close{position:absolute;right:17px;top:15px;z-index:20}
 .product-modal{display:grid;grid-template-columns:52% 48%;height:min(720px,92vh)}
 .modal-product-image{position:relative;min-width:0;overflow:hidden;background:#f2dfc8}
-.modal-gallery{position:relative;width:100%;height:100%}
-.modal-main-image{position:absolute;inset:0 0 82px;display:grid;place-items:center;overflow:hidden}
-.modal-main-image img{width:100%;height:100%;object-fit:contain}
-.modal-placeholder{height:100%;display:grid;place-items:center;align-content:center;color:rgba(90,16,40,.35);font:80px "Cinzel"}
-.modal-placeholder small{font:700 8px "DM Sans";letter-spacing:.35em;margin-top:-15px}
-.modal-thumbnails{position:absolute;left:14px;right:14px;bottom:14px;height:66px;display:flex;gap:8px;padding:5px;background:rgba(255,255,255,.94);border-radius:11px;overflow-x:auto}
-.modal-thumbnail{flex:0 0 56px;width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;background:#fff;overflow:hidden}
-.modal-thumbnail.active{border-color:var(--wine)}
-.modal-thumbnail img{width:100%;height:100%;object-fit:cover;display:block}
-.modal-product-info{padding:55px 42px;overflow-y:auto}
+/* ============================================================
+   PRODUCT IMAGE GALLERY
+   ============================================================ */
+
+.modal-gallery {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ============================================================
+   MAIN PRODUCT IMAGE
+   ============================================================ */
+
+.modal-main-image {
+  width: 100%;
+  min-height: 420px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #f3e2c7;
+  border-radius: 14px;
+}
+
+.modal-main-image img {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  max-height: 620px;
+  object-fit: contain;
+  display: block;
+}
+
+/* ============================================================
+   IMAGE PLACEHOLDER / FALLBACK
+   ============================================================ */
+
+.modal-placeholder {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  color: rgba(90,16,40,.35);
+  font: 80px "Cinzel";
+}
+
+.modal-placeholder small {
+  font: 700 8px "DM Sans";
+  letter-spacing: .35em;
+  margin-top: -15px;
+}
+
+/* Fallback inside main image */
+
+.modal-main-image .modal-image-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #f3e2c7;
+}
+
+/* ============================================================
+   LEFT / RIGHT IMAGE ARROWS
+   ============================================================ */
+
+.modal-image-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 46px;
+  height: 46px;
+
+  border: 1px solid rgba(255,255,255,.75);
+  border-radius: 50%;
+
+  background: rgba(90,16,40,.86);
+  color: #fff;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  z-index: 20;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,.18);
+
+  transition:
+    transform .2s ease,
+    background .2s ease,
+    box-shadow .2s ease;
+}
+
+.modal-image-arrow:hover {
+  background: #5a1028;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+.modal-image-arrow:active {
+  transform: translateY(-50%) scale(.96);
+}
+
+.modal-image-prev {
+  left: 15px;
+}
+
+.modal-image-next {
+  right: 15px;
+}
+
+/* ============================================================
+   IMAGE COUNTER
+   ============================================================ */
+
+.modal-image-counter {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+
+  padding: 7px 12px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.94);
+  color: #5a1028;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  z-index: 20;
+
+  box-shadow: 0 5px 18px rgba(0,0,0,.12);
+}
+
+/* ============================================================
+   THUMBNAILS
+   DESKTOP = 5 PER ROW
+   ============================================================ */
+
+.modal-thumbnails {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 10px;
+
+  padding: 8px;
+
+  box-sizing: border-box;
+
+  background: rgba(255,255,255,.96);
+
+  border: 1px solid #eadbc8;
+
+  border-radius: 14px;
+
+  overflow: visible;
+}
+
+/* ============================================================
+   INDIVIDUAL THUMBNAIL
+   ============================================================ */
+
+.modal-thumbnail {
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  padding: 0;
+
+  border: 2px solid transparent;
+
+  border-radius: 9px;
+
+  background: #fff;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition:
+    border-color .2s ease,
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.modal-thumbnail:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 5px 14px rgba(90,16,40,.12);
+}
+
+.modal-thumbnail.active {
+  border-color: var(--wine, #5a1028);
+
+  box-shadow:
+    0 0 0 2px rgba(200,150,62,.35);
+}
+
+.modal-thumbnail img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+/* ============================================================
+   PRODUCT INFORMATION
+   ============================================================ */
+
+.modal-product-info {
+  padding: 55px 42px;
+  overflow-y: auto;
+}
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+  .modal-main-image {
+    min-height: 360px;
+  }
+
+  .modal-main-image img {
+    min-height: 360px;
+    max-height: 520px;
+  }
+
+  .modal-thumbnails {
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
+
+    gap: 9px;
+  }
+
+}
+
+/* ============================================================
+   MOBILE
+   3 THUMBNAILS PER ROW
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+  .modal-main-image {
+    min-height: 280px;
+  }
+
+  .modal-main-image img {
+    min-height: 280px;
+    max-height: 420px;
+  }
+
+  .modal-thumbnails {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 8px;
+
+    padding: 7px;
+  }
+
+  .modal-image-arrow {
+    width: 40px;
+    height: 40px;
+
+    font-size: 20px;
+  }
+
+  .modal-image-prev {
+    left: 10px;
+  }
+
+  .modal-image-next {
+    right: 10px;
+  }
+
+  .modal-image-counter {
+    right: 10px;
+    bottom: 10px;
+
+    padding: 6px 9px;
+
+    font-size: 11px;
+  }
+
+  .modal-product-info {
+    padding: 30px 22px;
+  }
+
+}
+
+/* ============================================================
+   SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 380px) {
+
+  .modal-thumbnails {
+    gap: 6px;
+  }
+
+  .modal-image-arrow {
+    width: 36px;
+    height: 36px;
+
+    font-size: 18px;
+  }
+
+}
 .modal-product-info h2{margin:9px 0;color:var(--wine-dark);font:600 38px/1.08 "Playfair Display"}
 .modal-price{margin:15px 0;color:var(--wine);font-size:22px;font-weight:900}
 .modal-moq{display:inline-block;padding:7px 10px;border-radius:999px;background:#f4e6cd;color:var(--wine);font-size:10px;font-weight:800}
