@@ -1413,7 +1413,6 @@ function renderCart() {
     <div class="cart-thumb">${item.imageUrl ? `<img src="${escapeAttr(item.imageUrl)}" alt="">` : `<span>M</span>`}</div>
     <div class="cart-item-info">
       <h4>${escapeHtml(item.productName)}</h4>
-      ${item.variantName ? `<p>${escapeHtml(item.variantName)}</p>` : ""}
       <p>${money(item.price)}${item.unit ? ` / ${escapeHtml(item.unit)}` : ""}</p>
       <div class="cart-controls"><button type="button" onclick="changeCart('${escapeAttr(item.cartKey)}',-1)">−</button><b>${item.quantity}</b><button type="button" onclick="changeCart('${escapeAttr(item.cartKey)}',1)">+</button><button class="remove" type="button" onclick="removeCart('${escapeAttr(item.cartKey)}')">Remove</button></div>
     </div>
