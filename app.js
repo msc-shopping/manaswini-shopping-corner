@@ -412,7 +412,156 @@ function renderCategoryProducts() {
 function attachProductCardEvents(grid) {
 
   if (!grid) return;
+  /*
+   * ============================================================
+   * AUTOMATIC PRODUCT IMAGE CAROUSEL
+   * ============================================================
+   */
 
+  grid.querySelectorAll(".product-image-slider").forEach(slider => {
+
+    let images = [];
+
+    try {
+      images = JSON.parse(slider.dataset.images || "[]");
+    } catch (_) {
+      images = [];
+    }
+
+    if (images.length <= 1) return;
+
+    const img = slider.querySelector(".product-main-image");
+
+    if (!img) return;
+
+    const dots = [
+      ...slider.querySelectorAll(".product-image-dot")
+    ];
+
+    let currentIndex = 0;
+    let timer = null;
+
+    function showImage(index) {
+
+      if (!images[index]) return;
+
+      currentIndex = index;
+
+      const image = images[index];
+
+      /*
+       * IMPORTANT:
+       * Update both src AND original URL.
+       * This prevents a failed image from falling
+       * back to image 1.
+       */
+
+      img.dataset.originalUrl = image.url;
+      img.dataset.imageIndex = String(index);
+      img.dataset.fallbackTried = "0";
+
+      img.hidden = false;
+
+      img.classList.remove("image-changing");
+
+      /*
+       * Force a small reflow so the fade animation
+       * works even when changing rapidly.
+       */
+
+      void img.offsetWidth;
+
+      img.classList.add("image-changing");
+
+      img.src = image.url;
+
+      dots.forEach((dot, dotIndex) => {
+        dot.classList.toggle(
+          "active",
+          dotIndex === index
+        );
+      });
+    }
+
+    function startCarousel() {
+
+      if (timer) {
+        clearInterval(timer);
+      }
+
+      timer = setInterval(() => {
+
+        const nextIndex =
+          (currentIndex + 1) % images.length;
+
+        showImage(nextIndex);
+
+      }, 2500);
+
+    }
+
+    function stopCarousel() {
+
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+
+    }
+
+    /*
+     * Start automatically.
+     */
+
+    startCarousel();
+
+    /*
+     * Pause while mouse is over the product image.
+     */
+
+    slider.addEventListener("mouseenter", stopCarousel);
+
+    slider.addEventListener("mouseleave", startCarousel);
+
+    /*
+     * Allow clicking the dots.
+     */
+
+    dots.forEach((dot, index) => {
+
+      dot.addEventListener("click", event => {
+
+        event.stopPropagation();
+
+        showImage(index);
+
+        startCarousel();
+
+      });
+
+    });
+
+    /*
+     * If image changes because another script
+     * resets it, keep the carousel state consistent.
+     */
+
+    img.addEventListener("load", () => {
+
+      img.classList.add("image-loaded");
+
+      const fallback =
+        img.parentElement?.querySelector(
+          ".fallback-placeholder"
+        );
+
+      if (fallback) {
+        fallback.hidden = true;
+      }
+
+    });
+
+  });
   /*
    * PRODUCT IMAGE LOADING
    */
@@ -434,7 +583,7 @@ function attachProductCardEvents(grid) {
 
     });
 
-    img.addEventListener("error", () => {
+        img.addEventListener("error", () => {
 
       const original =
         img.dataset.originalUrl ||
@@ -448,8 +597,9 @@ function attachProductCardEvents(grid) {
         Number(img.dataset.fallbackTried || 0);
 
       /*
-       * FALLBACK 1
+       * FIRST FALLBACK
        */
+
       if (idMatch && tried === 0) {
 
         img.dataset.fallbackTried = "1";
@@ -461,8 +611,9 @@ function attachProductCardEvents(grid) {
       }
 
       /*
-       * FALLBACK 2
+       * SECOND FALLBACK
        */
+
       if (idMatch && tried === 1) {
 
         img.dataset.fallbackTried = "2";
@@ -480,7 +631,9 @@ function attachProductCardEvents(grid) {
       img.hidden = true;
 
       const fallback =
-        img.parentElement?.querySelector(".fallback-placeholder");
+        img.parentElement?.querySelector(
+          ".fallback-placeholder"
+        );
 
       if (fallback) {
         fallback.hidden = false;
@@ -592,52 +745,290 @@ function normalizeImageUrl(url) {
 }
 function getProductImages(product) {
   if (!product) return [];
+
   const found = [];
+
+  function addImage(value, name = "") {
+    if (value === null || value === undefined) return;
+
+    /*
+     * Handle arrays
+     */
+    if (Array.isArray(value)) {
+      value.forEach(item => {
+        if (item && typeof item === "object") {
+          addImage(item.url || item.URL || item.src || item.image || "", item.name || name);
+        } else {
+          addImage(item, name);
+        }
+      });
+      return;
+    }
+
+    /*
+     * Handle objects
+     */
+    if (typeof value === "object") {
+      addImage(
+        value.url ||
+        value.URL ||
+        value.src ||
+        value.image ||
+        value.ImageURL ||
+        "",
+        value.name || name
+      );
+      return;
+    }
+
+    /*
+     * Handle text containing one or more URLs
+     */
+    const text = String(value).trim();
+
+    if (!text) return;
+
+    text
+      .split(/[\n,|;]+/)
+      .map(item => item.trim())
+      .filter(Boolean)
+      .forEach(item => {
+        const url = normalizeImageUrl(item);
+
+        if (url) {
+          found.push({
+            name: String(name || ""),
+            url
+          });
+        }
+      });
+  }
+
+  /*
+   * ============================================================
+   * 1. ImageURLs array from Apps Script / products.json
+   * ============================================================
+   */
+
   if (Array.isArray(product.ImageURLs)) {
     product.ImageURLs.forEach(image => {
-      const url = normalizeImageUrl(image && (image.url || image.URL));
-      if (url) found.push({name:String(image.name || ""), url});
+      addImage(image, image?.name || "");
     });
   }
-  const keys = Object.keys(product);
-  keys.forEach(key => {
-    if (!/(image|photo|picture|img)/i.test(key)) return;
-    const value = product[key];
-    if (Array.isArray(value)) value.forEach(v => { const url=normalizeImageUrl(v); if(url) found.push({name:key,url}); });
-    else {
-      const text=String(value||"");
-      text.split(/[,\n|]+/).map(normalizeImageUrl).filter(Boolean).forEach(url=>found.push({name:key,url}));
+
+  /*
+   * ============================================================
+   * 2. Scan ALL product fields
+   *
+   * This catches:
+   * ImageURL
+   * ImageURL1
+   * ImageURL2
+   * ImageURL3
+   * Image 1
+   * Image 2
+   * Photo 1
+   * Picture 1
+   * etc.
+   * ============================================================
+   */
+
+  Object.keys(product).forEach(key => {
+
+    if (
+      /^(image|images|photo|photos|picture|pictures|img|imageurl)/i.test(key) ||
+      /(image|photo|picture|img)/i.test(key)
+    ) {
+      addImage(product[key], key);
     }
+
   });
-  const primary = normalizeImageUrl(product.ImageURL);
-  if (primary) found.unshift({name:"",url:primary});
-  return found.filter((item,index,arr)=>arr.findIndex(x=>x.url===item.url)===index);
+
+  /*
+   * ============================================================
+   * 3. Explicit primary image
+   * ============================================================
+   */
+
+  if (product.ImageURL) {
+    addImage(product.ImageURL, "ImageURL");
+  }
+
+  /*
+   * ============================================================
+   * 4. Normalize + remove duplicates
+   * ============================================================
+   */
+
+  const unique = [];
+  const seen = new Set();
+
+  found.forEach(item => {
+
+    const url = normalizeImageUrl(item.url);
+
+    if (!url) return;
+
+    /*
+     * Use the normalized URL as the primary duplicate key.
+     */
+    if (seen.has(url)) return;
+
+    seen.add(url);
+
+    unique.push({
+      name: item.name || "",
+      url
+    });
+
+  });
+
+  return unique;
 }
 
 function productCard(product) {
+
   const price = num(product.Price);
   const mrp = num(product.MRP);
   const moq = getMOQ(product);
+
   const images = getProductImages(product);
+
   const image = images[0]?.url || "";
 
-  return `<article class="product-card" data-id="${escapeAttr(product.ProductID)}">
-    <div class="product-image">
-      ${image
-        ? `<img class="product-main-image" src="${escapeAttr(image)}" data-original-url="${escapeAttr(image)}" alt="${escapeAttr(product.ProductName)}" loading="lazy" referrerpolicy="no-referrer">
-           <div class="image-placeholder fallback-placeholder" hidden><span>M</span><small>MANASWINI</small></div>`
-        : `<div class="image-placeholder"><span>M</span><small>MANASWINI</small></div>`}
-      ${moq > 1 ? `<span class="badge">MOQ ${moq}</span>` : ""}
+  const productId = String(product.ProductID || "");
 
-    </div>
-    <div class="product-info">
-      <div class="product-cat">${escapeHtml(product.Category || "Collection")}</div>
-      <h3 class="product-name">${escapeHtml(product.ProductName || "Product")}</h3>
-      <div class="price-row"><span class="price">${money(price)}</span>${mrp > price ? `<span class="mrp">${money(mrp)}</span>` : ""}</div>
-      <div class="moq">${moq > 1 ? `Minimum order: ${moq} ${escapeHtml(product.Unit || "units")}` : "Ready for single-piece orders"}</div>
-      <div class="card-actions"><button type="button" class="small-btn">View details</button><button type="button" class="small-btn primary" data-add>Add to cart</button></div>
-    </div>
-  </article>`;
+  const imageData = images.map((item, index) => ({
+    index,
+    url: item.url,
+    name: item.name || ""
+  }));
+
+  return `
+    <article
+      class="product-card"
+      data-id="${escapeAttr(productId)}"
+    >
+
+      <div class="product-image">
+
+        ${
+          images.length
+            ? `
+              <div
+                class="product-image-slider"
+                data-product-id="${escapeAttr(productId)}"
+                data-images='${escapeAttr(JSON.stringify(imageData))}'
+              >
+
+                <img
+                  class="product-main-image"
+                  src="${escapeAttr(image)}"
+                  data-original-url="${escapeAttr(image)}"
+                  data-image-index="0"
+                  alt="${escapeAttr(product.ProductName || "Product")}"
+                  loading="lazy"
+                  referrerpolicy="no-referrer"
+                >
+
+                <div
+                  class="image-placeholder fallback-placeholder"
+                  hidden
+                >
+                  <span>M</span>
+                  <small>MANASWINI</small>
+                </div>
+
+                ${
+                  images.length > 1
+                    ? `
+                      <div class="product-image-dots">
+                        ${images.map((_, index) => `
+                          <span
+                            class="product-image-dot ${index === 0 ? "active" : ""}"
+                            data-index="${index}"
+                          ></span>
+                        `).join("")}
+                      </div>
+                    `
+                    : ""
+                }
+
+                ${
+                  images.length > 1
+                    ? `
+                      <span class="product-image-count">
+                        ${images.length} photos
+                      </span>
+                    `
+                    : ""
+                }
+
+              </div>
+            `
+            : `
+              <div class="image-placeholder">
+                <span>M</span>
+                <small>MANASWINI</small>
+              </div>
+            `
+        }
+
+        ${moq > 1 ? `<span class="badge">MOQ ${moq}</span>` : ""}
+
+      </div>
+
+      <div class="product-info">
+
+        <div class="product-cat">
+          ${escapeHtml(product.Category || "Collection")}
+        </div>
+
+        <h3 class="product-name">
+          ${escapeHtml(product.ProductName || "Product")}
+        </h3>
+
+        <div class="price-row">
+          <span class="price">${money(price)}</span>
+
+          ${
+            mrp > price
+              ? `<span class="mrp">${money(mrp)}</span>`
+              : ""
+          }
+        </div>
+
+        <div class="moq">
+          ${
+            moq > 1
+              ? `Minimum order: ${moq} ${escapeHtml(product.Unit || "units")}`
+              : "Ready for single-piece orders"
+          }
+        </div>
+
+        <div class="card-actions">
+
+          <button
+            type="button"
+            class="small-btn"
+          >
+            View details
+          </button>
+
+          <button
+            type="button"
+            class="small-btn primary"
+            data-add
+          >
+            Add to cart
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+  `;
 }
 
 function openProduct(id) {
@@ -762,57 +1153,59 @@ if (mainImage) {
 
   });
 
-  mainImage.addEventListener("error", () => {
+mainImage.addEventListener("error", () => {
 
-    const original =
-      mainImage.dataset.originalUrl ||
-      mainImage.getAttribute("src") ||
-      "";
+  const original =
+    mainImage.dataset.originalUrl ||
+    mainImage.getAttribute("src") ||
+    "";
 
-    const idMatch =
-      original.match(/[?&]id=([A-Za-z0-9_-]+)/);
+  const idMatch =
+    original.match(/[?&]id=([A-Za-z0-9_-]+)/);
 
-    const tried =
-      Number(mainImage.dataset.fallbackTried || 0);
+  const tried =
+    Number(mainImage.dataset.fallbackTried || 0);
 
-    /*
-     * FIRST RETRY
-     */
+  /*
+   * FIRST FALLBACK
+   */
 
-    if (idMatch && tried === 0) {
+  if (idMatch && tried === 0) {
 
-      mainImage.dataset.fallbackTried = "1";
+    mainImage.dataset.fallbackTried = "1";
 
-      mainImage.src =
-        `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w2000`;
+    mainImage.src =
+      `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w2000`;
 
-      return;
-    }
+    return;
 
-    /*
-     * SECOND RETRY
-     */
+  }
 
-    if (idMatch && tried === 1) {
+  /*
+   * SECOND FALLBACK
+   */
 
-      mainImage.dataset.fallbackTried = "2";
+  if (idMatch && tried === 1) {
 
-      mainImage.src =
-        `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+    mainImage.dataset.fallbackTried = "2";
 
-      return;
-    }
+    mainImage.src =
+      `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
 
-    /*
-     * FINAL FALLBACK
-     */
+    return;
 
-    mainImage.hidden = true;
+  }
 
-    $("#modalImage .modal-image-fallback")
-      ?.removeAttribute("hidden");
+  /*
+   * FINAL FALLBACK
+   */
 
-  });
+  mainImage.hidden = true;
+
+  $("#modalImage .modal-image-fallback")
+    ?.removeAttribute("hidden");
+
+});
 
 }
 
@@ -879,36 +1272,60 @@ $$("#modalImage .modal-thumbnail img")
 
   });
 
-    /*
-     * Thumbnail click
-     */
+  /*
+   * ============================================================
+   * MODAL THUMBNAIL CLICK
+   * ============================================================
+   */
 
-    $$("#modalImage .modal-thumbnail")
-      .forEach(button => {
+  $$("#modalImage .modal-thumbnail")
+    .forEach(button => {
 
-        button.addEventListener("click", () => {
+      button.addEventListener("click", () => {
 
-          const image =
-            images[Number(button.dataset.index)];
+        const index =
+          Number(button.dataset.index);
 
-          if (!image) return;
+        const image = images[index];
 
-          mainImage.dataset.fallbackTried = "0";
+        if (!image || !mainImage) return;
 
-          mainImage.src = image.url;
+        /*
+         * IMPORTANT:
+         * Update original URL every time the user
+         * selects another thumbnail.
+         *
+         * This fixes the problem where image 6/7/8
+         * fails and image 1 appears instead.
+         */
 
-          state.selectedVariant = image;
+        mainImage.dataset.originalUrl = image.url;
+        mainImage.dataset.fallbackTried = "0";
+        mainImage.dataset.imageIndex = String(index);
 
-          $$("#modalImage .modal-thumbnail")
-            .forEach(item =>
-              item.classList.remove("active")
-            );
+        mainImage.hidden = false;
 
-          button.classList.add("active");
+        const fallback =
+          $("#modalImage .modal-image-fallback");
 
-        });
+        if (fallback) {
+          fallback.hidden = true;
+        }
+
+        mainImage.src = image.url;
+
+        state.selectedVariant = image;
+
+        $$("#modalImage .modal-thumbnail")
+          .forEach(item => {
+            item.classList.remove("active");
+          });
+
+        button.classList.add("active");
 
       });
+
+    });
 
   }
 
