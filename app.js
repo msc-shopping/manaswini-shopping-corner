@@ -1064,83 +1064,216 @@ function openProduct(id) {
    );
   const modalImage = $("#modalImage");
 
-  if (!images.length) {
+if (!images.length) {
 
-    modalImage.innerHTML = `
-      <div class="modal-placeholder">
-        <span>M</span>
-        <small>MANASWINI</small>
-      </div>
-    `;
+  modalImage.innerHTML = `
+    <div class="modal-placeholder">
+      <span>M</span>
+      <small>MANASWINI</small>
+    </div>
+  `;
 
-  } else {
+} else {
 
-    modalImage.innerHTML = `
-      <div class="modal-gallery">
+  /*
+   * ============================================================
+   * PRODUCT IMAGE GALLERY
+   * ============================================================
+   *
+   * Desktop:
+   *   5 thumbnails per row
+   *
+   * Mobile:
+   *   3 thumbnails per row
+   *
+   * Main image:
+   *   Previous / Next arrows
+   *
+   * All product images are displayed.
+   */
 
-        <div class="modal-main-image">
+  modalImage.innerHTML = `
+    <div class="modal-gallery">
 
-          <img
-              id="modalMainImage"
-              src="${escapeAttr(images[0].url)}"
-              data-original-url="${escapeAttr(images[0].url)}"
-              alt="${escapeAttr(product.ProductName)}"
-              referrerpolicy="no-referrer"
-              loading="eager"
-            >
+      <!-- MAIN IMAGE AREA -->
+      <div class="modal-main-image">
 
-          <div
-            class="modal-placeholder modal-image-fallback"
-            hidden
-          >
-            <span>M</span>
-            <small>MANASWINI</small>
-          </div>
+        <button
+          type="button"
+          class="modal-image-arrow modal-image-prev"
+          id="modalImagePrev"
+          aria-label="Previous image"
+        >
+          &#10094;
+        </button>
 
+        <img
+          id="modalMainImage"
+          src="${escapeAttr(images[0].url)}"
+          alt="${escapeAttr(product.ProductName)}"
+          referrerpolicy="no-referrer"
+        >
+
+        <div
+          class="modal-placeholder modal-image-fallback"
+          hidden
+        >
+          <span>M</span>
+          <small>MANASWINI</small>
         </div>
 
-        ${
-          images.length > 1
-            ? `
-              <div class="modal-thumbnails">
+        <button
+          type="button"
+          class="modal-image-arrow modal-image-next"
+          id="modalImageNext"
+          aria-label="Next image"
+        >
+          &#10095;
+        </button>
 
-                ${images.map((image, index) => `
-                  <button
-                    type="button"
-                    class="modal-thumbnail ${index === 0 ? "active" : ""}"
-                    data-index="${index}"
-                  >
-                    <img
-                       src="${escapeAttr(image.url)}"
-                       data-original-url="${escapeAttr(image.url)}"
-                       alt="Image ${index + 1}"
-                       loading="eager"
-                       referrerpolicy="no-referrer"
-                     >
-                  </button>
-                `).join("")}
-
-              </div>
-            `
-            : ""
-        }
+        <div class="modal-image-counter">
+          <span id="modalImageCurrent">1</span>
+          /
+          <span>${images.length}</span>
+        </div>
 
       </div>
-    `;
 
-const mainImage = $("#modalMainImage");
+      <!-- ALL THUMBNAILS -->
+      <div class="modal-thumbnails">
 
-/*
- * ============================================================
- * MAIN MODAL IMAGE FALLBACK
- * ============================================================
- */
+        ${images.map((image, index) => `
+          <button
+            type="button"
+            class="modal-thumbnail ${index === 0 ? "active" : ""}"
+            data-index="${index}"
+            aria-label="View image ${index + 1}"
+          >
+            <img
+              src="${escapeAttr(image.url)}"
+              alt="Image ${index + 1}"
+              loading="${index === 0 ? "eager" : "lazy"}"
+              referrerpolicy="no-referrer"
+            >
+          </button>
+        `).join("")}
 
-if (mainImage) {
+      </div>
 
-  mainImage.dataset.fallbackTried = "0";
+    </div>
+  `;
 
-  mainImage.addEventListener("load", () => {
+  const mainImage = $("#modalMainImage");
+  const previousButton = $("#modalImagePrev");
+  const nextButton = $("#modalImageNext");
+  const currentCounter = $("#modalImageCurrent");
+
+  let currentImageIndex = 0;
+
+  /*
+   * ============================================================
+   * SHOW IMAGE
+   * ============================================================
+   */
+
+  function showModalImage(index) {
+
+    if (!images.length) return;
+
+    /*
+     * Loop continuously:
+     *
+     * First -> Previous -> Last
+     * Last  -> Next -> First
+     */
+
+    if (index < 0) {
+      index = images.length - 1;
+    }
+
+    if (index >= images.length) {
+      index = 0;
+    }
+
+    currentImageIndex = index;
+
+    const image = images[currentImageIndex];
+
+    if (!image || !image.url) return;
+
+    /*
+     * Reset fallback state
+     */
+
+    mainImage.hidden = false;
+
+    mainImage.dataset.fallbackTried = "0";
+
+    mainImage.dataset.originalUrl = image.url;
+
+    const fallback =
+      $("#modalImage .modal-image-fallback");
+
+    if (fallback) {
+      fallback.hidden = true;
+    }
+
+    /*
+     * Change main image
+     */
+
+    mainImage.src = image.url;
+
+    /*
+     * Update counter
+     */
+
+    if (currentCounter) {
+      currentCounter.textContent =
+        String(currentImageIndex + 1);
+    }
+
+    /*
+     * Update active thumbnail
+     */
+
+    $$("#modalImage .modal-thumbnail")
+      .forEach((button, buttonIndex) => {
+
+        button.classList.toggle(
+          "active",
+          buttonIndex === currentImageIndex
+        );
+
+      });
+
+    /*
+     * Keep selected image available to existing cart logic
+     */
+
+    state.selectedVariant = image;
+
+    /*
+     * Bring selected thumbnail into view
+     */
+
+    const activeThumbnail =
+      $("#modalImage .modal-thumbnail.active");
+
+    activeThumbnail?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "nearest"
+    });
+  }
+
+  /*
+   * ============================================================
+   * MAIN IMAGE LOAD
+   * ============================================================
+   */
+
+  mainImage?.addEventListener("load", () => {
 
     mainImage.hidden = false;
 
@@ -1153,185 +1286,217 @@ if (mainImage) {
 
   });
 
-mainImage.addEventListener("error", () => {
-
-  const original =
-    mainImage.dataset.originalUrl ||
-    mainImage.getAttribute("src") ||
-    "";
-
-  const idMatch =
-    original.match(/[?&]id=([A-Za-z0-9_-]+)/);
-
-  const tried =
-    Number(mainImage.dataset.fallbackTried || 0);
-
   /*
-   * FIRST FALLBACK
+   * ============================================================
+   * MAIN IMAGE FALLBACK
+   * ============================================================
    */
 
-  if (idMatch && tried === 0) {
+  mainImage?.addEventListener("error", () => {
 
-    mainImage.dataset.fallbackTried = "1";
+    const original =
+      mainImage.dataset.originalUrl ||
+      mainImage.getAttribute("src") ||
+      "";
 
-    mainImage.src =
-      `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w2000`;
+    const idMatch =
+      original.match(/[?&]id=([A-Za-z0-9_-]+)/);
 
-    return;
+    const tried =
+      Number(mainImage.dataset.fallbackTried || 0);
 
-  }
+    /*
+     * FIRST RETRY
+     */
 
-  /*
-   * SECOND FALLBACK
-   */
+    if (idMatch && tried === 0) {
 
-  if (idMatch && tried === 1) {
+      mainImage.dataset.fallbackTried = "1";
 
-    mainImage.dataset.fallbackTried = "2";
+      mainImage.src =
+        `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w2000`;
 
-    mainImage.src =
-      `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+      return;
+    }
 
-    return;
+    /*
+     * SECOND RETRY
+     */
 
-  }
+    if (idMatch && tried === 1) {
 
-  /*
-   * FINAL FALLBACK
-   */
+      mainImage.dataset.fallbackTried = "2";
 
-  mainImage.hidden = true;
+      mainImage.src =
+        `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
 
-  $("#modalImage .modal-image-fallback")
-    ?.removeAttribute("hidden");
+      return;
+    }
 
-});
+    /*
+     * FINAL FALLBACK
+     */
 
-}
+    mainImage.hidden = true;
 
-
-/*
- * ============================================================
- * THUMBNAIL FALLBACK
- * ============================================================
- */
-
-$$("#modalImage .modal-thumbnail img")
-  .forEach((thumbnail) => {
-
-    thumbnail.dataset.fallbackTried = "0";
-
-    thumbnail.addEventListener("error", () => {
-
-      const original =
-        thumbnail.dataset.originalUrl ||
-        thumbnail.getAttribute("src") ||
-        "";
-
-      const idMatch =
-        original.match(/[?&]id=([A-Za-z0-9_-]+)/);
-
-      const tried =
-        Number(thumbnail.dataset.fallbackTried || 0);
-
-      /*
-       * FIRST RETRY
-       */
-
-      if (idMatch && tried === 0) {
-
-        thumbnail.dataset.fallbackTried = "1";
-
-        thumbnail.src =
-          `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w500`;
-
-        return;
-      }
-
-      /*
-       * SECOND RETRY
-       */
-
-      if (idMatch && tried === 1) {
-
-        thumbnail.dataset.fallbackTried = "2";
-
-        thumbnail.src =
-          `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
-
-        return;
-      }
-
-      /*
-       * FINAL FALLBACK
-       */
-
-      thumbnail.style.display = "none";
-
-    });
+    $("#modalImage .modal-image-fallback")
+      ?.removeAttribute("hidden");
 
   });
 
   /*
    * ============================================================
-   * MODAL THUMBNAIL CLICK
+   * THUMBNAIL FALLBACK
+   * ============================================================
+   */
+
+  $$("#modalImage .modal-thumbnail img")
+    .forEach((thumbnail) => {
+
+      thumbnail.dataset.fallbackTried = "0";
+
+      thumbnail.dataset.originalUrl =
+        thumbnail.getAttribute("src") || "";
+
+      thumbnail.addEventListener("error", () => {
+
+        const original =
+          thumbnail.dataset.originalUrl ||
+          thumbnail.getAttribute("src") ||
+          "";
+
+        const idMatch =
+          original.match(/[?&]id=([A-Za-z0-9_-]+)/);
+
+        const tried =
+          Number(thumbnail.dataset.fallbackTried || 0);
+
+        /*
+         * FIRST RETRY
+         */
+
+        if (idMatch && tried === 0) {
+
+          thumbnail.dataset.fallbackTried = "1";
+
+          thumbnail.src =
+            `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w800`;
+
+          return;
+        }
+
+        /*
+         * SECOND RETRY
+         */
+
+        if (idMatch && tried === 1) {
+
+          thumbnail.dataset.fallbackTried = "2";
+
+          thumbnail.src =
+            `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+
+          return;
+        }
+
+        /*
+         * If thumbnail cannot load,
+         * keep the thumbnail box but show M.
+         */
+
+        thumbnail.style.display = "none";
+
+      });
+
+    });
+
+  /*
+   * ============================================================
+   * PREVIOUS / NEXT BUTTONS
+   * ============================================================
+   */
+
+  previousButton?.addEventListener("click", (event) => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    showModalImage(currentImageIndex - 1);
+
+  });
+
+  nextButton?.addEventListener("click", (event) => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    showModalImage(currentImageIndex + 1);
+
+  });
+
+  /*
+   * ============================================================
+   * THUMBNAIL CLICK
    * ============================================================
    */
 
   $$("#modalImage .modal-thumbnail")
     .forEach(button => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (event) => {
+
+        event.preventDefault();
+        event.stopPropagation();
 
         const index =
           Number(button.dataset.index);
 
-        const image = images[index];
-
-        if (!image || !mainImage) return;
-
-        /*
-         * IMPORTANT:
-         * Update original URL every time the user
-         * selects another thumbnail.
-         *
-         * This fixes the problem where image 6/7/8
-         * fails and image 1 appears instead.
-         */
-
-        mainImage.dataset.originalUrl = image.url;
-        mainImage.dataset.fallbackTried = "0";
-        mainImage.dataset.imageIndex = String(index);
-
-        mainImage.hidden = false;
-
-        const fallback =
-          $("#modalImage .modal-image-fallback");
-
-        if (fallback) {
-          fallback.hidden = true;
-        }
-
-        mainImage.src = image.url;
-
-        state.selectedVariant = image;
-
-        $$("#modalImage .modal-thumbnail")
-          .forEach(item => {
-            item.classList.remove("active");
-          });
-
-        button.classList.add("active");
+        showModalImage(index);
 
       });
 
     });
 
-  }
+  /*
+   * ============================================================
+   * KEYBOARD NAVIGATION
+   * ============================================================
+   */
 
-  openModal("productModal");
+  document.addEventListener("keydown", (event) => {
+
+    /*
+     * Only act while modal is visible.
+     */
+
+    const modal =
+      $("#productModal");
+
+    if (!modal || modal.hidden) return;
+
+    if (event.key === "ArrowLeft") {
+
+      event.preventDefault();
+
+      showModalImage(
+        currentImageIndex - 1
+      );
+
+    }
+
+    if (event.key === "ArrowRight") {
+
+      event.preventDefault();
+
+      showModalImage(
+        currentImageIndex + 1
+      );
+
+    }
+
+  });
+
 }
-
 /* ============================================================
    CART
    ============================================================ */
