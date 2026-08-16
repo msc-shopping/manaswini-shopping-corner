@@ -350,30 +350,6 @@ footer{flex:0 0 auto;background:#25040f;color:#cdbfc0}
 }
 
 /* ============================================================
-   IMAGE COUNTER
-   ============================================================ */
-
-.modal-image-counter {
-  position: absolute;
-  right: 15px;
-  bottom: 15px;
-
-  padding: 7px 12px;
-
-  border-radius: 999px;
-
-  background: rgba(255,255,255,.94);
-  color: #5a1028;
-
-  font-size: 12px;
-  font-weight: 700;
-
-  z-index: 20;
-
-  box-shadow: 0 5px 18px rgba(0,0,0,.12);
-}
-
-/* ============================================================
    THUMBNAILS
    DESKTOP = 5 PER ROW
    ============================================================ */
@@ -522,15 +498,6 @@ footer{flex:0 0 auto;background:#25040f;color:#cdbfc0}
 
   .modal-image-next {
     right: 10px;
-  }
-
-  .modal-image-counter {
-    right: 10px;
-    bottom: 10px;
-
-    padding: 6px 9px;
-
-    font-size: 11px;
   }
 
   .modal-product-info {
