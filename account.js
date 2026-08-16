@@ -3,7 +3,8 @@
    Email/password accounts + Google Sign-In + order history.
    ============================================================ */
 
-const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID =
+  "828001323247-j09eo6jfvq0oq25qpae3q82sjn4bpj3a.apps.googleusercontent.com";
 const ACCOUNT_KEY = "manaswini_account";
 const ACCOUNT_API_URL =
   window.MANASWINI_API_URL ||
