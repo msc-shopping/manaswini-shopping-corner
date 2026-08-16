@@ -673,3 +673,10 @@ body{overflow-x:hidden;}
   }
 
 }
+/* ============================================================
+   CATEGORY PRODUCTS — 3 PRODUCTS PER ROW
+   ============================================================ */
+
+#categoryProductsByCategory .product-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
