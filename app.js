@@ -450,14 +450,21 @@ function normalizeImageUrl(url) {
   const value = String(url || "").trim();
   if (!value) return "";
 
-  // Google Drive image links are converted to the public file-view URL.
-  // thumbnailLink is intentionally avoided because Google documents it as
-  // short-lived and not intended for direct web-app use.
-  const drive = value.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]+)/i);
-  if (drive) return `https://drive.google.com/uc?export=view&id=${drive[1]}`;
+  let match = value.match(
+    /drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=[^&]+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]+)/i
+  );
 
-  const userContent = value.match(/drive\.usercontent\.google\.com\/(?:download|view)[^?]*\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i);
-  if (userContent) return `https://drive.google.com/uc?export=view&id=${userContent[1]}`;
+  if (match) {
+    return `https://drive.usercontent.google.com/download?id=${match[1]}&export=view`;
+  }
+
+  match = value.match(
+    /drive\.usercontent\.google\.com\/(?:download|view)[^?]*\?[^#]*id=([A-Za-z0-9_-]+)/i
+  );
+
+  if (match) {
+    return `https://drive.usercontent.google.com/download?id=${match[1]}&export=view`;
+  }
 
   return value;
 }
