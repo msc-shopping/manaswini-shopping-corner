@@ -745,7 +745,11 @@ function normalizeImageUrl(url) {
 }
 function getProductImages(product) {
   if (!product) return [];
-
+   console.log("PRODUCT IMAGE DEBUG:", product.ProductName);
+   console.log("PRODUCT KEYS:", Object.keys(product));
+   console.log("IMAGE FIELDS:", Object.keys(product).filter(key =>
+     /image|photo|picture|img/i.test(key)
+   ));
   const found = [];
 
   function addImage(value, name = "") {
