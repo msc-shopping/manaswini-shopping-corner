@@ -2,7 +2,7 @@
    MANASWINI SHOPPING CORNER — FRONTEND APP
    ============================================================ */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwm--c615ozXW6wDPzSq8WLGfwnPbkncyCM8m5dXeUB2GiFYFXuK9jaLzPKmIrAJ-me/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxhV70YM0H3LYxEj2qI3uxDAVOn0BPPRjnv3_Sd4z3qSpHPqvREQutdSRZssP9ZBk8BWQ/exec";
 window.MANASWINI_API_URL = API_URL;
 const APP_SCRIPT_ELEMENT = document.currentScript || document.querySelector('script[src*="app.js"]');
 const SITE_ROOT = APP_SCRIPT_ELEMENT ? new URL("./", APP_SCRIPT_ELEMENT.src) : new URL("./", location.href);

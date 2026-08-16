@@ -5,7 +5,9 @@
 
 const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
 const ACCOUNT_KEY = "manaswini_account";
-const ACCOUNT_API_URL = window.MANASWINI_API_URL || "https://script.google.com/macros/s/AKfycbwm--c615ozXW6wDPzSq8WLGfwnPbkncyCM8m5dXeUB2GiFYFXuK9jaLzPKmIrAJ-me/exec";
+const ACCOUNT_API_URL =
+  window.MANASWINI_API_URL ||
+  "https://script.google.com/macros/s/AKfycbxhV70YM0H3LYxEj2qI3uxDAVOn0BPPRjnv3_Sd4z3qSpHPqvREQutdSRZssP9ZBk8BWQ/exec";
 
 function accountGet() { try { return JSON.parse(localStorage.getItem(ACCOUNT_KEY) || "null"); } catch (_) { return null; } }
 function accountSave(user) { localStorage.setItem(ACCOUNT_KEY, JSON.stringify(user)); }
