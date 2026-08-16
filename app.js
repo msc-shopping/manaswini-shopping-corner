@@ -1131,12 +1131,6 @@ if (!images.length) {
           &#10095;
         </button>
 
-        <div class="modal-image-counter">
-          <span id="modalImageCurrent">1</span>
-          /
-          <span>${images.length}</span>
-        </div>
-
       </div>
 
       <!-- ALL THUMBNAILS -->
