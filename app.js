@@ -954,16 +954,6 @@ function productCard(product) {
                     : ""
                 }
 
-                ${
-                  images.length > 1
-                    ? `
-                      <span class="product-image-count">
-                        ${images.length} photos
-                      </span>
-                    `
-                    : ""
-                }
-
               </div>
             `
             : `
