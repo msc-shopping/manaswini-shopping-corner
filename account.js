@@ -4,7 +4,7 @@
    ============================================================ */
 
 const GOOGLE_CLIENT_ID =
-  "828001323247-j09eo6jfvq0oq25qpae3q82sjn4bpj3a.apps.googleusercontent.com";
+  "828001323247-j09e06jfvq0og25qpae3q82sjn4bpj3a.apps.googleusercontent.com";
 const ACCOUNT_KEY = "manaswini_account";
 const ACCOUNT_API_URL =
   window.MANASWINI_API_URL ||
