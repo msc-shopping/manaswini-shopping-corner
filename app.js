@@ -1051,7 +1051,13 @@ function openProduct(id) {
   setModalQty(state.modalQty);
 
   const images = getProductImages(product);
-
+   console.log(
+     "PRODUCT:",
+     product.ProductName,
+     "IMAGES:",
+     images.length,
+     images
+   );
   const modalImage = $("#modalImage");
 
   if (!images.length) {
