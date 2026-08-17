@@ -668,7 +668,10 @@ const params = new URLSearchParams(window.location.search);
 
 const resetToken =
   params.get("token");
-
+console.log(
+  "RESET TOKEN:",
+  resetToken
+);
 const resetForm =
   document.getElementById("resetForm");
 
