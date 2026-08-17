@@ -27,7 +27,14 @@
 <div class="auth-divider"><span>OR</span></div>
 <form id="signupForm" class="auth-form"><h3>Create account</h3><div class="form-grid"><label>Full Name<input name="fullName" required></label><label>Username<input name="username" required minlength="3"></label><label>Email Address<input name="email" required type="email"></label><label>Mobile Number<input name="phone" inputmode="tel" required></label><label class="wide">Password<input name="password" type="password" required minlength="6"></label></div><button class="btn btn-gold full" type="submit">Create Account</button><div class="form-message" id="signupMessage"></div></form>
 <div class="auth-divider"><span>ALREADY A CUSTOMER?</span></div>
-<form id="loginForm" class="auth-form compact-auth"><div class="form-grid"><label>Email or Username<input name="identity" required></label><label>Password<input name="password" type="password" required></label></div><button class="btn btn-outline full" type="submit">Login</button><div class="form-message" id="loginMessage"></div></form>
+<form id="loginForm" class="auth-form compact-auth"><div class="form-grid"><label>Email or Username<input name="identity" required></label><label>Password<input name="password" type="password" required></label></div><button class="btn btn-outline full" type="submit">Login</button><div class="forgot-password-wrap">
+  <button
+    type="button"
+    class="text-btn forgot-password-btn"
+    id="forgotPasswordBtn">
+    Forgot Password?
+  </button>
+</div><div class="form-message" id="loginMessage"></div></form>
 </div>
 </div>
 <div id="accountLoggedIn" class="account-dashboard" hidden>
@@ -43,6 +50,67 @@
 </main>
 <footer><div class="footer-main"><div class="footer-brand"><div class="brand"><div class="brand-mark">M</div><span><b>MANASWINI</b><small>SHOPPING CORNER</small></span></div><p>Tradition • Elegance • Celebration</p></div><div><h4>Shop</h4><a href="../shop/">All Products</a><a href="../categories/">Categories</a><a href="../about/">About</a><a href="../contact/">Contact</a></div><div><h4>Help</h4><a href="tel:9030833667">9030833667</a><a href="mailto:manaswinishoppingcorner@gmail.com">Email us</a><span>Hyderabad, Telangana, India</span></div><div><h4>Order</h4><span>Online Payment</span><span>Cash on Delivery</span><span>Bulk / MOQ Orders</span></div></div><div class="footer-bottom">© <span id="year"></span> Manaswini Shopping Corner. All rights reserved.</div></footer>
 <div class="overlay" id="overlay"></div><aside aria-label="Shopping cart" class="cart-drawer" id="cartDrawer"><div class="drawer-head"><div><span class="eyebrow">YOUR BAG</span><h3>Shopping Cart</h3></div><button class="close-btn" id="closeCart">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-footer"><div class="cart-line"><span>Subtotal</span><strong id="cartSubtotal">₹0.00</strong></div><div class="cart-line muted"><span>Shipping</span><span id="cartShipping">Calculated at checkout</span></div><button class="btn btn-gold full" id="checkoutBtn">Proceed to Checkout</button><button class="text-btn full" id="whatsappBtn">Order via WhatsApp</button></div></aside>
+<div
+  class="modal"
+  id="forgotPasswordModal">
+
+  <div class="modal-card auth-reset-card">
+
+    <button
+      class="close-btn modal-close"
+      data-close="forgotPasswordModal">
+      ×
+    </button>
+
+    <div class="checkout-head">
+
+      <span class="eyebrow">
+        PASSWORD RESET
+      </span>
+
+      <h2>
+        Reset your password
+      </h2>
+
+      <p>
+        Enter the email address registered
+        with Manaswini Shopping Corner.
+      </p>
+
+    </div>
+
+    <form
+      id="forgotPasswordForm"
+      class="auth-form">
+
+      <label>
+        Email Address
+
+        <input
+          type="email"
+          name="email"
+          id="forgotPasswordEmail"
+          required
+          autocomplete="email"
+          placeholder="you@example.com">
+      </label>
+
+      <button
+        class="btn btn-gold full"
+        type="submit">
+        Send Reset Link
+      </button>
+
+      <div
+        class="form-message"
+        id="forgotPasswordMessage">
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
 <script src="../app.js" defer></script><script src="../account.js" defer></script>
 </body>
 </html>
