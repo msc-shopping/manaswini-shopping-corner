@@ -25,7 +25,28 @@
 <div class="auth-card"><div class="auth-copy"><span class="eyebrow">WELCOME</span><h2>Sign in to Manaswini</h2><p>Use your Google account or create an account with your email and username.</p></div>
 <div id="googleButtonWrap" class="google-wrap"><div id="googleSignInButton"></div><button type="button" class="google-fallback" id="googleFallback">Continue with Google</button><small id="googleHelp">Google Sign-In requires your Google OAuth Client ID to be configured in <b>account.js</b>.</small></div>
 <div class="auth-divider"><span>OR</span></div>
-<form id="signupForm" class="auth-form"><h3>Create account</h3><div class="form-grid"><label>Full Name<input name="fullName" required></label><label>Username<input name="username" required minlength="3"></label><label>Email Address<input name="email" required type="email"></label><label>Mobile Number<input name="phone" inputmode="tel" required></label><label class="wide">Password<input name="password" type="password" required minlength="6"></label></div><button class="btn btn-gold full" type="submit">Create Account</button><div class="form-message" id="signupMessage"></div></form>
+<form id="signupForm" class="auth-form"><h3>Create account</h3><div class="form-grid"><label>Full Name<input name="fullName" required></label><label>Username<input name="username" required minlength="3"></label><label>Email Address<input name="email" required type="email"></label><label>Mobile Number<input name="phone" inputmode="tel" required></label><label class="wide password-field">
+  Password
+  <span class="password-input-wrap">
+    <input
+      id="signupPassword"
+      name="password"
+      type="password"
+      required
+      minlength="6"
+      autocomplete="new-password">
+
+    <button
+      type="button"
+      class="password-toggle"
+      id="signupPasswordToggle"
+      aria-label="Show password"
+      title="Show password">
+
+      👁
+    </button>
+  </span>
+</label></div><button class="btn btn-gold full" type="submit">Create Account</button><div class="form-message" id="signupMessage"></div></form>
 <div class="auth-divider"><span>ALREADY A CUSTOMER?</span></div>
 <form id="loginForm" class="auth-form compact-auth"><div class="form-grid"><label>Email or Username<input name="identity" required></label><label class="password-field">
   Password
