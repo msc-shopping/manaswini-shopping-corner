@@ -479,7 +479,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         showing ? "password" : "text";
 
       loginPasswordToggle.textContent =
-        showing ? "SHOW" : "HIDE";
+        showing ? "👁" : "🙈";
 
     }
   );
