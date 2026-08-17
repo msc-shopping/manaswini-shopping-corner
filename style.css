@@ -1081,3 +1081,93 @@ body{overflow-x:hidden;}
   color: #5a1028 !important;
   outline: none !important;
 }
+/* ============================================================
+   FORGOT PASSWORD MODAL — FINAL SPACING
+   ============================================================ */
+
+#forgotPasswordModal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+  box-sizing: border-box;
+
+  background: rgba(35, 8, 18, 0.55);
+}
+
+#forgotPasswordModal.open {
+  display: flex;
+}
+
+#forgotPasswordModal .modal-card {
+  position: relative;
+
+  width: min(100%, 520px);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+
+  margin: 0 auto;
+  padding: 42px;
+
+  box-sizing: border-box;
+
+  background: #fffdfa;
+  border: 1px solid #e7d9c8;
+  border-radius: 22px;
+
+  box-shadow: 0 25px 70px rgba(50, 10, 25, 0.22);
+}
+
+#forgotPasswordModal .checkout-head {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#forgotPasswordModal .checkout-head .eyebrow {
+  display: block;
+  margin-bottom: 12px;
+}
+
+#forgotPasswordModal .checkout-head h2 {
+  margin: 0 0 12px;
+}
+
+#forgotPasswordModal .checkout-head p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+#forgotPasswordModal .auth-form label {
+  display: block;
+  margin-bottom: 18px;
+}
+
+#forgotPasswordModal .auth-form input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#forgotPasswordModal .modal-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 2;
+}
+
+@media (max-width: 600px) {
+
+  #forgotPasswordModal {
+    padding: 16px;
+  }
+
+  #forgotPasswordModal .modal-card {
+    padding: 34px 22px;
+    border-radius: 18px;
+  }
+
+}
