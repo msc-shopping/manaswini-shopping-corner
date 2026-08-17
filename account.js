@@ -373,6 +373,9 @@ async function handleForgotPassword(event) {
 
   event.preventDefault();
 
+  const form =
+    event.target;
+
   const message =
     document.getElementById(
       "forgotPasswordMessage"
@@ -380,7 +383,7 @@ async function handleForgotPassword(event) {
 
   const email =
     String(
-      event.target.email?.value || ""
+      form.email?.value || ""
     )
       .trim()
       .toLowerCase();
@@ -395,15 +398,58 @@ async function handleForgotPassword(event) {
   }
 
   message.textContent =
-    "Preparing password reset...";
+    "Sending password reset link...";
 
-  /*
-   * The V4 reset-password backend will be
-   * connected in the next step.
-   */
+  try {
 
-  message.textContent =
-    "Password reset service is being connected. Please try again shortly.";
+    const result =
+      await accountPost({
+
+        action: "forgotPassword",
+
+        email: email
+
+      });
+
+    /*
+     * The backend intentionally returns the same
+     * message whether or not the email exists.
+     *
+     * This prevents account enumeration.
+     */
+
+    message.innerHTML = `
+
+      <div class="verification-pending">
+
+        <strong>
+          Check your email.
+        </strong>
+
+        <p>
+          If an account exists for
+          <strong>${escapeHtml(email)}</strong>,
+          a password reset link has been sent.
+        </p>
+
+        <p>
+          The link will remain valid for
+          30 minutes.
+        </p>
+
+      </div>
+
+    `;
+
+    form.reset();
+
+  } catch (error) {
+
+    message.textContent =
+      error.message ||
+      "Unable to send the password reset link.";
+
+  }
 
 }
 document.addEventListener('DOMContentLoaded',()=>{
