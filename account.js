@@ -369,11 +369,84 @@ async function trackAccountOrder(event) {
   box.hidden=false; box.innerHTML='<div class="spinner"></div> Checking your order...';
   try { const response=await fetch(`${ACCOUNT_API_URL}?action=trackOrder&orderId=${encodeURIComponent(orderId)}`,{cache:"no-store"}); const data=await response.json(); if(data.status!=="success"||!data.order)throw new Error(data.message||"Order ID not found."); const o=data.order; box.innerHTML=`<strong>${accountEsc(o.OrderID||orderId)}</strong><div class="account-track-grid"><span>Status</span><b>${accountEsc(o.OrderStatus||"Order Placed")}</b><span>Payment</span><b>${accountEsc(o.PaymentStatus||"Pending")}</b><span>Total</span><b>₹${Number(o.TotalAmount||0).toLocaleString("en-IN")}</b></div>`; } catch(error){box.innerHTML=`<span class="form-message">${accountEsc(error.message||"Unable to track this order.")}</span>`;}
 }
+async function handleForgotPassword(event) {
 
+  event.preventDefault();
+
+  const message =
+    document.getElementById(
+      "forgotPasswordMessage"
+    );
+
+  const email =
+    String(
+      event.target.email?.value || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  if (!email) {
+
+    message.textContent =
+      "Please enter your email address.";
+
+    return;
+
+  }
+
+  message.textContent =
+    "Preparing password reset...";
+
+  /*
+   * The V4 reset-password backend will be
+   * connected in the next step.
+   */
+
+  message.textContent =
+    "Password reset service is being connected. Please try again shortly.";
+
+}
 document.addEventListener('DOMContentLoaded',()=>{
   renderAccount(); setupGoogle();
   document.getElementById('signupForm')?.addEventListener('submit',handleSignup);
   document.getElementById('loginForm')?.addEventListener('submit',handleLogin);
+    /*
+   * ----------------------------------------------------------
+   * FORGOT PASSWORD
+   * ----------------------------------------------------------
+   */
+
+  document
+    .getElementById("forgotPasswordBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+
+        const modal =
+          document.getElementById(
+            "forgotPasswordModal"
+          );
+
+        if (modal) {
+
+          modal.classList.add("open");
+
+          document
+            .getElementById(
+              "forgotPasswordEmail"
+            )
+            ?.focus();
+
+        }
+
+      }
+    );
+    document
+    .getElementById("forgotPasswordForm")
+    ?.addEventListener(
+      "submit",
+      handleForgotPassword
+    );
   document.getElementById('logoutBtn')?.addEventListener('click',()=>{accountClear();renderAccount();});
   document.getElementById('editProfileBtn')?.addEventListener('click',editProfile);
   document.getElementById('editAddressBtn')?.addEventListener('click',editAddress);
