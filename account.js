@@ -456,32 +456,55 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderAccount(); setupGoogle();
   document.getElementById('signupForm')?.addEventListener('submit',handleSignup);
   document.getElementById('loginForm')?.addEventListener('submit',handleLogin);
-    /* ----------------------------------------------------------
-   * LOGIN PASSWORD SHOW / HIDE
+      /* ----------------------------------------------------------
+   * PASSWORD SHOW / HIDE
    * ---------------------------------------------------------- */
 
-  const loginPassword =
-    document.getElementById("loginPassword");
+  function setupPasswordToggle(inputId, toggleId) {
 
-  const loginPasswordToggle =
-    document.getElementById("loginPasswordToggle");
+    const passwordInput =
+      document.getElementById(inputId);
 
-  loginPasswordToggle?.addEventListener(
-    "click",
-    () => {
+    const passwordToggle =
+      document.getElementById(toggleId);
 
-      if (!loginPassword) return;
+    if (!passwordInput || !passwordToggle) return;
+
+    passwordToggle.textContent = "SHOW";
+
+    passwordToggle.addEventListener("click", () => {
 
       const showing =
-        loginPassword.type === "text";
+        passwordInput.type === "text";
 
-      loginPassword.type =
+      passwordInput.type =
         showing ? "password" : "text";
 
-      loginPasswordToggle.textContent =
-        showing ? "👁" : "🙈";
+      passwordToggle.textContent =
+        showing ? "SHOW" : "HIDE";
 
-    }
+      passwordToggle.setAttribute(
+        "aria-label",
+        showing ? "Show password" : "Hide password"
+      );
+
+      passwordToggle.setAttribute(
+        "title",
+        showing ? "Show password" : "Hide password"
+      );
+
+    });
+
+  }
+
+  setupPasswordToggle(
+    "signupPassword",
+    "signupPasswordToggle"
+  );
+
+  setupPasswordToggle(
+    "loginPassword",
+    "loginPasswordToggle"
   );
     /*
    * ----------------------------------------------------------
