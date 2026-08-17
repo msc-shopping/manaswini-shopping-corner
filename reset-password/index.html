@@ -832,18 +832,14 @@ resetForm.addEventListener(
 
           body:
             new URLSearchParams({
-
-              action:
-                "resetPassword",
-
-              token:
-                resetToken,
-
-              password:
-                password
-
+              payload: JSON.stringify({
+                action: "resetPassword",
+                payload: {
+                  token: resetToken,
+                  password: password
+                }
+              })
             }).toString()
-
         });
 
 
