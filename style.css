@@ -1014,3 +1014,70 @@ body{overflow-x:hidden;}
   background: transparent;
   box-shadow: none;
 }
+/* ============================================================
+   PASSWORD INPUT — SHOW / HIDE INSIDE FIELD
+   ============================================================ */
+
+.password-field {
+  display: block;
+}
+
+.password-input-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.password-input-wrap > input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 78px;
+}
+
+.password-toggle {
+  position: absolute !important;
+
+  top: 50% !important;
+  right: 16px !important;
+
+  transform: translateY(-50%) !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  color: #7b5260 !important;
+
+  font-family: "DM Sans", sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+
+  line-height: 1 !important;
+
+  cursor: pointer;
+
+  z-index: 5;
+}
+
+.password-toggle:hover,
+.password-toggle:focus,
+.password-toggle:active {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #5a1028 !important;
+  outline: none !important;
+}
