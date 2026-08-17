@@ -16,10 +16,45 @@ function accountClear() { localStorage.removeItem(ACCOUNT_KEY); }
 function accountEsc(value) { return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c])); }
 
 async function accountPost(payload) {
-  const response = await fetch(ACCOUNT_API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload)});
-  const data = await response.json();
-  if (data.status !== "success") throw new Error(data.message || "Account request failed.");
+
+  const response = await fetch(
+    ACCOUNT_API_URL,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    }
+  );
+
+  const data =
+    await response.json();
+
+  /*
+   * Normal successful requests return:
+   * status = success
+   *
+   * Signup intentionally returns:
+   * status = pending_verification
+   *
+   * Both are valid responses.
+   */
+
+  if (
+    data.status !== "success" &&
+    data.status !== "pending_verification"
+  ) {
+
+    throw new Error(
+      data.message ||
+      "Account request failed."
+    );
+
+  }
+
   return data;
+
 }
 
 function afterAccountLogin() {
@@ -108,17 +143,140 @@ async function handleGoogleCredential(response) {
 }
 
 async function handleSignup(event) {
+
   event.preventDefault();
-  const message=document.getElementById("signupMessage");
-  const data=Object.fromEntries(new FormData(event.target).entries());
-  message.textContent="Creating your account...";
+
+  const form =
+    event.target;
+
+  const message =
+    document.getElementById(
+      "signupMessage"
+    );
+
+  const data =
+    Object.fromEntries(
+      new FormData(form).entries()
+    );
+
+  message.textContent =
+    "Creating your account...";
+
   try {
-    const result=await accountPost({action:"emailSignup", fullName:data.fullName, username:data.username, email:data.email, phone:data.phone, password:data.password});
-    accountSave({...result.user, provider:"email", sessionToken:result.sessionToken});
-    event.target.reset();
-    message.textContent="Account created successfully.";
-    afterAccountLogin();
-  } catch(error) { message.textContent=error.message || "Could not create the account."; }
+
+    const result =
+      await accountPost({
+
+        action: "emailSignup",
+
+        fullName:
+          data.fullName,
+
+        username:
+          data.username,
+
+        email:
+          data.email,
+
+        phone:
+          data.phone,
+
+        password:
+          data.password
+
+      });
+
+
+    /*
+     * ----------------------------------------------------------
+     * IMPORTANT
+     *
+     * DO NOT create a session here.
+     *
+     * The customer must first complete:
+     *
+     * 1. Email verification
+     * 2. Mobile verification
+     *
+     * Only then will the account become ACTIVE.
+     * ----------------------------------------------------------
+     */
+
+
+    form.reset();
+
+
+    /*
+     * Save only the pending account information.
+     *
+     * There is intentionally NO sessionToken.
+     */
+
+    accountSave({
+
+      ...result.user,
+
+      provider: "email",
+
+      sessionToken: null,
+
+      accountStatus: "PENDING",
+
+      emailVerified: false,
+
+      phoneVerified: false
+
+    });
+
+
+    /*
+     * Show verification instructions.
+     */
+
+    message.innerHTML = `
+
+      <div class="verification-pending">
+
+        <strong>
+          Account created successfully.
+        </strong>
+
+        <p>
+          We have sent a verification link
+          to your email address.
+        </p>
+
+        <p>
+          <strong>Step 1:</strong>
+          Open the email and verify your
+          email address.
+        </p>
+
+        <p>
+          <strong>Step 2:</strong>
+          Complete your one-time mobile
+          number verification.
+        </p>
+
+        <p>
+          Your account will become active
+          only after both verifications
+          are completed.
+        </p>
+
+      </div>
+
+    `;
+
+
+  } catch (error) {
+
+    message.textContent =
+      error.message ||
+      "Could not create the account.";
+
+  }
+
 }
 
 async function handleLogin(event) {
