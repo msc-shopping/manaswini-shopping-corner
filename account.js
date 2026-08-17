@@ -280,17 +280,69 @@ async function handleSignup(event) {
 }
 
 async function handleLogin(event) {
+
   event.preventDefault();
-  const message=document.getElementById("loginMessage");
-  const data=Object.fromEntries(new FormData(event.target).entries());
-  message.textContent="Signing you in...";
+
+  const message =
+    document.getElementById("loginMessage");
+
+  const data =
+    Object.fromEntries(
+      new FormData(event.target).entries()
+    );
+
+  message.textContent =
+    "Signing you in...";
+
   try {
-    const result=await accountPost({action:"emailLogin", identity:data.identity, password:data.password});
-    accountSave({...result.user, provider:"email", sessionToken:result.sessionToken});
+
+    const result =
+      await accountPost({
+
+        action: "emailLogin",
+
+        identity:
+          data.identity,
+
+        password:
+          data.password
+
+      });
+
+    /*
+     * Login is allowed only after:
+     *
+     * EmailVerified = TRUE
+     * PhoneVerified = TRUE
+     * AccountStatus = ACTIVE
+     */
+
+    accountSave({
+
+      ...result.user,
+
+      provider: "email",
+
+      sessionToken:
+        result.sessionToken
+
+    });
+
     event.target.reset();
-    message.textContent="Login successful.";
+
+    message.textContent =
+      "Login successful.";
+
     afterAccountLogin();
-  } catch(error) { message.textContent=error.message || "Login failed."; }
+
+  } catch (error) {
+
+    message.textContent =
+      error.message ||
+      "Login failed.";
+
+  }
+
 }
 
 async function editProfile() {
