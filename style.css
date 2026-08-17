@@ -962,3 +962,55 @@ body{overflow-x:hidden;}
 #categoryProductsByCategory .product-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+/* ============================================================
+   PASSWORD INPUT WITH SHOW / HIDE
+   ============================================================ */
+
+.password-input-wrap {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+.password-input-wrap input {
+  width: 100%;
+  padding-right: 75px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+
+  border: 0;
+  background: transparent;
+
+  padding: 0;
+  margin: 0;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #7b5260;
+  cursor: pointer;
+
+  line-height: 1;
+  height: auto;
+  width: auto;
+
+  box-shadow: none;
+}
+
+.password-toggle:hover {
+  background: transparent;
+  color: #5a1028;
+  box-shadow: none;
+}
+
+.password-toggle:focus {
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+}
