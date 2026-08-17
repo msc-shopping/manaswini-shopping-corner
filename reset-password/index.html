@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5a1028">
+<meta name="description" content="Reset your Manaswini Shopping Corner password.">
+<title>Reset Password | Manaswini Shopping Corner</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --maroon:#5a1028;
+  --maroon-dark:#430b1d;
+  --gold:#b58b3c;
+  --cream:#f8f3eb;
+  --card:#fffdfa;
+  --text:#2b1c21;
+  --muted:#786b70;
+  --border:#e7d9c8;
+  --success:#177245;
+  --error:#9b2438;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  min-height:100%;
+}
+
+body{
+  background:var(--cream);
+  color:var(--text);
+  font-family:"DM Sans",Arial,sans-serif;
+}
+
+/* TOP BAR */
+
+.topbar{
+  min-height:38px;
+  padding:0 5%;
+  background:var(--maroon);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  font-size:12px;
+  letter-spacing:.2px;
+}
+
+.topbar-right{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+/* HEADER */
+
+.site-header{
+  background:rgba(255,253,250,.97);
+  border-bottom:1px solid var(--border);
+}
+
+.header-inner{
+  max-width:1200px;
+  min-height:76px;
+  margin:auto;
+  padding:0 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:30px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:var(--maroon);
+  text-decoration:none;
+  flex-shrink:0;
+}
+
+.brand-mark{
+  width:40px;
+  height:40px;
+  border:1px solid var(--gold);
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-family:"Playfair Display",serif;
+  font-size:19px;
+  color:var(--gold);
+}
+
+.brand span:last-child{
+  display:flex;
+  flex-direction:column;
+}
+
+.brand b{
+  font-family:"Cinzel",serif;
+  font-size:17px;
+  letter-spacing:2px;
+}
+
+.brand small{
+  margin-top:2px;
+  font-size:7px;
+  letter-spacing:2.5px;
+  color:#a49496;
+}
+
+.main-nav{
+  display:flex;
+  align-items:center;
+  gap:27px;
+}
+
+.main-nav a{
+  color:#4c4145;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:600;
+}
+
+.main-nav a:hover{
+  color:var(--maroon);
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.account-btn,
+.cart-btn{
+  border-radius:22px;
+  padding:11px 17px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:700;
+}
+
+.account-btn{
+  color:var(--maroon);
+  border:1px solid var(--gold);
+  background:#fffdfa;
+}
+
+.cart-btn{
+  color:#fff;
+  background:var(--maroon);
+  border:1px solid var(--maroon);
+}
+
+/* MAIN */
+
+.reset-page{
+  min-height:calc(100vh - 114px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:70px 20px;
+}
+
+.reset-card{
+  width:min(100%,520px);
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:48px 46px;
+  box-shadow:0 20px 55px rgba(67,11,29,.10);
+}
+
+.reset-brand{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.reset-brand .brand-mark{
+  margin:0 auto 13px;
+}
+
+.eyebrow{
+  display:block;
+  color:var(--gold);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:3px;
+  margin-bottom:13px;
+}
+
+.reset-card h1{
+  margin:0;
+  text-align:center;
+  color:var(--maroon);
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:40px;
+  line-height:1.15;
+  font-weight:600;
+}
+
+.reset-subtitle{
+  margin:14px auto 34px;
+  max-width:390px;
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.7;
+}
+
+.form-group{
+  margin-bottom:20px;
+}
+
+.form-group label{
+  display:block;
+  margin-bottom:8px;
+  color:var(--maroon);
+  font-size:12px;
+  font-weight:700;
+}
+
+.password-wrap{
+  position:relative;
+}
+
+.password-wrap input{
+  padding-right:50px;
+}
+
+input{
+  width:100%;
+  height:52px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:#fff;
+  padding:0 16px;
+  outline:none;
+  color:var(--text);
+  font-family:inherit;
+  font-size:14px;
+  transition:.2s ease;
+}
+
+input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(181,139,60,.10);
+}
+
+.toggle-password{
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  background:none;
+  color:#8b777d;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:700;
+}
+
+.password-hint{
+  margin-top:7px;
+  color:#918387;
+  font-size:11px;
+}
+
+.reset-btn{
+  width:100%;
+  height:52px;
+  border:0;
+  border-radius:11px;
+  background:var(--maroon);
+  color:#fff;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:13px;
+  font-weight:700;
+  box-shadow:0 9px 20px rgba(90,16,40,.16);
+  transition:.2s ease;
+}
+
+.reset-btn:hover{
+  background:var(--maroon-dark);
+  transform:translateY(-1px);
+}
+
+.reset-btn:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.message{
+  display:none;
+  margin-top:20px;
+  padding:14px 16px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.error{
+  background:#fff0f2;
+  border:1px solid #efc7ce;
+  color:var(--error);
+}
+
+.message.success{
+  background:#edf9f2;
+  border:1px solid #c8e8d4;
+  color:var(--success);
+}
+
+.success-box{
+  text-align:center;
+}
+
+.success-icon{
+  width:58px;
+  height:58px;
+  margin:0 auto 20px;
+  border-radius:50%;
+  background:#edf9f2;
+  border:1px solid #bfe2cc;
+  color:var(--success);
+  display:grid;
+  place-items:center;
+  font-size:27px;
+  font-weight:700;
+}
+
+.success-box h2{
+  margin:0;
+  color:var(--maroon);
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:30px;
+}
+
+.success-box p{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.7;
+  margin:14px auto 26px;
+  max-width:390px;
+}
+
+.home-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:190px;
+  height:48px;
+  padding:0 22px;
+  border-radius:10px;
+  background:var(--maroon);
+  color:#fff;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+}
+
+/* FOOTER */
+
+footer{
+  background:#300016;
+  color:#fff;
+}
+
+.footer-bottom{
+  min-height:55px;
+  border-top:1px solid rgba(255,255,255,.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:15px;
+  color:#c8afb7;
+  font-size:11px;
+}
+
+/* MOBILE */
+
+@media(max-width:850px){
+
+  .topbar{
+    padding:8px 18px;
+    flex-direction:column;
+    gap:5px;
+    text-align:center;
+  }
+
+  .topbar-right{
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  .header-inner{
+    min-height:65px;
+  }
+
+  .main-nav{
+    display:none;
+  }
+
+  .header-actions{
+    margin-left:auto;
+  }
+
+  .account-btn{
+    display:none;
+  }
+
+  .reset-page{
+    padding:40px 16px;
+  }
+
+  .reset-card{
+    padding:38px 22px;
+    border-radius:18px;
+  }
+
+  .reset-card h1{
+    font-size:32px;
+  }
+
+  .brand b{
+    font-size:14px;
+  }
+}
+
+@media(max-width:480px){
+
+  .topbar{
+    font-size:10px;
+  }
+
+  .topbar-right span:nth-child(2){
+    display:none;
+  }
+
+  .header-inner{
+    padding:0 15px;
+  }
+
+  .cart-btn{
+    padding:10px 13px;
+  }
+
+  .reset-card{
+    padding:32px 18px;
+  }
+
+  .reset-card h1{
+    font-size:29px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div>Traditional collections for weddings, poojas &amp; celebrations</div>
+
+  <div class="topbar-right">
+    <span>COD Available</span>
+    <span>Online Payment</span>
+    <span>☎ 9030833667</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="header-inner">
+
+    <a class="brand"
+       href="../"
+       aria-label="Manaswini Shopping Corner home">
+
+      <span class="brand-mark">M</span>
+
+      <span>
+        <b>MANASWINI</b>
+        <small>SHOPPING CORNER</small>
+      </span>
+
+    </a>
+
+    <nav class="main-nav">
+      <a href="../">Home</a>
+      <a href="../categories/">Categories</a>
+      <a href="../shop/">Shop</a>
+      <a href="../about/">About</a>
+      <a href="../contact/">Contact</a>
+      <a href="../collaborate/">Collaborate with Us</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="account-btn" href="../account/">My Account</a>
+      <a class="cart-btn" href="../shop/">Shop</a>
+    </div>
+
+  </div>
+</header>
+
+<main class="reset-page">
+
+  <section class="reset-card" id="resetCard">
+
+    <div class="reset-brand">
+
+      <span class="brand-mark">M</span>
+
+      <span class="eyebrow">MANASWINI SHOPPING CORNER</span>
+
+    </div>
+
+    <div id="resetFormView">
+
+      <h1>Reset your password</h1>
+
+      <p class="reset-subtitle">
+        Create a new password for your Manaswini Shopping Corner account.
+      </p>
+
+      <form id="resetForm">
+
+        <div class="form-group">
+
+          <label for="newPassword">
+            New Password
+          </label>
+
+          <div class="password-wrap">
+
+            <input
+              id="newPassword"
+              name="password"
+              type="password"
+              minlength="6"
+              autocomplete="new-password"
+              placeholder="Enter your new password"
+              required
+            >
+
+            <button
+              class="toggle-password"
+              type="button"
+              data-target="newPassword">
+              SHOW
+            </button>
+
+          </div>
+
+          <div class="password-hint">
+            Use at least 6 characters.
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="confirmPassword">
+            Confirm Password
+          </label>
+
+          <div class="password-wrap">
+
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              minlength="6"
+              autocomplete="new-password"
+              placeholder="Re-enter your new password"
+              required
+            >
+
+            <button
+              class="toggle-password"
+              type="button"
+              data-target="confirmPassword">
+              SHOW
+            </button>
+
+          </div>
+
+        </div>
+
+        <button
+          class="reset-btn"
+          id="resetBtn"
+          type="submit">
+          Reset Password
+        </button>
+
+        <div
+          class="message"
+          id="resetMessage"
+          role="alert">
+        </div>
+
+      </form>
+
+    </div>
+
+    <div
+      class="success-box"
+      id="successView"
+      hidden>
+
+      <div class="success-icon">✓</div>
+
+      <span class="eyebrow">
+        PASSWORD RESET
+      </span>
+
+      <h2>Password updated successfully.</h2>
+
+      <p>
+        Your password has been changed successfully.
+        You can now return to Manaswini Shopping Corner
+        and sign in with your new password.
+      </p>
+
+      <a
+        class="home-btn"
+        href="../account/">
+        Return to My Account
+      </a>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-bottom">
+    © <span id="year"></span>
+    Manaswini Shopping Corner. All rights reserved.
+  </div>
+</footer>
+
+<script>
+
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbxhV70YM0H3LYxEj2qI3uxDAVOn0BPPRjnv3_Sd4z3qSpHPqvREQutdSRZssP9ZBk8BWQ/exec";
+
+const params = new URLSearchParams(window.location.search);
+
+const resetToken =
+  params.get("token");
+
+const resetForm =
+  document.getElementById("resetForm");
+
+const resetBtn =
+  document.getElementById("resetBtn");
+
+const resetMessage =
+  document.getElementById("resetMessage");
+
+const resetFormView =
+  document.getElementById("resetFormView");
+
+const successView =
+  document.getElementById("successView");
+
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+
+function showMessage(message, type) {
+
+  resetMessage.textContent = message;
+
+  resetMessage.className =
+    "message show " + type;
+
+}
+
+
+function clearMessage() {
+
+  resetMessage.textContent = "";
+
+  resetMessage.className =
+    "message";
+
+}
+
+
+/* Password visibility */
+
+document
+  .querySelectorAll(".toggle-password")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const target =
+        document.getElementById(
+          button.dataset.target
+        );
+
+      if (target.type === "password") {
+
+        target.type = "text";
+        button.textContent = "HIDE";
+
+      } else {
+
+        target.type = "password";
+        button.textContent = "SHOW";
+
+      }
+
+    });
+
+  });
+
+
+/* Check token */
+
+if (!resetToken) {
+
+  resetForm.querySelectorAll("input, button")
+    .forEach(element => {
+      element.disabled = true;
+    });
+
+  showMessage(
+    "This password-reset link is invalid or incomplete. Please request a new password-reset email.",
+    "error"
+  );
+
+}
+
+
+/* Submit */
+
+resetForm.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+    clearMessage();
+
+    const password =
+      document.getElementById(
+        "newPassword"
+      ).value;
+
+    const confirmPassword =
+      document.getElementById(
+        "confirmPassword"
+      ).value;
+
+
+    if (!resetToken) {
+
+      showMessage(
+        "This password-reset link is invalid or incomplete. Please request a new password-reset email.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (password.length < 6) {
+
+      showMessage(
+        "Password must contain at least 6 characters.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (password !== confirmPassword) {
+
+      showMessage(
+        "The passwords do not match.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    resetBtn.disabled = true;
+
+    resetBtn.textContent =
+      "Updating password…";
+
+
+    try {
+
+      const response =
+        await fetch(API_URL, {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+
+          body:
+            new URLSearchParams({
+
+              action:
+                "resetPassword",
+
+              token:
+                resetToken,
+
+              password:
+                password
+
+            }).toString()
+
+        });
+
+
+      const data =
+        await response.json();
+
+
+      if (
+        data &&
+        data.status === "success"
+      ) {
+
+        resetFormView.hidden = true;
+
+        successView.hidden = false;
+
+        return;
+
+      }
+
+
+      throw new Error(
+        data && data.message
+          ? data.message
+          : "Unable to reset the password."
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "Password reset error:",
+        error
+      );
+
+      showMessage(
+        error.message ||
+        "Unable to reset your password right now. Please request a new reset link and try again.",
+        "error"
+      );
+
+      resetBtn.disabled = false;
+
+      resetBtn.textContent =
+        "Reset Password";
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
