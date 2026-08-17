@@ -456,6 +456,33 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderAccount(); setupGoogle();
   document.getElementById('signupForm')?.addEventListener('submit',handleSignup);
   document.getElementById('loginForm')?.addEventListener('submit',handleLogin);
+    /* ----------------------------------------------------------
+   * LOGIN PASSWORD SHOW / HIDE
+   * ---------------------------------------------------------- */
+
+  const loginPassword =
+    document.getElementById("loginPassword");
+
+  const loginPasswordToggle =
+    document.getElementById("loginPasswordToggle");
+
+  loginPasswordToggle?.addEventListener(
+    "click",
+    () => {
+
+      if (!loginPassword) return;
+
+      const showing =
+        loginPassword.type === "text";
+
+      loginPassword.type =
+        showing ? "password" : "text";
+
+      loginPasswordToggle.textContent =
+        showing ? "SHOW" : "HIDE";
+
+    }
+  );
     /*
    * ----------------------------------------------------------
    * FORGOT PASSWORD
