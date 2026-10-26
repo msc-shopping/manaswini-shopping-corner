@@ -453,6 +453,20 @@ async function handleForgotPassword(event) {
 
 }
 document.addEventListener('DOMContentLoaded',()=>{
+  // If checkout redirected the customer here, do not leave an old profile-only
+  // record looking like an authenticated session. Checkout requires a Google ID token.
+  const returnToCheckout = new URLSearchParams(window.location.search).get('return') === 'checkout';
+  const savedUser = accountGet();
+
+  if (returnToCheckout && savedUser && !savedUser.idToken) {
+    // This is stale profile data from an older login flow, not a usable checkout session.
+    accountClear();
+  } else if (returnToCheckout && savedUser && savedUser.idToken) {
+    // Already signed in: return directly to the shop and reopen checkout.
+    window.location.replace('../shop/?checkout=1');
+    return;
+  }
+
   renderAccount(); setupGoogle();
   document.getElementById('signupForm')?.addEventListener('submit',handleSignup);
   document.getElementById('loginForm')?.addEventListener('submit',handleLogin);
