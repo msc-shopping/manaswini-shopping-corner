@@ -1171,3 +1171,13 @@ body{overflow-x:hidden;}
   }
 
 }
+
+/* Checkout payment verification updates */
+.checkout-card{max-height:90vh;overflow-y:auto;overscroll-behavior:contain}
+.checkout-card .checkout-form{padding-bottom:12px}
+.checkout-card::-webkit-scrollbar{width:9px}
+.checkout-card::-webkit-scrollbar-thumb{background:#cfa751;border-radius:10px}
+.checkout-card::-webkit-scrollbar-track{background:#f4eadc}
+.payment-info{background:#fffaf0}
+.payment-note{font-size:12px;line-height:1.6;color:var(--muted);margin:12px 0}
+#paymentHelpWhatsApp{display:block;text-align:center;text-decoration:none;margin:12px 0}
