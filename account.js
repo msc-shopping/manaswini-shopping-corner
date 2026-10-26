@@ -68,14 +68,9 @@ function renderAccount() {
   const loggedOut = document.getElementById("accountLoggedOut");
   const loggedIn = document.getElementById("accountLoggedIn");
   if (!loggedOut || !loggedIn) return;
-
-  // A saved profile is not necessarily an authenticated session. Checkout
-  // requires a sessionToken, so show the login screen for stale/pending
-  // profiles rather than displaying the account dashboard as if signed in.
-  const isAuthenticated = Boolean(user && user.sessionToken);
-  loggedOut.hidden = isAuthenticated;
-  loggedIn.hidden = !isAuthenticated;
-  if (!isAuthenticated) return;
+  loggedOut.hidden = !!user;
+  loggedIn.hidden = !user;
+  if (!user) return;
 
   document.getElementById("accountGreeting").textContent = `Hello, ${user.fullName || user.username || "there"}.`;
   document.getElementById("profileDetails").innerHTML = `<div class="profile-row"><span>Full Name</span><strong>${accountEsc(user.fullName || "—")}</strong></div><div class="profile-row"><span>Username</span><strong>${accountEsc(user.username || "—")}</strong></div><div class="profile-row"><span>Email</span><strong>${accountEsc(user.email || "—")}</strong></div><div class="profile-row"><span>Mobile</span><strong>${accountEsc(user.phone || "—")}</strong></div>`;
@@ -93,8 +88,8 @@ async function renderOrders(user) {
   box.innerHTML = '<div class="empty"><span class="spinner"></span> Loading your orders...</div>';
   const local = JSON.parse(localStorage.getItem("manaswini_orders") || "[]");
   try {
-    if (!user.sessionToken) throw new Error("No session");
-    const data = await accountPost({action:"getMyOrders", sessionToken:user.sessionToken});
+    if (!user.idToken) throw new Error("Google sign-in needs to be refreshed");
+    const data = await accountPost({action:"getMyOrders", idToken:user.idToken});
     const orders = data.orders || [];
     if (!orders.length && !local.length) { box.innerHTML='<div class="empty">No orders found yet.<br><a class="text-link" href="../shop/">Start shopping →</a></div>'; return; }
     const merged = orders.length ? orders : local.filter(o => !user.email || o.email === user.email).slice().reverse();
@@ -142,7 +137,7 @@ async function handleGoogleCredential(response) {
   if (!data || !data.email) { alert("Google sign-in could not be completed."); return; }
   try {
     const result=await accountPost({action:"googleLogin", idToken:response.credential});
-    accountSave({...result.user, provider:"google", sessionToken:result.sessionToken});
+    accountSave({...result.user, provider:"google", idToken:response.credential});
     afterAccountLogin();
   } catch(error) { alert(error.message || "Google sign-in failed."); }
 }
@@ -351,20 +346,20 @@ async function handleLogin(event) {
 }
 
 async function editProfile() {
-  const user=accountGet(); if(!user?.sessionToken) return;
+  const user=accountGet(); if(!user?.idToken) { alert("Please sign in with Google again."); return; }
   const name=prompt('Full name:',user.fullName||''); if(name===null)return;
   const phone=prompt('Mobile number:',user.phone||''); if(phone===null)return;
   const updated={...user,fullName:name.trim(),phone:phone.trim()};
-  try { const result=await accountPost({action:"saveProfile",sessionToken:user.sessionToken,profile:{fullName:updated.fullName,phone:updated.phone,address:user.address||"",city:user.city||"",state:user.state||"Telangana",pincode:user.pincode||"",username:user.username||""}}); accountSave({...updated,...result.user,sessionToken:user.sessionToken}); renderAccount(); } catch(error){alert(error.message);} 
+  try { const result=await accountPost({action:"saveProfile",idToken:user.idToken,profile:{fullName:updated.fullName,phone:updated.phone,address:user.address||"",city:user.city||"",state:user.state||"Telangana",pincode:user.pincode||"",username:user.username||""}}); accountSave({...updated,...result.user,idToken:user.idToken}); renderAccount(); } catch(error){alert(error.message);} 
 }
 
 async function editAddress() {
-  const user=accountGet(); if(!user?.sessionToken)return;
+  const user=accountGet(); if(!user?.idToken) { alert("Please sign in with Google again."); return; }
   const address=prompt('Delivery address:',user.address||''); if(address===null)return;
   const city=prompt('City:',user.city||'Hyderabad'); if(city===null)return;
   const pin=prompt('PIN code:',user.pincode||''); if(pin===null)return;
   const updated={...user,address:address.trim(),city:city.trim(),pincode:pin.trim()};
-  try { const result=await accountPost({action:"saveProfile",sessionToken:user.sessionToken,profile:{fullName:user.fullName||"",phone:user.phone||"",address:updated.address,city:updated.city,state:user.state||"Telangana",pincode:updated.pincode,username:user.username||""}}); accountSave({...updated,...result.user,sessionToken:user.sessionToken}); renderAccount(); } catch(error){alert(error.message);} 
+  try { const result=await accountPost({action:"saveProfile",idToken:user.idToken,profile:{fullName:user.fullName||"",phone:user.phone||"",address:updated.address,city:updated.city,state:user.state||"Telangana",pincode:updated.pincode,username:user.username||""}}); accountSave({...updated,...result.user,idToken:user.idToken}); renderAccount(); } catch(error){alert(error.message);} 
 }
 
 async function trackAccountOrder(event) {
@@ -458,16 +453,7 @@ async function handleForgotPassword(event) {
 
 }
 document.addEventListener('DOMContentLoaded',()=>{
-  renderAccount();
-  // If checkout sent an already-authenticated customer to My Account,
-  // return them to the checkout modal without requiring another login.
-  const returnParams = new URLSearchParams(window.location.search);
-  const currentAccount = accountGet();
-  if (returnParams.get('return') === 'checkout' && currentAccount?.sessionToken) {
-    window.location.replace('../shop/?checkout=1');
-    return;
-  }
-  setupGoogle();
+  renderAccount(); setupGoogle();
   document.getElementById('signupForm')?.addEventListener('submit',handleSignup);
   document.getElementById('loginForm')?.addEventListener('submit',handleLogin);
       /* ----------------------------------------------------------
