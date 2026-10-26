@@ -88,8 +88,8 @@ async function renderOrders(user) {
   box.innerHTML = '<div class="empty"><span class="spinner"></span> Loading your orders...</div>';
   const local = JSON.parse(localStorage.getItem("manaswini_orders") || "[]");
   try {
-    if (!user.idToken) throw new Error("Google sign-in needs to be refreshed");
-    const data = await accountPost({action:"getMyOrders", idToken:user.idToken});
+    if (!user.idToken && !user.sessionToken) throw new Error("Please log in again to view your orders.");
+    const data = await accountPost({action:"getMyOrders", idToken:user.idToken || "", sessionToken:user.sessionToken || ""});
     const orders = data.orders || [];
     if (!orders.length && !local.length) { box.innerHTML='<div class="empty">No orders found yet.<br><a class="text-link" href="../shop/">Start shopping →</a></div>'; return; }
     const merged = orders.length ? orders : local.filter(o => !user.email || o.email === user.email).slice().reverse();
@@ -187,87 +187,12 @@ async function handleSignup(event) {
       });
 
 
-    /*
-     * ----------------------------------------------------------
-     * IMPORTANT
-     *
-     * DO NOT create a session here.
-     *
-     * The customer must first complete:
-     *
-     * 1. Email verification
-     * 2. Mobile verification
-     *
-     * Only then will the account become ACTIVE.
-     * ----------------------------------------------------------
-     */
-
-
     form.reset();
-
-
-    /*
-     * Save only the pending account information.
-     *
-     * There is intentionally NO sessionToken.
-     */
-
-    accountSave({
-
-      ...result.user,
-
-      provider: "email",
-
-      sessionToken: null,
-
-      accountStatus: "PENDING",
-
-      emailVerified: false,
-
-      phoneVerified: false
-
-    });
-
-
-    /*
-     * Show verification instructions.
-     */
-
-    message.innerHTML = `
-
-      <div class="verification-pending">
-
-        <strong>
-          Account created successfully.
-        </strong>
-
-        <p>
-          We have sent a verification link
-          to your email address.
-        </p>
-
-        <p>
-          <strong>Step 1:</strong>
-          Open the email and verify your
-          email address.
-        </p>
-
-        <p>
-          <strong>Step 2:</strong>
-          Complete your one-time mobile
-          number verification.
-        </p>
-
-        <p>
-          Your account will become active
-          only after both verifications
-          are completed.
-        </p>
-
-      </div>
-
-    `;
-
+    message.textContent = result.message || "Account created. You can now log in with your email or username and password.";
+    const loginIdentity = document.querySelector('#loginForm [name="identity"]');
+    const loginPassword = document.querySelector('#loginForm [name="password"]');
+    if (loginIdentity) loginIdentity.value = data.email || data.username || "";
+    if (loginPassword) loginPassword.focus();
 
   } catch (error) {
 
