@@ -453,19 +453,16 @@ async function handleForgotPassword(event) {
 
 }
 document.addEventListener('DOMContentLoaded',()=>{
-  // Complete a checkout redirect even when the customer was already signed in
-  // before arriving at the account page. Previously this ran only after a new login.
+  renderAccount();
+  // If checkout sent an already-authenticated customer to My Account,
+  // return them to the checkout modal without requiring another login.
   const returnParams = new URLSearchParams(window.location.search);
-  if (returnParams.get('return') === 'checkout') {
-    const currentUser = accountGet();
-    if (currentUser && currentUser.sessionToken) {
-      window.location.replace(new URL('../shop/?checkout=1', window.location.href).href);
-      return;
-    }
-    // A legacy/stale local account without a session token cannot check out.
-    if (currentUser && !currentUser.sessionToken) accountClear();
+  const currentAccount = accountGet();
+  if (returnParams.get('return') === 'checkout' && currentAccount?.sessionToken) {
+    window.location.replace('../shop/?checkout=1');
+    return;
   }
-  renderAccount(); setupGoogle();
+  setupGoogle();
   document.getElementById('signupForm')?.addEventListener('submit',handleSignup);
   document.getElementById('loginForm')?.addEventListener('submit',handleLogin);
       /* ----------------------------------------------------------
