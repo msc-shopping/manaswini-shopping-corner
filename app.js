@@ -28,9 +28,18 @@ const state = {
   category: "",
   search: "",
   sort: "featured",
-  source: "none",
-  checkoutRedirectHandled: false
+  source: "none"
 };
+
+let checkoutRedirectHandled = false;
+
+function openCheckoutFromRedirect() {
+  if (checkoutRedirectHandled) return;
+  if (new URLSearchParams(location.search).get("checkout") !== "1") return;
+  checkoutRedirectHandled = true;
+  history.replaceState({}, "", location.pathname);
+  setTimeout(() => openCheckout(), 250);
+}
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -167,6 +176,7 @@ async function loadProducts() {
       state.products = products;
       state.source = "local";
       afterProductsLoaded();
+      openCheckoutFromRedirect();
       // Local catalogue is already usable: never keep customers waiting for the live API.
       showLoadingStates(false);
     }
@@ -190,6 +200,7 @@ async function loadProducts() {
     state.source = "live";
     afterProductsLoaded();
     showLoadingStates(false);
+    openCheckoutFromRedirect();
   } catch (error) {
     console.warn("Live catalogue unavailable:", error);
     if (!state.products.length) {
@@ -264,15 +275,6 @@ function afterProductsLoaded() {
   renderCategoryProducts(false);
   reconcileCart();
   renderCart();
-
-  // Open checkout as soon as the local catalogue is ready. Do not depend
-  // on the live Apps Script catalogue request succeeding.
-  const params = new URLSearchParams(location.search);
-  if (params.get("checkout") === "1" && !state.checkoutRedirectHandled) {
-    state.checkoutRedirectHandled = true;
-    history.replaceState({}, "", location.pathname);
-    setTimeout(() => openCheckout(), 250);
-  }
 }
 
 function showLoadingStates(show) {
@@ -1652,7 +1654,7 @@ function openCheckout() {
   }
 
   const account = getLoggedInAccount();
-  if (!account || !account.sessionToken) {
+  if (!account || !account.idToken) {
     closeCart();
     window.location.href = `${pageUrl("account")}?return=checkout`;
     return;
@@ -1685,14 +1687,14 @@ async function submitOrder(event) {
   }
 
   const account = getLoggedInAccount();
-  if (!account || !account.sessionToken) {
+  if (!account || !account.idToken) {
     closeModal("checkoutModal");
     window.location.href = `${pageUrl("account")}?return=checkout`;
     return;
   }
 
   const payload = {
-    authToken: account.sessionToken,
+    idToken: account.idToken,
     customer: {
       name: String(form.get("name") || account.fullName || "").trim(),
       phone: String(form.get("phone") || "").trim(),
