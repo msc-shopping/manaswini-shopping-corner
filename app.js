@@ -28,7 +28,8 @@ const state = {
   category: "",
   search: "",
   sort: "featured",
-  source: "none"
+  source: "none",
+  checkoutRedirectHandled: false
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -189,10 +190,6 @@ async function loadProducts() {
     state.source = "live";
     afterProductsLoaded();
     showLoadingStates(false);
-    if (new URLSearchParams(location.search).get("checkout") === "1") {
-      history.replaceState({}, "", location.pathname);
-      setTimeout(() => openCheckout(), 250);
-    }
   } catch (error) {
     console.warn("Live catalogue unavailable:", error);
     if (!state.products.length) {
@@ -267,6 +264,15 @@ function afterProductsLoaded() {
   renderCategoryProducts(false);
   reconcileCart();
   renderCart();
+
+  // Open checkout as soon as the local catalogue is ready. Do not depend
+  // on the live Apps Script catalogue request succeeding.
+  const params = new URLSearchParams(location.search);
+  if (params.get("checkout") === "1" && !state.checkoutRedirectHandled) {
+    state.checkoutRedirectHandled = true;
+    history.replaceState({}, "", location.pathname);
+    setTimeout(() => openCheckout(), 250);
+  }
 }
 
 function showLoadingStates(show) {
