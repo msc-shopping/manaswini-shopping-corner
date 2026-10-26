@@ -1678,10 +1678,15 @@ async function submitOrder(event) {
 
   const form = new FormData(event.target);
   const paymentMode = "ONLINE";
+  const paymentMethod = String(form.get("paymentMethod") || "").trim();
   const paymentReference = String(form.get("paymentReference") || "").trim();
 
-  if (paymentMode === "ONLINE" && !paymentReference) {
-    $("#checkoutMessage").textContent = "Please enter the transaction / UTR ID.";
+  if (!paymentMethod) {
+    $("#checkoutMessage").textContent = "Please select the payment method you used.";
+    return;
+  }
+  if (!paymentReference) {
+    $("#checkoutMessage").textContent = "Please enter the transaction ID / reference number.";
     return;
   }
 
@@ -1704,6 +1709,7 @@ async function submitOrder(event) {
       pincode: String(form.get("pincode") || "").trim()
     },
     paymentMode,
+    paymentMethod,
     paymentReference,
     items: state.cart.map(item => ({ productId: item.productId, quantity: item.quantity }))
   };
@@ -1744,7 +1750,7 @@ async function submitOrder(event) {
     $("#successPayment").textContent = `${data.paymentStatus || "Pending Verification"} • Total ${money(data.total)}`;
     const help = $("#paymentHelpWhatsApp");
     if (help) {
-      const message = `Hello Manaswini Shopping Corner, my payment is pending verification for Order ID ${data.orderId}. UPI Transaction ID/UTR: ${paymentReference}. Please verify it.`;
+      const message = `Hello Manaswini Shopping Corner, my payment is pending verification for Order ID ${data.orderId}. Payment method: ${paymentMethod}. Transaction ID/reference: ${paymentReference}. Please verify it.`;
       help.href = `https://wa.me/919030833667?text=${encodeURIComponent(message)}`;
     }
     openModal("successModal");
