@@ -93,7 +93,7 @@ async function renderOrders(user) {
     const orders = data.orders || [];
     if (!orders.length && !local.length) { box.innerHTML='<div class="empty">No orders found yet.<br><a class="text-link" href="../shop/">Start shopping →</a></div>'; return; }
     const merged = orders.length ? orders : local.filter(o => !user.email || o.email === user.email).slice().reverse();
-    box.innerHTML=merged.map(o=>`<div class="order-row"><div><strong>${accountEsc(o.orderId)}</strong><small>${accountEsc(o.date||"")}</small></div><div><b>₹${Number(o.total||0).toLocaleString("en-IN")}</b><small>${accountEsc(o.status||o.paymentStatus||"Order Placed")}</small></div></div>`).join("");
+    box.innerHTML=merged.map(o=>`<div class="order-row"><div><strong>${accountEsc(o.orderId)}</strong><small>${accountEsc(o.date||"")}</small>${o.paymentReference?`<small>UPI UTR: ${accountEsc(o.paymentReference)}</small>`:""}</div><div><b>₹${Number(o.total||0).toLocaleString("en-IN")}</b><small>${accountEsc(o.status||"Awaiting Payment Verification")}</small><small>Payment: ${accountEsc(o.paymentStatus||"Pending Verification")}</small></div></div>`).join("");
   } catch (_) {
     const mine = local.filter(o => !user.email || o.email === user.email).slice().reverse();
     box.innerHTML = mine.length ? mine.map(o=>`<div class="order-row"><div><strong>${accountEsc(o.orderId)}</strong><small>${accountEsc(o.date||"")}</small></div><div><b>₹${Number(o.total||0).toLocaleString("en-IN")}</b><small>${accountEsc(o.status||"Order Placed")}</small></div></div>`).join("") : '<div class="empty">Unable to load orders right now.</div>';
