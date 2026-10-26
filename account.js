@@ -68,9 +68,14 @@ function renderAccount() {
   const loggedOut = document.getElementById("accountLoggedOut");
   const loggedIn = document.getElementById("accountLoggedIn");
   if (!loggedOut || !loggedIn) return;
-  loggedOut.hidden = !!user;
-  loggedIn.hidden = !user;
-  if (!user) return;
+
+  // A saved profile is not necessarily an authenticated session. Checkout
+  // requires a sessionToken, so show the login screen for stale/pending
+  // profiles rather than displaying the account dashboard as if signed in.
+  const isAuthenticated = Boolean(user && user.sessionToken);
+  loggedOut.hidden = isAuthenticated;
+  loggedIn.hidden = !isAuthenticated;
+  if (!isAuthenticated) return;
 
   document.getElementById("accountGreeting").textContent = `Hello, ${user.fullName || user.username || "there"}.`;
   document.getElementById("profileDetails").innerHTML = `<div class="profile-row"><span>Full Name</span><strong>${accountEsc(user.fullName || "—")}</strong></div><div class="profile-row"><span>Username</span><strong>${accountEsc(user.username || "—")}</strong></div><div class="profile-row"><span>Email</span><strong>${accountEsc(user.email || "—")}</strong></div><div class="profile-row"><span>Mobile</span><strong>${accountEsc(user.phone || "—")}</strong></div>`;
