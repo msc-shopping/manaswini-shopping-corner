@@ -14,7 +14,7 @@
 <body data-page="index">
 <div class="topbar">
 <div>Traditional collections for weddings, poojas &amp; celebrations</div>
-<div class="topbar-right"><span>COD Available</span><span>Online Payment</span><span>☎ 9030833667</span></div>
+<div class="topbar-right"><span>UPI Payment</span><span>Manual Payment Verification</span><span>☎ 9030833667</span></div>
 </div>
 <header class="site-header">
 <div class="header-inner">
@@ -82,7 +82,7 @@
 <div class="footer-brand"><div class="brand"><div class="brand-mark">M</div><span><b>MANASWINI</b><small>SHOPPING CORNER</small></span></div><p>Tradition • Elegance • Celebration</p></div>
 <div><h4>Shop</h4><a href="shop/">All Products</a><a href="categories/">Categories</a><a href="about/">About</a><a href="contact/">Contact</a></div>
 <div><h4>Help</h4><a href="tel:9030833667">9030833667</a><a href="mailto:manaswinishoppingcorner@gmail.com">Email us</a><span>Hyderabad, Telangana, India</span></div>
-<div><h4>Order</h4><span>Online Payment</span><span>Cash on Delivery</span><span>Bulk / MOQ Orders</span></div>
+<div><h4>Order</h4><span>UPI Payment</span><span>Payment Verification</span><span>Bulk / MOQ Orders</span></div>
 </div>
 <div class="footer-bottom">© <span id="year"></span> Manaswini Shopping Corner. All rights reserved.</div>
 </footer>
@@ -126,12 +126,11 @@
 <label>State<input name="state" required="" value="Telangana"/></label>
 <label>PIN Code<input inputmode="numeric" name="pincode" required=""/></label>
 </div>
-<div class="payment-choice"><b>Payment method</b>
-<label class="pay-option"><input checked="" name="paymentMode" type="radio" value="COD"/><span><strong>Cash on Delivery</strong><small>Pay when your order is delivered.</small></span></label>
-<label class="pay-option"><input name="paymentMode" type="radio" value="ONLINE"/><span><strong>Online Payment</strong><small>Payment gateway will be connected after checkout testing.</small></span></label>
-<div class="online-payment-details" id="onlinePaymentDetails" hidden>
-  <div class="checkout-summary"><strong>Online payment</strong><br><small>Complete payment through the payment method provided by the store, then enter the transaction/reference ID below.</small></div>
-  <label class="wide">Transaction / UTR ID<input name="paymentReference" id="paymentReference" autocomplete="off" placeholder="Enter transaction / UTR ID"></label>
+<div class="payment-choice"><b>PAYMENT</b>
+<div class="pay-option payment-info"><span><strong>UPI Payment — Manual Verification</strong><small>Complete your UPI payment using Manaswini Shopping Corner's UPI QR/payment details, then enter the UPI transaction ID (UTR) below. Your payment will remain pending until Manaswini Shopping Corner verifies it.</small></span></div>
+<div class="online-payment-details" id="onlinePaymentDetails">
+  <label class="wide">UPI Transaction ID / UTR<input name="paymentReference" id="paymentReference" required autocomplete="off" placeholder="Enter the UPI transaction ID / UTR"></label>
+  <p class="payment-note">Allow up to 24 hours for verification. If it is not approved within 24 hours, contact us on WhatsApp using the button shown after placing your order.</p>
 </div>
 </div>
 <div class="checkout-summary" id="checkoutSummary"></div>
@@ -148,6 +147,8 @@
 <p>Your order has been recorded successfully.</p>
 <div class="order-number" id="successOrderId"></div>
 <p class="small" id="successPayment"></p>
+<p class="payment-note">Your payment is pending verification. If it is not approved within 24 hours, contact Manaswini Shopping Corner on WhatsApp.</p>
+<a class="btn btn-gold full" id="paymentHelpWhatsApp" href="https://wa.me/919030833667" target="_blank" rel="noopener">Contact us on WhatsApp</a>
 <button class="btn btn-gold full" onclick="closeModal('successModal')" type="button">
           Continue Shopping
         </button>
