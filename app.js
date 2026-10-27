@@ -3,6 +3,12 @@
    ============================================================ */
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxhV70YM0H3LYxEj2qI3uxDAVOn0BPPRjnv3_Sd4z3qSpHPqvREQutdSRZssP9ZBk8BWQ/exec";
+// Store UPI payment details. Keep qr.png in the GitHub repository root.
+const STORE_PAYMENT = {
+  upiId: "sanjeevkumargajawada-4@oksbi",
+  accountName: "Sanjeevkumar Gajavada",
+  qrImage: "qr.png"
+};
 window.MANASWINI_API_URL = API_URL;
 const APP_SCRIPT_ELEMENT = document.currentScript || document.querySelector('script[src*="app.js"]');
 const SITE_ROOT = APP_SCRIPT_ELEMENT ? new URL("./", APP_SCRIPT_ELEMENT.src) : new URL("./", location.href);
@@ -1676,12 +1682,17 @@ function updatePaymentDetails() {
   if (!details) return;
   const safe = value => String(value || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   if (method === "UPI") {
-    const qr = STORE_PAYMENT.qrImage ? `<img class="payment-qr" src="${safe(new URL(STORE_PAYMENT.qrImage, SITE_ROOT).href)}" alt="Manaswini Shopping Corner UPI QR code" style="max-width:220px;width:100%;height:auto;display:block;margin:12px auto" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><p hidden>QR image could not be loaded. Please check the QR image path.</p>` : `<p><strong>UPI QR code has not been configured yet.</strong></p>`;
-    details.innerHTML = `<strong>Pay by UPI</strong>${qr}<p>UPI ID: <strong>${safe(STORE_PAYMENT.upiId || "Not configured")}</strong></p><p>Account name: ${safe(STORE_PAYMENT.accountName || "Not configured")}</p><p>Pay the exact order total using your UPI app, then enter the transaction ID/UTR below.</p>`;
-  } else if (method === "Bank Transfer") {
-    details.innerHTML = `<strong>Bank transfer details</strong><p>Account name: <strong>${safe(STORE_PAYMENT.accountName || "Not configured")}</strong></p><p>Bank: ${safe(STORE_PAYMENT.bankName || "Not configured")}</p><p>Account number: ${safe(STORE_PAYMENT.accountNumber || "Not configured")}</p><p>IFSC: ${safe(STORE_PAYMENT.ifsc || "Not configured")}</p><p>Complete the transfer, then enter the transaction reference below.</p>`;
+    const amount = money(cartSubtotal());
+    const qrUrl = new URL(STORE_PAYMENT.qrImage, SITE_ROOT).href;
+    details.innerHTML = `<strong>Pay by UPI / QR Code</strong>
+      <p class="payment-amount">Order amount to pay: <strong>${safe(amount)}</strong></p>
+      <img class="payment-qr" src="${safe(qrUrl)}" alt="Manaswini Shopping Corner UPI QR code" style="max-width:260px;width:100%;height:auto;display:block;margin:12px auto" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+      <p hidden>QR image could not be loaded. Confirm that qr.png is uploaded to the GitHub repository root.</p>
+      <p>UPI ID: <strong>${safe(STORE_PAYMENT.upiId)}</strong></p>
+      <p>Account name: ${safe(STORE_PAYMENT.accountName)}</p>
+      <p>Scan the QR code with any UPI app and pay the exact amount shown above. After completing payment, enter the UPI transaction ID / UTR below.</p>`;
   } else {
-    details.innerHTML = `<strong>Select a payment method</strong><p>Choose UPI or Bank Transfer to view the store's payment details.</p>`;
+    details.innerHTML = `<strong>Pay by UPI</strong><p>Select “UPI / QR code” to display the store's QR code and payment details.</p>`;
   }
 }
 
@@ -1694,8 +1705,8 @@ async function submitOrder(event) {
   const paymentMode = "ONLINE"; // Backend stores both supported manual digital methods as ONLINE.
   const paymentReference = String(form.get("paymentReference") || "").trim();
 
-  if (!["UPI", "Bank Transfer"].includes(selectedPaymentMethod)) {
-    $("#checkoutMessage").textContent = "Please select UPI or Bank Transfer.";
+  if (selectedPaymentMethod !== "UPI") {
+    $("#checkoutMessage").textContent = "Please select UPI / QR code as the payment method.";
     return;
   }
 
