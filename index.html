@@ -115,7 +115,7 @@
 <div class="modal" id="checkoutModal">
 <div class="modal-card checkout-card">
 <button class="close-btn modal-close" data-close="checkoutModal">×</button>
-<div class="checkout-head"><span class="eyebrow">CHECKOUT</span><h2>Complete your order</h2><p>Your order will be securely recorded before payment/shipping is processed.</p></div>
+<div class="checkout-head"><span class="eyebrow">CHECKOUT</span><h2>Complete your order</h2><p>Enter your delivery address, choose UPI / QR code, and complete payment before submitting your order.</p></div>
 <form class="checkout-form" id="checkoutForm">
 <div class="form-grid">
 <label>Full Name<input name="name" required=""/></label>
@@ -128,10 +128,10 @@
 </div>
 <div class="payment-choice"><b>PAYMENT METHOD</b>
 <div class="online-payment-details" id="onlinePaymentDetails">
-  <label class="wide">Select payment method<select name="paymentMethod" id="paymentMethod" required><option value="">Choose a payment method</option><option value="UPI">UPI / QR code</option><option value="Bank Transfer">Bank Transfer (NEFT / IMPS)</option></select></label>
-  <div id="storePaymentDetails" class="store-payment-card wide" aria-live="polite"><strong>Payment details</strong><p>Select UPI or Bank Transfer to view payment instructions.</p></div>
+  <label class="wide">Select payment method<select name="paymentMethod" id="paymentMethod" required><option value="">Choose a payment method</option><option value="UPI">UPI / QR code</option></select></label>
+  <div id="storePaymentDetails" class="store-payment-card wide" aria-live="polite"><strong>Payment details</strong><p>Select UPI / QR code to view the store QR code and UPI ID.</p></div>
   <label class="wide">Transaction ID / UTR<input name="paymentReference" id="paymentReference" required autocomplete="off" placeholder="Enter the transaction ID after payment"></label>
-  <p class="payment-note">After submitting your order, payment verification will remain pending for up to 24 hours. Your order will be confirmed and the invoice will be available after payment verification. If it is not verified within 24 hours, contact us on WhatsApp.</p>
+  <p class="payment-note">After you submit the order, payment verification will be pending for up to 24 hours. Your order will be confirmed only after successful payment verification, and your invoice will be available after verification. If it is not verified within 24 hours, contact us on WhatsApp.</p>
 </div>
 </div>
 <div class="checkout-summary" id="checkoutSummary"></div>
@@ -145,10 +145,10 @@
 <div class="success-icon">✓</div>
 <span class="eyebrow">ORDER RECEIVED</span>
 <h2>Thank you for your order.</h2>
-<p>Your order has been recorded successfully.</p>
+<p>Your order has been received and is awaiting payment verification.</p>
 <div class="order-number" id="successOrderId"></div>
 <p class="small" id="successPayment"></p>
-<p class="payment-note">Payment verification is pending and may take up to 24 hours. Your order will be confirmed and your invoice will be available after the payment is verified. If it is not verified within 24 hours, contact us on WhatsApp.</p>
+<p class="payment-note"><strong>Payment Verification Pending</strong><br>Your payment will be verified within 24 hours. Your order will be confirmed after successful payment verification, and your invoice will be available after verification. If it is not verified within 24 hours, contact us on WhatsApp.</p>
 <a class="btn btn-gold full" id="paymentHelpWhatsApp" href="https://wa.me/919030833667" target="_blank" rel="noopener">Contact us on WhatsApp</a>
 <button class="btn btn-gold full" onclick="closeModal('successModal')" type="button">
           Continue Shopping
