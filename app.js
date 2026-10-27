@@ -112,6 +112,7 @@ function bindCommonUI() {
   $$('input[name="paymentMode"]').forEach(radio => {
     radio.addEventListener("change", updatePaymentDetails);
   });
+  $("#paymentMethod")?.addEventListener("change", updatePaymentDetails);
 
   $("#categoryPageFilter")?.addEventListener("change", event => {
     state.category = event.target.value;
@@ -1654,7 +1655,7 @@ function openCheckout() {
   }
 
   const account = getLoggedInAccount();
-  if (!account || (!account.idToken && !account.sessionToken)) {
+  if (!account || !account.idToken) {
     closeCart();
     window.location.href = `${pageUrl("account")}?return=checkout`;
     return;
@@ -1670,6 +1671,18 @@ function openCheckout() {
 function updatePaymentDetails() {
   const box = $("#onlinePaymentDetails");
   if (box) box.hidden = false;
+  const method = String($("#paymentMethod")?.value || "");
+  const details = $("#storePaymentDetails");
+  if (!details) return;
+  const safe = value => String(value || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  if (method === "UPI") {
+    const qr = STORE_PAYMENT.qrImage ? `<img class="payment-qr" src="${safe(new URL(STORE_PAYMENT.qrImage, SITE_ROOT).href)}" alt="Manaswini Shopping Corner UPI QR code" style="max-width:220px;width:100%;height:auto;display:block;margin:12px auto" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><p hidden>QR image could not be loaded. Please check the QR image path.</p>` : `<p><strong>UPI QR code has not been configured yet.</strong></p>`;
+    details.innerHTML = `<strong>Pay by UPI</strong>${qr}<p>UPI ID: <strong>${safe(STORE_PAYMENT.upiId || "Not configured")}</strong></p><p>Account name: ${safe(STORE_PAYMENT.accountName || "Not configured")}</p><p>Pay the exact order total using your UPI app, then enter the transaction ID/UTR below.</p>`;
+  } else if (method === "Bank Transfer") {
+    details.innerHTML = `<strong>Bank transfer details</strong><p>Account name: <strong>${safe(STORE_PAYMENT.accountName || "Not configured")}</strong></p><p>Bank: ${safe(STORE_PAYMENT.bankName || "Not configured")}</p><p>Account number: ${safe(STORE_PAYMENT.accountNumber || "Not configured")}</p><p>IFSC: ${safe(STORE_PAYMENT.ifsc || "Not configured")}</p><p>Complete the transfer, then enter the transaction reference below.</p>`;
+  } else {
+    details.innerHTML = `<strong>Select a payment method</strong><p>Choose UPI or Bank Transfer to view the store's payment details.</p>`;
+  }
 }
 
 async function submitOrder(event) {
@@ -1677,8 +1690,14 @@ async function submitOrder(event) {
   if (!state.cart.length) return;
 
   const form = new FormData(event.target);
-  const paymentMode = "ONLINE";
+  const selectedPaymentMethod = String(form.get("paymentMethod") || "").trim();
+  const paymentMode = "ONLINE"; // Backend stores both supported manual digital methods as ONLINE.
   const paymentReference = String(form.get("paymentReference") || "").trim();
+
+  if (!["UPI", "Bank Transfer"].includes(selectedPaymentMethod)) {
+    $("#checkoutMessage").textContent = "Please select UPI or Bank Transfer.";
+    return;
+  }
 
   if (paymentMode === "ONLINE" && !paymentReference) {
     $("#checkoutMessage").textContent = "Please enter the transaction / UTR ID.";
@@ -1686,15 +1705,14 @@ async function submitOrder(event) {
   }
 
   const account = getLoggedInAccount();
-  if (!account || (!account.idToken && !account.sessionToken)) {
+  if (!account || !account.idToken) {
     closeModal("checkoutModal");
     window.location.href = `${pageUrl("account")}?return=checkout`;
     return;
   }
 
   const payload = {
-    idToken: account.idToken || "",
-    sessionToken: account.sessionToken || "",
+    idToken: account.idToken,
     customer: {
       name: String(form.get("name") || account.fullName || "").trim(),
       phone: String(form.get("phone") || "").trim(),
@@ -1705,6 +1723,7 @@ async function submitOrder(event) {
       pincode: String(form.get("pincode") || "").trim()
     },
     paymentMode,
+    paymentMethod: selectedPaymentMethod,
     paymentReference,
     items: state.cart.map(item => ({ productId: item.productId, quantity: item.quantity }))
   };
@@ -1745,7 +1764,7 @@ async function submitOrder(event) {
     $("#successPayment").textContent = `${data.paymentStatus || "Pending Verification"} • Total ${money(data.total)}`;
     const help = $("#paymentHelpWhatsApp");
     if (help) {
-      const message = `Hello Manaswini Shopping Corner, my payment is pending verification for Order ID ${data.orderId}. UPI Transaction ID/UTR: ${paymentReference}. Please verify it.`;
+      const message = `Hello Manaswini Shopping Corner, my payment is pending verification for Order ID ${data.orderId}. Payment method: ${selectedPaymentMethod}. Transaction reference: ${paymentReference}. Please verify it.`;
       help.href = `https://wa.me/919030833667?text=${encodeURIComponent(message)}`;
     }
     openModal("successModal");
